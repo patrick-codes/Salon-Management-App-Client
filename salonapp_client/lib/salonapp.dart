@@ -19,7 +19,6 @@ class SalonApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'PasChat',
       routes: {
-        //'/': (context) => const SplashScreen(),
         '/welcome': (context) => const WelcomeScreen(),
         '/login': (context) => const LoginScreen(),
         '/signup': (context) => const SignupScren(),

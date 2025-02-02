@@ -6,10 +6,12 @@ import '../color_constants.dart';
 class CustomButton extends StatelessWidget {
   String text;
   final void Function() onpressed;
+  Color color;
   CustomButton({
     Key? key,
     required this.text,
     required this.onpressed,
+    required this.color,
   }) : super(key: key);
 
   @override
@@ -20,7 +22,7 @@ class CustomButton extends StatelessWidget {
         height: 50,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-          color: primaryColor,
+          color: color,
           borderRadius: BorderRadius.circular(5),
         ),
         child: Center(

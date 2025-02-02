@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:salonapp_client/filter%20screen/filter_screen.dart';
 import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import 'package:salonapp_client/helpers/colors/widgets/minimal_heading.dart';
 
@@ -121,9 +122,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     const SizedBox(height: 20),
                     TextFormField(
+                      readOnly: true,
+                      onTap: () {
+                        scrollBottomSheet(context);
+                      },
                       // controller: controller.emailController,
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             color: Colors.black87,
+                            fontSize: 14,
                             fontWeight: FontWeight.bold,
                           ),
                       validator: (value) {
@@ -142,10 +148,17 @@ class _MyHomePageState extends State<MyHomePage> {
                           color: Colors.grey,
                           size: 23,
                         ),
-                        suffixIcon: const Icon(
-                          MingCute.filter_2_line,
-                          color: Colors.grey,
-                          size: 23,
+                        suffixIcon: const SizedBox(
+                          width: 60,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(MingCute.close_line, color: Colors.grey),
+                              SizedBox(width: 10),
+                              Icon(MingCute.list_search_line,
+                                  color: Colors.grey),
+                            ],
+                          ),
                         ),
                         filled: true,
                         isDense: true,
@@ -233,6 +246,35 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> scrollBottomSheet(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      clipBehavior: Clip.hardEdge,
+      //enableDrag: true,
+      //useSafeArea: true,
+      showDragHandle: true,
+      isDismissible: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(25),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.8,
+          minChildSize: 0.2,
+          maxChildSize: 0.9,
+          builder: (BuildContext context, ScrollController scrollController) {
+            return FilterScreen();
+          },
+        );
+      },
     );
   }
 

@@ -49,7 +49,7 @@ class AppointmentsPage extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(18.0),
+          padding: const EdgeInsets.all(13.0),
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
             child: Column(

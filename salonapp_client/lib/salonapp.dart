@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:salonapp_client/presentation/authentication%20screens/login_screen.dart';
 import 'package:salonapp_client/presentation/authentication%20screens/signup_screen.dart';
+import 'package:salonapp_client/presentation/checkout%20page/checkout_page.dart';
 import 'package:salonapp_client/presentation/intro%20screens/welcome_screen.dart';
 import 'package:salonapp_client/presentation/shops/shop%20info/shop_info.dart';
-
+import 'package:salonapp_client/presentation/shops/main_shop_page.dart';
 import 'helpers/colors/color_constants.dart';
 import 'presentation/home/home.dart';
 import 'presentation/home/main_home.dart';
@@ -17,7 +18,7 @@ class SalonApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'PasChat',
+      title: 'Hairvana',
       routes: {
         '/welcome': (context) => const WelcomeScreen(),
         '/login': (context) => const LoginScreen(),
@@ -25,6 +26,7 @@ class SalonApp extends StatelessWidget {
         '/main': (context) => const MyHomePage(),
         '/mainhome': (context) => const MainHomePage(),
         '/shopinfo': (context) => const ShopInfo(),
+        '/mainshopinfo': (context) => const MainShopinfoPage(),
       },
       theme: ThemeData(
         textTheme: GoogleFonts.interTextTheme(

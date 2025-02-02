@@ -53,6 +53,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 text: "Get Started",
                 onpressed: () =>
                     Navigator.pushReplacementNamed(context, '/login'),
+                color: primaryColor,
               ),
             ),
           ],
@@ -188,7 +189,7 @@ List<TitleText> infos = [
   TitleText(
     title: "Say Goodbye ",
     subtitle:
-        "Paschat delivers messages faster than any other application The world's fastest messaging app. It is free and secure.",
+        "Delivers messages faster than any other application The world's fastest messaging app. It is free and secure.",
     waitingText: "to Waiting ",
     middleText: "The Fastest Way to Book your BarberShop ",
     appointmentText: "Appointment",
@@ -196,7 +197,7 @@ List<TitleText> infos = [
   TitleText(
     title: "Say Goodbye ",
     subtitle:
-        "Paschat delivers messages faster than any other application The world's fastest messaging app. It is free and secure.",
+        "Delivers messages faster than any other application The world's fastest messaging app. It is free and secure.",
     waitingText: "to Waiting ",
     middleText: "The Fastest Way to Book your BarberShop ",
     appointmentText: "Appointment",
@@ -204,7 +205,7 @@ List<TitleText> infos = [
   TitleText(
     title: "Say Goodbye ",
     subtitle:
-        "Paschat delivers messages faster than any other application The world's fastest messaging app. It is free and secure.",
+        "Delivers messages faster than any other application The world's fastest messaging app. It is free and secure.",
     waitingText: "to Waiting ",
     middleText: "The Fastest Way to Book your BarberShop ",
     appointmentText: "Appointment",

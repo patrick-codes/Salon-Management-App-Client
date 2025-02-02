@@ -297,6 +297,7 @@ class _ShopInfoState extends State<ShopInfo> {
                 child: CustomButton(
                   text: "Book Now",
                   onpressed: () {},
+                  color: primaryColor,
                 ),
               ),
             ),

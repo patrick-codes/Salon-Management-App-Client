@@ -4,6 +4,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import 'package:salonapp_client/presentation/appointments/appointments_page.dart';
+import '../shops/shop info/shops.dart';
 import 'home.dart';
 
 class MainHomePage extends StatefulWidget {
@@ -22,7 +23,7 @@ class _MainHomePageState extends State<MainHomePage> {
   List<Widget> pages = [
     MyHomePage(),
     AppointmentsPage(),
-    Container(),
+    ShopsPage(),
     Container(),
     Container(),
   ];
@@ -66,7 +67,7 @@ class _MainHomePageState extends State<MainHomePage> {
             ),
             GButton(
               icon: MingCute.map_line,
-              text: 'Explore',
+              text: 'Track',
             ),
             GButton(
               icon: MingCute.scissors_line,

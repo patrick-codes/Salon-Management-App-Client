@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:salonapp_client/presentation/checkout%20page/checkout_page.dart';
 
-import '../../helpers/colors/color_constants.dart';
-import '../../helpers/colors/widgets/custom_button.dart';
-import '../../helpers/colors/widgets/minimal_heading.dart';
+import '../../../helpers/colors/color_constants.dart';
+import '../../../helpers/colors/widgets/custom_button.dart';
+import '../../../helpers/colors/widgets/minimal_heading.dart';
+import '../../checkout page/pages/checkout_page.dart';
 
 class MainShopinfoPage extends StatefulWidget {
   const MainShopinfoPage({super.key});

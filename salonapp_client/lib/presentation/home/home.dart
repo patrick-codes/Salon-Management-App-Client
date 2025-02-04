@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:salonapp_client/filter%20screen/filter_screen.dart';
 import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import 'package:salonapp_client/helpers/colors/widgets/minimal_heading.dart';
+
+import '../filter screen/pages/filter_screen.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});

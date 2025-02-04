@@ -1,9 +1,4 @@
-import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../helpers/colors/color_constants.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

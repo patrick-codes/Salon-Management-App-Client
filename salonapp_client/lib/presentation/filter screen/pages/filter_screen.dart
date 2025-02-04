@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import 'package:salonapp_client/helpers/colors/widgets/minimal_heading.dart';
 
-import '../helpers/colors/widgets/custom_button.dart';
+import '../../../helpers/colors/widgets/custom_button.dart';
 
 class FilterScreen extends StatefulWidget {
   FilterScreen({super.key});

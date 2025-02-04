@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
 
-import '../../helpers/colors/color_constants.dart';
+import '../../../helpers/colors/color_constants.dart';
 
 class AppointmentsPage extends StatelessWidget {
   AppointmentsPage({super.key});

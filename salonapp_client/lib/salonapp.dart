@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:salonapp_client/presentation/authentication%20screens/login_screen.dart';
-import 'package:salonapp_client/presentation/authentication%20screens/signup_screen.dart';
-import 'package:salonapp_client/presentation/checkout%20page/checkout_page.dart';
-import 'package:salonapp_client/presentation/intro%20screens/welcome_screen.dart';
 import 'package:salonapp_client/presentation/shops/shop%20info/shop_info.dart';
-import 'package:salonapp_client/presentation/shops/main_shop_page.dart';
 import 'helpers/colors/color_constants.dart';
+import 'presentation/authentication screens/pages/login_screen.dart';
+import 'presentation/authentication screens/pages/signup_screen.dart';
 import 'presentation/home/home.dart';
 import 'presentation/home/main_home.dart';
-import 'presentation/intro screens/splash_screen.dart';
+import 'presentation/intro screens/pages/splash_screen.dart';
+import 'presentation/intro screens/pages/welcome_screen.dart';
+import 'presentation/shops/pages/main_shop_page.dart';
 
 class SalonApp extends StatelessWidget {
   const SalonApp({super.key});

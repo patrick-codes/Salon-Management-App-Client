@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../authentication screens/bloc/auth_bloc.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,7 +18,6 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    initSplash();
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -36,44 +38,52 @@ class _SplashScreenState extends State<SplashScreen>
     super.dispose();
   }
 
-  Future initSplash() async {
-    await Future.delayed(const Duration(seconds: 5));
-    Navigator.pushNamedAndRemoveUntil(context, '/welcome', (route) => false);
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SlideTransition(
-                    position: _slideAnimation,
-                    child: Image.asset(
-                      "assets/images/logo.jpg",
-                      height: 150,
-                      width: 150,
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (BuildContext context, state) async {
+        if (state is AuthenticatedState) {
+          await Future.delayed(const Duration(seconds: 3));
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/mainhome', (route) => false);
+        } else if (state is UnAuthenticatedState) {
+          await Future.delayed(const Duration(seconds: 3));
+          Navigator.pushNamedAndRemoveUntil(
+              context, '/welcome', (route) => false);
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(),
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Stack(
+            children: [
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SlideTransition(
+                      position: _slideAnimation,
+                      child: Image.asset(
+                        "assets/images/logo.jpg",
+                        height: 150,
+                        width: 150,
+                      ),
                     ),
-                  ),
-                  const Text(
-                    "Hairvana",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                    const Text(
+                      "Hairvana",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

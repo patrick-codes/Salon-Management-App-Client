@@ -1,7 +1,7 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_paystack/flutter_paystack.dart';
+//import 'package:flutter_paystack/flutter_paystack.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/widgets/custom_button.dart';
 
@@ -37,59 +37,59 @@ class _CheckoutPageState extends State<CheckoutPage> {
   double shippingFee = 200;
   double? total = 0.0;
 
-  final plugin = PaystackPlugin();
+  // final plugin = PaystackPlugin();
   String message = '';
 
-  @override
-  void initState() {
-    plugin.initialize(publicKey: ApiKeys.publicKey);
-    getTotal();
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   plugin.initialize(publicKey: ApiKeys.publicKey);
+  //   getTotal();
+  //   super.initState();
+  // }
 
-  void makePayment() async {
-    _amount = total;
-    double price = _amount! * 100;
-    Charge charge = Charge()
-      // ..accessCode = _accesscode
-      ..amount = price.toInt()
-      ..reference = ref
-      ..email = _email
-      ..currency = _currency;
+  // void makePayment() async {
+  //   _amount = total;
+  //   double price = _amount! * 100;
+  //   Charge charge = Charge()
+  //     // ..accessCode = _accesscode
+  //     ..amount = price.toInt()
+  //     ..reference = ref
+  //     ..email = _email
+  //     ..currency = _currency;
 
-    CheckoutResponse response = await plugin.checkout(
-      context,
-      logo: Image.asset(
-        "assets/images/logo.jpg",
-        height: 60,
-        width: 60,
-      ),
-      charge: charge,
-      method: CheckoutMethod.card,
-    );
-    if (response.status == true) {
-      message = '${response.reference}';
-      print(message);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SucessPage(message: message),
-        ),
-      );
+  //   CheckoutResponse response = await plugin.checkout(
+  //     context,
+  //     logo: Image.asset(
+  //       "assets/images/logo.jpg",
+  //       height: 60,
+  //       width: 60,
+  //     ),
+  //     charge: charge,
+  //     method: CheckoutMethod.card,
+  //   );
+  //   if (response.status == true) {
+  //     message = '${response.reference}';
+  //     print(message);
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => SucessPage(message: message),
+  //       ),
+  //     );
 
-      // DialogBoxUtil(
-      //   context,
-      //   onTap: () {},
-      //   content: '',
-      //   leftText: '',
-      //   rightText: '',
-      //   oncancel: () {},
-      //   icon: Icons.done,
-      // );
-    } else {
-      print("access code error");
-    }
-  }
+  //     // DialogBoxUtil(
+  //     //   context,
+  //     //   onTap: () {},
+  //     //   content: '',
+  //     //   leftText: '',
+  //     //   rightText: '',
+  //     //   oncancel: () {},
+  //     //   icon: Icons.done,
+  //     // );
+  //   } else {
+  //     print("access code error");
+  //   }
+  // }
 
   Future getTotal() async {
     setState(() {
@@ -142,7 +142,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
           child: Center(
             child: CustomButton(
               text: 'Checkout',
-              onpressed: makePayment,
+              onpressed: () {},
               color: Colors.green,
             ),
           ),

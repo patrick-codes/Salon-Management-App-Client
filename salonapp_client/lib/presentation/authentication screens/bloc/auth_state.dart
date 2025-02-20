@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'auth_bloc.dart';
 
 sealed class AuthState {}
@@ -20,8 +21,20 @@ class AuthFailureState extends AuthState {
   AuthFailureState({required this.errorMessage});
 }
 
-class AuthLoggedoutState extends AuthState {
+class AuthLogoutSuccesState extends AuthState {
   final String message;
 
-  AuthLoggedoutState({required this.message});
+  AuthLogoutSuccesState({
+    required this.message,
+  });
 }
+
+class AuthLogoutFailureState extends AuthState {
+  final String error;
+
+  AuthLogoutFailureState({required this.error});
+}
+
+class PasswordResetSuccesState extends AuthState {}
+
+class PasswordResetFailureState extends AuthState {}

@@ -35,16 +35,8 @@ class DialogBoxUtil extends StatelessWidget {
         height: 270,
         width: 90,
         decoration: BoxDecoration(
-          color: primaryColor,
+          color: backgroundColor,
           borderRadius: BorderRadius.circular(5),
-          // gradient: const LinearGradient(
-          //   colors: [
-          //     primaryColor,
-          //     backgroundColorDeep2,
-          //   ],
-          //   begin: Alignment.topLeft,
-          //   end: Alignment.topRight,
-          // ),
         ),
         child: Column(
           children: [

@@ -1,8 +1,17 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import 'package:salonapp_client/helpers/colors/widgets/minimal_heading.dart';
+import 'package:salonapp_client/presentation/authentication%20screens/bloc/auth_bloc.dart';
+import 'package:salonapp_client/presentation/location/bloc/location_bloc.dart';
+import 'package:toastification/toastification.dart';
 
+import '../../helpers/widgets/dialogbox_util.dart';
 import '../filter screen/pages/filter_screen.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -13,6 +22,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // @override
+  //  void initState() {
+  //   super.initState();
+  //   _loadLocation();
+  //   //_updateMapCenter();
+  //   //isOnline = false;
+  //   Future.delayed(const Duration(seconds: 2), () {
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //   });
+  // }
+
   List<Icon> icons = <Icon>[
     const Icon(
       MingCute.scissors_line,
@@ -47,203 +69,393 @@ class _MyHomePageState extends State<MyHomePage> {
     "Locking",
     "Natural",
   ];
+  // String locationMessage = 'Current Location of user';
+  // late bool serviceEnabled = false;
+  // late LocationPermission permission;
+  // Position? _currentUserLocation;
+  // String currentAddress = 'Loading current location....';
+  // String placeLoc = '';
+  // String? placeAdm;
+  // String currentStreet = '';
+  // double? distanceInMeters = 0.0;
+  // double? distanceInKm = 0.0;
+  // double? userLatitude;
+  // double? userLongitude;
+  // LatLng? coordinates;
+  // LatLng initialCenter = const LatLng(5.7931065, -0.7893054);
+  // bool isLoading = false;
+
+  // void _showAlertBanner2(
+  //   String message,
+  // ) {
+  //   Flushbar(
+  //     backgroundColor: Colors.red,
+  //     icon: const Icon(
+  //       Icons.cancel_rounded,
+  //       color: Colors.white,
+  //     ),
+  //     flushbarPosition: FlushbarPosition.TOP,
+  //     message: message,
+  //     duration: const Duration(seconds: 5),
+  //   ).show(context);
+  // }
+
+  // Future<Position> _getLocation() async {
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     _showAlertBanner2('Turn on location service');
+  //   }
+
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       _showAlertBanner2('Location permission denied by device');
+  //     }
+  //   }
+  //   if (permission == LocationPermission.deniedForever) {
+  //     _showAlertBanner2(
+  //         'Location permissions are permanently denied, we cannot request permission.');
+  //   }
+
+  //   return await Geolocator.getCurrentPosition();
+  // }
+
+  // Future<void> _loadLocation() async {
+  //   _currentUserLocation = await _getLocation();
+  //   await _addressFromCoordinates();
+  //   print('Cordinates: $_currentUserLocation');
+  // }
+
+  // Future<LatLng?> _addressFromCoordinates() async {
+  //   try {
+  //     List<Placemark> placemarks = await placemarkFromCoordinates(
+  //         _currentUserLocation!.latitude, _currentUserLocation!.longitude);
+  //     Placemark place = placemarks[0];
+  //     if (mounted) {
+  //       setState(() {
+  //         currentAddress = '${place.locality}-${place.administrativeArea}';
+  //         userLatitude = _currentUserLocation!.latitude;
+  //         userLongitude = _currentUserLocation!.longitude;
+  //         placeLoc = '${place.street}';
+  //         placeAdm = '${place.country}';
+  //       });
+  //     }
+  //     print('Location: $currentAddress');
+  //     print(userLatitude);
+  //     print(userLongitude);
+
+  //     return initialCenter;
+  //   } catch (e) {
+  //     print(e);
+  //     return null;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[300]!.withOpacity(0.28),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: 250,
-              width: MediaQuery.of(context).size.width,
-              decoration: const BoxDecoration(
-                color: primaryColor,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 40),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (BuildContext context, AuthState state) {
+        if (state is AuthLogoutSuccesState) {
+          Navigator.pushReplacementNamed(context, '/welcome');
+          toastification.show(
+            showProgressBar: false,
+            title: Text(state.message),
+            autoCloseDuration: const Duration(seconds: 7),
+            style: ToastificationStyle.minimal,
+            type: ToastificationType.warning,
+          );
+        }
+      },
+      builder: (BuildContext context, state) {
+        return Scaffold(
+          backgroundColor: Colors.grey[300]!.withOpacity(0.28),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  height: 250,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: const BoxDecoration(
+                      // color: primaryColor,
+                      gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomLeft,
+                    colors: [
+                      primaryColor,
+                      Colors.deepOrange,
+                    ],
+                  )),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Welcome Back,",
-                          style:
-                              Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
+                        const SizedBox(height: 40),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              height: 35,
+                              width: 235,
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(40),
+                                color: Colors.black,
+                              ),
+                              child: Center(
+                                child: Row(
+                                  children: [
+                                    SizedBox(width: 3),
+                                    Icon(
+                                      MingCute.location_2_fill,
+                                      color: primaryColor,
+                                    ),
+                                    SizedBox(width: 3),
+                                    BlocConsumer<LocationBloc, LocationState>(
+                                      listener: (context, locationState) {
+                                        if (locationState is LocationOff) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                                content: Text(
+                                                    "Location Error: ${locationState.message}")),
+                                          );
+                                        }
+                                      },
+                                      builder: (context, state) {
+                                        if (state is CordinatesLoaded) {
+                                          return Text(
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            state.message,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium!
+                                                .copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12,
+                                                  color: Colors.white,
+                                                ),
+                                          );
+                                        } else
+                                          return Text(
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            "Location loading......",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium!
+                                                .copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 12,
+                                                  color: Colors.white,
+                                                ),
+                                          );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => DialogBoxUtil(
+                                    context,
+                                    onTap: () {
+                                      context
+                                          .read<AuthBloc>()
+                                          .add(LogoutEvent());
+                                    },
+                                    content: 'Confirm Logout',
+                                    leftText: 'Cancel',
+                                    rightText: 'Logout',
+                                    oncancel: () {
+                                      Navigator.pop(context);
+                                    },
+                                    icon: MingCute.exit_fill,
                                   ),
+                                );
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(40),
+                                ),
+                                child: const Center(
+                                  child: Icon(
+                                    MingCute.exit_fill,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(40),
+                        SizedBox(height: 8),
+                        RichText(
+                          overflow: TextOverflow.visible,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text:
+                                    "Let's Find                                       ",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                    ),
+                              ),
+                              TextSpan(
+                                text: "your top Barber!",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                    ),
+                              ),
+                            ],
                           ),
-                          child: const Center(
-                            child: Icon(
-                              MingCute.notification_line,
-                              size: 20,
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          readOnly: true,
+                          onTap: () {
+                            scrollBottomSheet(context);
+                          },
+                          // controller: controller.emailController,
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    color: Colors.black87,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              print('Type something');
+                              return 'Type something';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            hintText: "Search",
+                            hintStyle: const TextStyle(
+                                color: Colors.grey, fontSize: 15),
+                            prefixIcon: const Icon(
+                              MingCute.search_2_line,
+                              color: Colors.grey,
+                              size: 23,
+                            ),
+                            suffixIcon: const SizedBox(
+                              width: 60,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Icon(MingCute.close_line, color: Colors.grey),
+                                  SizedBox(width: 10),
+                                  Icon(MingCute.list_search_line,
+                                      color: Colors.grey),
+                                ],
+                              ),
+                            ),
+                            filled: true,
+                            isDense: true,
+                            fillColor: Colors.white,
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: BorderSide.none,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius: BorderRadius.circular(50),
                             ),
                           ),
                         ),
                       ],
                     ),
-                    RichText(
-                      overflow: TextOverflow.visible,
-                      text: TextSpan(
+                  ),
+                ),
+                SizedBox(
+                  height: 500,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TextSpan(
-                            text:
-                                "Let's Find                                       ",
-                            style:
-                                Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                    ),
+                          const SizedBox(height: 8),
+                          MinimalHeadingText(
+                              leftText: "Categories", rightText: "See all"),
+                          const SizedBox(height: 8),
+                          SizedBox(
+                            height: 70,
+                            width: MediaQuery.of(context).size.width,
+                            child: ListView.builder(
+                              itemCount: icons.length,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (BuildContext context, int index) {
+                                return _buildCategoryCircle(
+                                  icons[index],
+                                  title[index],
+                                );
+                              },
+                            ),
                           ),
-                          TextSpan(
-                            text: "your top Barber!",
-                            style:
-                                Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                    ),
+                          const SizedBox(height: 20),
+                          MinimalHeadingText(
+                              leftText: "Nearby shops", rightText: "See all"),
+                          const SizedBox(height: 8),
+                          SizedBox(
+                            height: 28,
+                            width: MediaQuery.of(context).size.width,
+                            child: ListView.builder(
+                              itemCount: icons.length,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (BuildContext context, int index) {
+                                return _buildSquareCategoryButton(
+                                    title[index],
+                                    index == 0
+                                        ? tertiaryColor.withOpacity(0.2)
+                                        : Colors.grey.shade300,
+                                    index == 0
+                                        ? primaryColor
+                                        : Colors.grey.shade300,
+                                    index == 0 ? primaryColor : Colors.black54);
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            height: 400,
+                            width: MediaQuery.of(context).size.width,
+                            child: ListView.builder(
+                              itemCount: icons.length,
+                              scrollDirection: Axis.vertical,
+                              itemBuilder: (BuildContext context, int index) {
+                                return shopContainer(context);
+                              },
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      readOnly: true,
-                      onTap: () {
-                        scrollBottomSheet(context);
-                      },
-                      // controller: controller.emailController,
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: Colors.black87,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          print('Type something');
-                          return 'Type something';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        hintText: "Search",
-                        hintStyle:
-                            const TextStyle(color: Colors.grey, fontSize: 15),
-                        prefixIcon: const Icon(
-                          MingCute.search_2_line,
-                          color: Colors.grey,
-                          size: 23,
-                        ),
-                        suffixIcon: const SizedBox(
-                          width: 60,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(MingCute.close_line, color: Colors.grey),
-                              SizedBox(width: 10),
-                              Icon(MingCute.list_search_line,
-                                  color: Colors.grey),
-                            ],
-                          ),
-                        ),
-                        filled: true,
-                        isDense: true,
-                        fillColor: Colors.white,
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(50),
-                          borderSide: BorderSide.none,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 500,
-              width: MediaQuery.of(context).size.width,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 8),
-                      MinimalHeadingText(
-                          leftText: "Categories", rightText: "See all"),
-                      const SizedBox(height: 8),
-                      SizedBox(
-                        height: 70,
-                        width: MediaQuery.of(context).size.width,
-                        child: ListView.builder(
-                          itemCount: icons.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (BuildContext context, int index) {
-                            return _buildCategoryCircle(
-                                icons[index], title[index]);
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      MinimalHeadingText(
-                          leftText: "Nearby shops", rightText: "See all"),
-                      const SizedBox(height: 8),
-                      SizedBox(
-                        height: 28,
-                        width: MediaQuery.of(context).size.width,
-                        child: ListView.builder(
-                          itemCount: icons.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (BuildContext context, int index) {
-                            return _buildSquareCategoryButton(
-                                title[index],
-                                index == 0
-                                    ? tertiaryColor.withOpacity(0.2)
-                                    : Colors.grey.shade300,
-                                index == 0
-                                    ? primaryColor
-                                    : Colors.grey.shade300,
-                                index == 0 ? primaryColor : Colors.black54);
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        height: 400,
-                        width: MediaQuery.of(context).size.width,
-                        child: ListView.builder(
-                          itemCount: icons.length,
-                          scrollDirection: Axis.vertical,
-                          itemBuilder: (BuildContext context, int index) {
-                            return shopContainer(context);
-                          },
-                        ),
-                      ),
-                    ],
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

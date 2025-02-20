@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_paystack/flutter_paystack.dart';
+//import 'package:flutter_paystack/flutter_paystack.dart';
 import 'api_key.dart';
-import 'success_page.dart';
 
 class TestingPage extends StatefulWidget {
   final double amount;
@@ -24,33 +23,33 @@ class _TestingPageState extends State<TestingPage> {
   final String _currency = 'GHS';
   final String _email = 'kofiktechgh@gmail.com';
 
-  final plugin = PaystackPlugin();
+  //final plugin = PaystackPlugin();
   String message = '';
 
-  @override
-  void initState() {
-    plugin.initialize(publicKey: ApiKeys.publicKey);
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   plugin.initialize(publicKey: ApiKeys.publicKey);
+  //   super.initState();
+  // }
 
-  void makePayment() async {
-    int price = widget.amount.toInt() * 100;
-    Charge charge = Charge()
-      ..amount = price
-      ..reference = 'ref: ${DateTime.now()}'
-      ..email = _email
-      ..currency = _currency;
+  // void makePayment() async {
+  //   int price = widget.amount.toInt() * 100;
+  //   Charge charge = Charge()
+  //     ..amount = price
+  //     ..reference = 'ref: ${DateTime.now()}'
+  //     ..email = _email
+  //     ..currency = _currency;
 
-    CheckoutResponse response = await plugin.checkout(
-      context,
-      charge: charge,
-      method: CheckoutMethod.card,
-    );
-    if (response.status == true) {
-      message = 'Payment Sucessfully made with ${response.reference}';
-      // Get.to(() => SucessPage(message: message));
-    }
-  }
+  //   CheckoutResponse response = await plugin.checkout(
+  //     context,
+  //     charge: charge,
+  //     method: CheckoutMethod.card,
+  //   );
+  //   if (response.status == true) {
+  //     message = 'Payment Sucessfully made with ${response.reference}';
+  //     // Get.to(() => SucessPage(message: message));
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +61,7 @@ class _TestingPageState extends State<TestingPage> {
             children: [
               MaterialButton(
                 color: Colors.deepOrange,
-                onPressed: makePayment,
+                onPressed: () {},
                 child: Text("Pay"),
               ),
               /*

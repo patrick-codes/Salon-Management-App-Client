@@ -9,34 +9,37 @@ import 'presentation/home/main_home.dart';
 import 'presentation/intro screens/pages/splash_screen.dart';
 import 'presentation/intro screens/pages/welcome_screen.dart';
 import 'presentation/shops/pages/main_shop_page.dart';
+import 'package:toastification/toastification.dart';
 
 class SalonApp extends StatelessWidget {
   const SalonApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Hairvana',
-      routes: {
-        '/welcome': (context) => const WelcomeScreen(),
-        '/login': (context) => const LoginScreen(),
-        '/signup': (context) => const SignupScren(),
-        '/main': (context) => const MyHomePage(),
-        '/mainhome': (context) => const MainHomePage(),
-        '/shopinfo': (context) => const ShopInfo(),
-        '/mainshopinfo': (context) => const MainShopinfoPage(),
-      },
-      theme: ThemeData(
-        textTheme: GoogleFonts.interTextTheme(
-          Theme.of(context).textTheme,
+    return ToastificationWrapper(
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Hairvana',
+        routes: {
+          '/': (context) => const SplashScreen(),
+          '/welcome': (context) => const WelcomeScreen(),
+          '/login': (context) => const LoginScreen(),
+          '/signup': (context) => const SignupScren(),
+          '/main': (context) => const MyHomePage(),
+          '/mainhome': (context) => const MainHomePage(),
+          '/shopinfo': (context) => const ShopInfo(),
+          '/mainshopinfo': (context) => const MainShopinfoPage(),
+        },
+        theme: ThemeData(
+          textTheme: GoogleFonts.interTextTheme(
+            Theme.of(context).textTheme,
+          ),
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: primaryColor,
+          ),
+          useMaterial3: true,
         ),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: primaryColor,
-        ),
-        useMaterial3: true,
       ),
-      home: const SplashScreen(),
     );
   }
 }

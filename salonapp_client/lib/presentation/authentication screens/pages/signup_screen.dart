@@ -119,6 +119,61 @@ class _SignupScrenState extends State<SignupScren> {
                           ),
                         ),
                         const SizedBox(height: 18),
+                        Center(
+                          child: GestureDetector(
+                            // onTap: _pickImage,
+                            child: Stack(
+                              children: [
+                                Container(
+                                  height: 120,
+                                  width: 120,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: primaryColor,
+                                      width: 3,
+                                    ),
+                                    // image: DecorationImage(
+                                    //   fit: BoxFit.cover,
+                                    //   image: _image != null
+                                    //       ? Image.file(_image!).image
+                                    //       : Image.asset(
+                                    //               height: 120,
+                                    //               width: 120,
+                                    //               "assets/images/male_user_100px.png")
+                                    //           .image,
+                                    // ),
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(200),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 2,
+                                  left: 80,
+                                  child: Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 2,
+                                        color: primaryColor,
+                                      ),
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    child: const Center(
+                                      child: Icon(
+                                        MingCute.camera_fill,
+                                        color: Colors.green,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 15),
                         Form(
                           key: formKey,
                           child: Column(
@@ -260,11 +315,21 @@ class _SignupScrenState extends State<SignupScren> {
                           onTap: () {
                             if (formKey.currentState!.validate()) {
                               formKey.currentState!.save();
+                              final _fullName =
+                                  SignupController.fullname.text.trim();
+                              final _gender =
+                                  SignupController.gender.text.trim();
+                              final _phone =
+                                  SignupController.contact.text.trim();
+
                               final _email = SignupController.email.text.trim();
                               final _password =
                                   SignupController.password.text.trim();
                               context.read<AuthBloc>().add(
                                     SignupEvent(
+                                      fullName: _fullName,
+                                      gender: _gender,
+                                      phone: _phone,
                                       email: _email,
                                       password: _password,
                                     ),

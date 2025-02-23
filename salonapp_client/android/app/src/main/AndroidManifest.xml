@@ -7,6 +7,10 @@
         android:label="Hairvana"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+       
+        <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyBelPMj10LMpGbh3YNbnhOkmr37lOs2yyU"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 //import 'package:flutter_paystack/flutter_paystack.dart';
-import 'api_key.dart';
 
 class TestingPage extends StatefulWidget {
   final double amount;

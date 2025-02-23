@@ -29,6 +29,20 @@ class AuthLogoutSuccesState extends AuthState {
   });
 }
 
+class ImageLoadingState extends AuthState {}
+
+class ImagePickSuccesState extends AuthState {
+  final File? imgUrl;
+
+  ImagePickSuccesState({required this.imgUrl});
+}
+
+class ImagePickFailureState extends AuthState {
+  final String error;
+
+  ImagePickFailureState({required this.error});
+}
+
 class AuthLogoutFailureState extends AuthState {
   final String error;
 

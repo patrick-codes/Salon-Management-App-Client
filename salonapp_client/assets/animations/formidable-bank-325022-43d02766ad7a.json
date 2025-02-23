@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "formidable-bank-325022",
+  "private_key_id": "43d02766ad7ac9c5c8304a84e1cd3521ef7debbf",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCg8qjCXSdzgnLN\n/W8B2qmEIDQvn8JwQqFHBk/nbZV8CkBTSkR4eeTCjt0jmXN03TNSF1maFMqv+ry1\nfJj1VC//FN8a35xURYlfttgSfz91G0glTwkO/cjg36AM1Xto7ZWq7GMpAJfnw4Ti\nGsqOx+GU7Jp+/g6YsVhMsqtr0S37+ZUljieJ4k7fba5L76CO4bdu/oyXNhKDUjnO\n2B8Xrfxg4fJVLkokE4MPGaA+MeUXIdbWXyIKslYFGswISfnbQ75ZfaHxAzINiMvf\nZIvJ39E07EW7oeWHNuWYDEWA0kOx/tYH9572wgzC4cqoIejfaL77MI1iUfP1b5eL\ndCuQbN9zAgMBAAECggEAAj8uf9kI/IgCn23EtQ+mWSlWsmST0eCuFrAo/D6Vuq03\nCTUVyMRO2kP9whPjlv61hjL3U0nm8HSpqL09bY0qqUjTWAnPof0SrErjMCabweeP\n3RPuQsnkQYBQJReREvi43rt4ciK9o4SrafR6VEM+c27O5wRmif6caRETJjyp+fE7\nbTIPhenWRnVogxwrbUQjpb1ZcWCM+kHGlCxK/znjdQ7v2RuBM/LCfn7gIMwmvH3Q\nrZbodSdy63aEUJKraddKOYKVFvgbpAoj4NWYEHEcdNFk+ZRiPynQriZnTgIe+A2H\nEyuJPt0TcTTCzgJUePlERZwgsfyHxrs6Sywmw7XerQKBgQDgyYWjBTXeqavGndz4\np2gM6LcESo4CAOHNpBQUxp1eymcbOcVUPRfEqTE9MMVGBft0kQW66kmepJdhQjnZ\ngvKBAa+v4mEURL4rPs6Q8yYgj2tcMHN4Pmia+p+maK0ZUUfoSfVrDoMFLahQqpOv\nx87DKc1uCXL9sYeaMa1UYXYjvwKBgQC3S9m84xYXd+o/9P+juZPdKYVla58AFiIO\nJDcYIUUSrHbc5/9JNDZkaJo9inecYSnCQNDWz1TW5E2gFf+Day4rOLv3XrlSNWv0\nOWqlu2/sGFhzXFR/jmB0Dx/0HmLyYyiVqbvfviQEX0gLpUSapEhIpsEF8B/DTDPm\nKiMcktehTQKBgQC0CJMQqtanXAspCzx0pleOp0AVnsS31A8FjZlLvntB9Se5RX7G\n5htINh4qnQoS+C2aAaCuQIDwH3Diw5DjpZ4mNryISO5ptlj899OngiaSQ2vALUn+\nDzXmkj4VoJaqxU+rOrjlonzLQ/MfkE6ypXvzEWLn84d2qp4poAnroBdnrwKBgF9z\nUF/coZR3DbVgj/9ilG2HQcAe2x3gaLuUgFxAdwfSZ9OBvJ8SYYDIOAn0IXV945EU\nz6wNK9D78rB6xCRbnB9F3BxlZ3w39Y+olrDXeuEnjGgGnLoQGopVlf46FKzElk3Z\npcxN59OfCpWF6sPc6QdsTvgYo3HALQaeysoGbePBAoGAJ4ZBtG1ZIUcv+XBsy+Ze\nTtckSH00Wbt7m0qfnuJ6xDFWNXhIo8okpCsLRnizNu2p6ExiRQPg5XmXPVlawvet\n0oBdR0zHYeMsxZpnQ+XzVqjZCbMxwqNYSVdwGJu6jGLJW2gKxb3rS8C7y1urWLhI\nJ0IGwx0g6Bs/pRDT7CVHeaI=\n-----END PRIVATE KEY-----\n",
+  "client_email": "salonapp-client@formidable-bank-325022.iam.gserviceaccount.com",
+  "client_id": "116139392948731182678",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/salonapp-client%40formidable-bank-325022.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

@@ -1,10 +1,6 @@
-import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import 'package:salonapp_client/helpers/colors/widgets/minimal_heading.dart';
 import 'package:salonapp_client/presentation/authentication%20screens/bloc/auth_bloc.dart';

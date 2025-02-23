@@ -6,8 +6,6 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/widgets/custom_button.dart';
 
 import '../../../helpers/colors/color_constants.dart';
-import '../components/Transaction/api_key.dart';
-import '../components/Transaction/success_page.dart';
 
 class CheckoutPage extends StatefulWidget {
   final String? title;

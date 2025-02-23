@@ -9,4 +9,17 @@ class SignupController {
   static final location = TextEditingController();
   static final email = TextEditingController();
   static final password = TextEditingController();
+
+  // @override
+  // void dispose() {
+  //   fullname.dispose();
+  //   gender.dispose();
+  //   dob.dispose();
+  //   imgUrl.dispose();
+  //   contact.dispose();
+  //   location.dispose();
+  //   email.dispose();
+  //   password.dispose();
+  //   super.dispose();
+  // }
 }

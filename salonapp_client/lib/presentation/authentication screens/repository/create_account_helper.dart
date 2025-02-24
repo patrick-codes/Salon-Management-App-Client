@@ -2,7 +2,7 @@ import 'package:salonapp_client/presentation/authentication%20screens/repository
 import 'data model/user_model.dart';
 
 class AccountHelper {
-  static late UserHelper userhelper;
+  static UserHelper userhelper = UserHelper();
 
   static Future<void> createUser(UserModel user) async {
     try {

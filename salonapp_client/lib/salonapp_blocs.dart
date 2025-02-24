@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salonapp_client/presentation/location/bloc/location_bloc.dart';
 import 'package:salonapp_client/salonapp.dart';
 import 'presentation/authentication screens/bloc/auth_bloc.dart';
+import 'presentation/shops/bloc/shops_bloc.dart';
 
 class SalonAppBlocs extends StatelessWidget {
   const SalonAppBlocs({super.key});
@@ -16,6 +17,9 @@ class SalonAppBlocs extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => LocationBloc()..add(LoadLocationEvent()),
+        ),
+        BlocProvider(
+          create: (_) => ShopsBloc()..add(ViewShopsEvent()),
         )
       ],
       child: SalonApp(),

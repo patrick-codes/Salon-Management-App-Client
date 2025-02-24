@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:salonapp_client/presentation/shops/shop%20info/shop_info.dart';
+import 'package:salonapp_client/presentation/shops/pages/shop%20info/shop_info.dart';
 import 'helpers/colors/color_constants.dart';
 import 'presentation/authentication screens/pages/login_screen.dart';
 import 'presentation/authentication screens/pages/signup_screen.dart';

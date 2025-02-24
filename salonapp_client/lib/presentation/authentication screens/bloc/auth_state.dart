@@ -37,6 +37,12 @@ class ImagePickSuccesState extends AuthState {
   ImagePickSuccesState({required this.imgUrl});
 }
 
+class ImageUrlSuccesState extends AuthState {
+  final String? imgUrl;
+
+  ImageUrlSuccesState({required this.imgUrl});
+}
+
 class ImagePickFailureState extends AuthState {
   final String error;
 

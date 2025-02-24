@@ -18,19 +18,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // @override
-  //  void initState() {
-  //   super.initState();
-  //   _loadLocation();
-  //   //_updateMapCenter();
-  //   //isOnline = false;
-  //   Future.delayed(const Duration(seconds: 2), () {
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //   });
-  // }
-
   List<Icon> icons = <Icon>[
     const Icon(
       MingCute.scissors_line,
@@ -65,88 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
     "Locking",
     "Natural",
   ];
-  // String locationMessage = 'Current Location of user';
-  // late bool serviceEnabled = false;
-  // late LocationPermission permission;
-  // Position? _currentUserLocation;
-  // String currentAddress = 'Loading current location....';
-  // String placeLoc = '';
-  // String? placeAdm;
-  // String currentStreet = '';
-  // double? distanceInMeters = 0.0;
-  // double? distanceInKm = 0.0;
-  // double? userLatitude;
-  // double? userLongitude;
-  // LatLng? coordinates;
-  // LatLng initialCenter = const LatLng(5.7931065, -0.7893054);
-  // bool isLoading = false;
-
-  // void _showAlertBanner2(
-  //   String message,
-  // ) {
-  //   Flushbar(
-  //     backgroundColor: Colors.red,
-  //     icon: const Icon(
-  //       Icons.cancel_rounded,
-  //       color: Colors.white,
-  //     ),
-  //     flushbarPosition: FlushbarPosition.TOP,
-  //     message: message,
-  //     duration: const Duration(seconds: 5),
-  //   ).show(context);
-  // }
-
-  // Future<Position> _getLocation() async {
-  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  //   if (!serviceEnabled) {
-  //     _showAlertBanner2('Turn on location service');
-  //   }
-
-  //   permission = await Geolocator.checkPermission();
-  //   if (permission == LocationPermission.denied) {
-  //     permission = await Geolocator.requestPermission();
-  //     if (permission == LocationPermission.denied) {
-  //       _showAlertBanner2('Location permission denied by device');
-  //     }
-  //   }
-  //   if (permission == LocationPermission.deniedForever) {
-  //     _showAlertBanner2(
-  //         'Location permissions are permanently denied, we cannot request permission.');
-  //   }
-
-  //   return await Geolocator.getCurrentPosition();
-  // }
-
-  // Future<void> _loadLocation() async {
-  //   _currentUserLocation = await _getLocation();
-  //   await _addressFromCoordinates();
-  //   print('Cordinates: $_currentUserLocation');
-  // }
-
-  // Future<LatLng?> _addressFromCoordinates() async {
-  //   try {
-  //     List<Placemark> placemarks = await placemarkFromCoordinates(
-  //         _currentUserLocation!.latitude, _currentUserLocation!.longitude);
-  //     Placemark place = placemarks[0];
-  //     if (mounted) {
-  //       setState(() {
-  //         currentAddress = '${place.locality}-${place.administrativeArea}';
-  //         userLatitude = _currentUserLocation!.latitude;
-  //         userLongitude = _currentUserLocation!.longitude;
-  //         placeLoc = '${place.street}';
-  //         placeAdm = '${place.country}';
-  //       });
-  //     }
-  //     print('Location: $currentAddress');
-  //     print(userLatitude);
-  //     print(userLongitude);
-
-  //     return initialCenter;
-  //   } catch (e) {
-  //     print(e);
-  //     return null;
-  //   }
-  // }
+  String photoUrl = "https://drive.google.com/uc?id=1QhPZ0499c3UtsfNITI5esk9yauYdafjz";
 
   @override
   Widget build(BuildContext context) {
@@ -162,6 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
             type: ToastificationType.warning,
           );
         }
+       
       },
       builder: (BuildContext context, state) {
         return Scaffold(
@@ -256,38 +163,55 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => DialogBoxUtil(
-                                    context,
-                                    onTap: () {
-                                      context
-                                          .read<AuthBloc>()
-                                          .add(LogoutEvent());
-                                    },
-                                    content: 'Confirm Logout',
-                                    leftText: 'Cancel',
-                                    rightText: 'Logout',
-                                    oncancel: () {
-                                      Navigator.pop(context);
-                                    },
-                                    icon: MingCute.exit_fill,
-                                  ),
-                                );
+                                // showDialog(
+                                //   context: context,
+                                //   builder: (context) => DialogBoxUtil(
+                                //     context,
+                                //     onTap: () {
+                                //       context
+                                //           .read<AuthBloc>()
+                                //           .add(LogoutEvent());
+                                //     },
+                                //     content: 'Confirm Logout',
+                                //     leftText: 'Cancel',
+                                //     rightText: 'Logout',
+                                //     oncancel: () {
+                                //       Navigator.pop(context);
+                                //     },
+                                //     icon: MingCute.exit_fill,
+                                //   ),
+                                // );
                               },
                               child: Container(
                                 height: 40,
                                 width: 40,
                                 decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: Image.network(
+                                    photoUrl ?? '',
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    },
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Icon(Icons.error,
+                                          size: 50, color: Colors.red);
+                                    },
+                                    fit: BoxFit.cover,
+                                  ).image),
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(40),
                                 ),
-                                child: const Center(
-                                  child: Icon(
-                                    MingCute.exit_fill,
-                                    size: 20,
-                                  ),
-                                ),
+                                // child:
+                                //  const Center(
+                                //   child: Icon(
+                                //     MingCute.exit_fill,
+                                //     size: 20,
+                                //   ),
+                                // ),
                               ),
                             ),
                           ],

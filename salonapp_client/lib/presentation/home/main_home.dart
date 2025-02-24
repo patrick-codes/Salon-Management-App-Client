@@ -4,7 +4,8 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import '../appointments/pages/appointments_page.dart';
-import '../shops/shop info/shops.dart';
+import '../shops/pages/create_shopservice_page.dart';
+import '../shops/pages/shop info/shops.dart';
 import 'home.dart';
 
 class MainHomePage extends StatefulWidget {
@@ -24,7 +25,7 @@ class _MainHomePageState extends State<MainHomePage> {
     MyHomePage(),
     AppointmentsPage(),
     ShopsPage(),
-    Container(),
+    CreateShopPage(),
     Container(),
   ];
 

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,6 +24,7 @@ class _SignupScrenState extends State<SignupScren> {
   bool isLoading = false;
   bool isToggeled = true;
   bool isVisible = true;
+  File? image;
 
   final formKey = GlobalKey<FormState>();
 
@@ -64,6 +67,8 @@ class _SignupScrenState extends State<SignupScren> {
             style: ToastificationStyle.minimal,
             type: ToastificationType.success,
           );
+        } else if (state is ImagePickSuccesState) {
+          image = state.imgUrl;
         }
       },
       builder: (BuildContext context, AuthState state) {
@@ -102,26 +107,27 @@ class _SignupScrenState extends State<SignupScren> {
                     child: Column(
                       children: [
                         const SizedBox(height: 18),
-                        SizedBox(
-                          width: 280,
-                          child: Center(
-                            child: Text(
-                              textAlign: TextAlign.center,
-                              "Create an account with your email and password or continue with your social media account",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(
-                                    color: Colors.black87,
-                                    fontSize: 15,
-                                  ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 18),
+                        // SizedBox(
+                        //   width: 280,
+                        //   child: Center(
+                        //     child: Text(
+                        //       textAlign: TextAlign.center,
+                        //       "Create an account with your email and password or continue with your social media account",
+                        //       style: Theme.of(context)
+                        //           .textTheme
+                        //           .bodySmall!
+                        //           .copyWith(
+                        //             color: Colors.black87,
+                        //             fontSize: 15,
+                        //           ),
+                        //     ),
+                        //   ),
+                        // ),
+                        // const SizedBox(height: 18),
                         Center(
                           child: GestureDetector(
-                            // onTap: _pickImage,
+                            onTap: () =>
+                                context.read<AuthBloc>().add(PickImageEvent()),
                             child: Stack(
                               children: [
                                 Container(
@@ -132,16 +138,17 @@ class _SignupScrenState extends State<SignupScren> {
                                       color: primaryColor,
                                       width: 3,
                                     ),
-                                    // image: DecorationImage(
-                                    //   fit: BoxFit.cover,
-                                    //   image: _image != null
-                                    //       ? Image.file(_image!).image
-                                    //       : Image.asset(
-                                    //               height: 120,
-                                    //               width: 120,
-                                    //               "assets/images/male_user_100px.png")
-                                    //           .image,
-                                    // ),
+                                    image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: image != null
+                                          ? Image.file(image!).image
+                                          : Image.asset(
+                                                  fit: BoxFit.fitHeight,
+                                                  height: 120,
+                                                  width: 120,
+                                                  "assets/images/userImage.png")
+                                              .image,
+                                    ),
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(200),
                                   ),
@@ -180,13 +187,13 @@ class _SignupScrenState extends State<SignupScren> {
                             children: [
                               TextFormField(
                                 controller: SignupController.fullname,
-                                // validator: (value) {
-                                //   if (value!.isEmpty) {
-                                //     print('Enter Username');
-                                //     return 'Enter Username';
-                                //   }
-                                //   return null;
-                                // },
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    print('Enter Username');
+                                    return 'Enter Username';
+                                  }
+                                  return null;
+                                },
                                 decoration: InputDecoration(
                                   label: const Text("username"),
                                   labelStyle: const TextStyle(fontSize: 13),
@@ -209,15 +216,15 @@ class _SignupScrenState extends State<SignupScren> {
                               TextFormField(
                                 controller: SignupController.contact,
                                 keyboardType: TextInputType.phone,
-                                // validator: (value) {
-                                //   if (value!.isEmpty) {
-                                //     print('Enter Contact');
-                                //     return 'Enter Contact';
-                                //   }
-                                //   return null;
-                                // },
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    print('Enter Contact');
+                                    return 'Enter Contact';
+                                  }
+                                  return null;
+                                },
                                 decoration: InputDecoration(
-                                  label: const Text("Contact"),
+                                  label: const Text("contact"),
                                   labelStyle: const TextStyle(fontSize: 13),
                                   prefixIcon: const Icon(MingCute.phone_fill),
                                   border: OutlineInputBorder(
@@ -273,8 +280,8 @@ class _SignupScrenState extends State<SignupScren> {
                                     return 'Enter Password';
                                   } else if (SignupController
                                           .password.text.length <
-                                      4) {
-                                    return 'Password should be at least 4 characters ';
+                                      6) {
+                                    return 'Password should be at least 6 characters ';
                                   }
                                   return null;
                                 },
@@ -340,7 +347,7 @@ class _SignupScrenState extends State<SignupScren> {
                             decoration: BoxDecoration(
                               color: state is AuthLoadingState
                                   ? primaryColor.withOpacity(0.4)
-                                  : primaryColor,
+                                  : Colors.black,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             height: 55,

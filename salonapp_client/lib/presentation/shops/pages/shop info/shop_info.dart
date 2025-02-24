@@ -3,7 +3,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/widgets/custom_button.dart';
 import 'package:salonapp_client/helpers/colors/widgets/minimal_heading.dart';
 
-import '../../../helpers/colors/color_constants.dart';
+import '../../../../helpers/colors/color_constants.dart';
 
 class ShopInfo extends StatefulWidget {
   const ShopInfo({super.key});

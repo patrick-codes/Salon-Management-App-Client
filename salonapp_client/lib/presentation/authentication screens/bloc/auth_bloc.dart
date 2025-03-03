@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:salonapp_client/presentation/authentication%20screens/repository/create_account_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../components/auth_exception.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+//import 'package:google_sign_in/google_sign_in.dart';
 import '../repository/data model/user_model.dart';
 import '../repository/user_helper.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
@@ -30,7 +30,7 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
     on<LoginEvent>(loginUser);
     on<ForgotPasswordEvent>(resetPassword);
     on<LogoutEvent>(logoutUser);
-    on<LoginWithGoogleEvent>(loginWithGoogle);
+    //on<LoginWithGoogleEvent>(loginWithGoogle);
   }
 
   Future<void> onAppStarted(
@@ -205,7 +205,7 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
       emit(AuthLoadingState());
 
       await _auth.signOut();
-      await GoogleSignIn().signOut();
+      // await GoogleSignIn().signOut();
 
       emit(AuthLogoutSuccesState(message: 'User Logged out Succesfuly!!'));
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -227,35 +227,35 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
     }
   }
 
-  Future<UserCredential> loginWithGoogle(
-      LoginWithGoogleEvent event, Emitter<AuthState> emit) async {
-    try {
-      emit(AuthLoadingState());
+  // Future<UserCredential> loginWithGoogle(
+  //     LoginWithGoogleEvent event, Emitter<AuthState> emit) async {
+  //   try {
+  //     emit(AuthLoadingState());
 
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
+  //     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  //     final GoogleSignInAuthentication? googleAuth =
+  //         await googleUser?.authentication;
 
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
+  //     final credential = GoogleAuthProvider.credential(
+  //       accessToken: googleAuth?.accessToken,
+  //       idToken: googleAuth?.idToken,
+  //     );
 
-      emit(AuthLoadingState());
-      final auth = await FirebaseAuth.instance.signInWithCredential(credential);
-      emit(AuthenticatedState(message: 'Login Succesful'));
-      debugPrint('Login Succesful');
-      return auth;
-    } on FirebaseAuthException catch (error) {
-      final ex = Exception(error.code);
-      emit(AuthFailureState(errorMessage: ex.toString()));
-      debugPrint('Error: $ex');
-      throw ex;
-    } catch (_) {
-      const excep = FirebaseAuthException;
-      emit(AuthFailureState(errorMessage: excep.toString()));
-      debugPrint('Exception $excep');
-      throw excep;
-    }
-  }
+  //     emit(AuthLoadingState());
+  //     final auth = await FirebaseAuth.instance.signInWithCredential(credential);
+  //     emit(AuthenticatedState(message: 'Login Succesful'));
+  //     debugPrint('Login Succesful');
+  //     return auth;
+  //   } on FirebaseAuthException catch (error) {
+  //     final ex = Exception(error.code);
+  //     emit(AuthFailureState(errorMessage: ex.toString()));
+  //     debugPrint('Error: $ex');
+  //     throw ex;
+  //   } catch (_) {
+  //     const excep = FirebaseAuthException;
+  //     emit(AuthFailureState(errorMessage: excep.toString()));
+  //     debugPrint('Exception $excep');
+  //     throw excep;
+  //   }
+  // }
 }

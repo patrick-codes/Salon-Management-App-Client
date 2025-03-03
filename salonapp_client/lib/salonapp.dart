@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:salonapp_client/presentation/shops/pages/shop%20info/shop_info.dart';
 import 'helpers/colors/color_constants.dart';
 import 'presentation/authentication screens/pages/login_screen.dart';
@@ -31,12 +30,12 @@ class SalonApp extends StatelessWidget {
           '/mainshopinfo': (context) => const MainShopinfoPage(),
         },
         theme: ThemeData(
-          textTheme: GoogleFonts.interTextTheme(
-            Theme.of(context).textTheme,
-          ),
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: primaryColor,
-          ),
+          fontFamily: 'Poppins',
+          // textTheme: GoogleFonts.interTextTheme(
+          //   Theme.of(context).textTheme,
+          // ),
+          scaffoldBackgroundColor: primaryBg,
+          primarySwatch: Colors.blue,
           useMaterial3: true,
         ),
       ),

@@ -7,7 +7,6 @@ import 'package:salonapp_client/presentation/authentication%20screens/bloc/auth_
 import 'package:salonapp_client/presentation/location/bloc/location_bloc.dart';
 import 'package:toastification/toastification.dart';
 
-import '../../helpers/widgets/dialogbox_util.dart';
 import '../filter screen/pages/filter_screen.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -52,7 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
     "Locking",
     "Natural",
   ];
-  String photoUrl = "https://drive.google.com/uc?id=1QhPZ0499c3UtsfNITI5esk9yauYdafjz";
+  String photoUrl =
+      "https://drive.google.com/uc?id=1QhPZ0499c3UtsfNITI5esk9yauYdafjz";
 
   @override
   Widget build(BuildContext context) {
@@ -68,11 +68,11 @@ class _MyHomePageState extends State<MyHomePage> {
             type: ToastificationType.warning,
           );
         }
-       
       },
       builder: (BuildContext context, state) {
         return Scaffold(
-          backgroundColor: Colors.grey[300]!.withOpacity(0.28),
+          backgroundColor: secondaryBg,
+          //Colors.grey[300]!.withOpacity(0.28),
           body: SingleChildScrollView(
             child: Column(
               children: [
@@ -80,15 +80,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   height: 250,
                   width: MediaQuery.of(context).size.width,
                   decoration: const BoxDecoration(
-                      // color: primaryColor,
-                      gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomLeft,
-                    colors: [
-                      primaryColor,
-                      Colors.deepOrange,
-                    ],
-                  )),
+                    // color: primaryColor,
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomLeft,
+                      colors: [
+                        primaryColor,
+                        Colors.deepOrange,
+                      ],
+                    ),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -223,11 +224,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             children: [
                               TextSpan(
                                 text:
-                                    "Let's Find                                       ",
+                                    "Let's Find                                        ",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
                                     .copyWith(
+                                      fontFamily: 'Poppins',
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20,
                                     ),
@@ -303,71 +305,94 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 24,
+                    left: 15.0,
+                    right: 15,
+                  ),
+                  child: MinimalHeadingText(
+                    leftText: "Categories",
+                    rightText: "See all",
+                  ),
+                ),
+                const SizedBox(height: 8),
                 SizedBox(
-                  height: 500,
+                  height: 85,
                   width: MediaQuery.of(context).size.width,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 8),
-                          MinimalHeadingText(
-                              leftText: "Categories", rightText: "See all"),
-                          const SizedBox(height: 8),
-                          SizedBox(
-                            height: 70,
-                            width: MediaQuery.of(context).size.width,
-                            child: ListView.builder(
-                              itemCount: icons.length,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (BuildContext context, int index) {
-                                return _buildCategoryCircle(
-                                  icons[index],
-                                  title[index],
-                                );
-                              },
-                            ),
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          height: 70,
+                          width: MediaQuery.of(context).size.width,
+                          child: ListView.builder(
+                            itemCount: icons.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (BuildContext context, int index) {
+                              return _buildCategoryCircle(
+                                icons[index],
+                                title[index],
+                              );
+                            },
                           ),
-                          const SizedBox(height: 20),
-                          MinimalHeadingText(
-                              leftText: "Nearby shops", rightText: "See all"),
-                          const SizedBox(height: 8),
-                          SizedBox(
-                            height: 28,
-                            width: MediaQuery.of(context).size.width,
-                            child: ListView.builder(
-                              itemCount: icons.length,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (BuildContext context, int index) {
-                                return _buildSquareCategoryButton(
-                                    title[index],
-                                    index == 0
-                                        ? tertiaryColor.withOpacity(0.2)
-                                        : Colors.grey.shade300,
-                                    index == 0
-                                        ? primaryColor
-                                        : Colors.grey.shade300,
-                                    index == 0 ? primaryColor : Colors.black54);
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            height: 400,
-                            width: MediaQuery.of(context).size.width,
-                            child: ListView.builder(
-                              itemCount: icons.length,
-                              scrollDirection: Axis.vertical,
-                              itemBuilder: (BuildContext context, int index) {
-                                return shopContainer(context);
-                              },
-                            ),
-                          ),
-                        ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15),
+                  child: MinimalHeadingText(
+                      leftText: "Nearby shops", rightText: "See all"),
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 40,
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        height: 30,
+                        width: MediaQuery.of(context).size.width,
+                        child: ListView.builder(
+                          itemCount: icons.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (BuildContext context, int index) {
+                            return _buildSquareCategoryButton(
+                                title[index],
+                                index == 0
+                                    ? tertiaryColor.withOpacity(0.2)
+                                    : Colors.grey.shade300,
+                                index == 0
+                                    ? primaryColor
+                                    : Colors.grey.shade300,
+                                index == 0 ? primaryColor : Colors.black54);
+                          },
+                        ),
                       ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 300,
+                  width: MediaQuery.of(context).size.width,
+                  child: SizedBox(
+                    height: 200,
+                    width: MediaQuery.of(context).size.width,
+                    child: ListView.builder(
+                      itemCount: icons.length,
+                      scrollDirection: Axis.vertical,
+                      itemBuilder: (BuildContext context, int index) {
+                        return shopContainer(context);
+                      },
                     ),
                   ),
                 ),
@@ -413,169 +438,173 @@ class _MyHomePageState extends State<MyHomePage> {
       onTap: () {
         Navigator.pushNamed(context, '/shopinfo');
       },
-      child: Container(
-        height: 95,
-        margin: const EdgeInsets.symmetric(vertical: 3),
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: secondaryColor,
-          border: Border.all(
-            width: 0.6,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 15.0, right: 15),
+        child: Container(
+          height: 100,
+          margin: const EdgeInsets.symmetric(vertical: 3),
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
             color: secondaryColor,
+            border: Border.all(
+              width: 0.6,
+              color: secondaryColor,
+            ),
           ),
-        ),
-        child: SizedBox(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: 70,
-                      width: 70,
-                      decoration: BoxDecoration(
-                        image: const DecorationImage(
-                            fit: BoxFit.cover,
-                            image: AssetImage("assets/images/img.jpg")),
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 210,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              overflow: TextOverflow.visible,
-                              'Captain Barbershop',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                    wordSpacing: 2,
-                                    //color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                  ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      overflow: TextOverflow.ellipsis,
-                                      'Lafa Street, Gbawe-Accra',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .copyWith(
-                                            color: Colors.black45,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 3),
-                            Row(
-                              children: [
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      MingCute.location_fill,
-                                      size: 12,
-                                      color: primaryColor,
-                                    ),
-                                    const SizedBox(width: 2),
-                                    Text(
-                                      overflow: TextOverflow.visible,
-                                      '1.2 km',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .copyWith(
-                                            color: Colors.black54,
-                                            fontSize: 12,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(width: 17),
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      MingCute.star_fill,
-                                      size: 12,
-                                      color: primaryColor,
-                                    ),
-                                    const SizedBox(width: 2),
-                                    Text(
-                                      overflow: TextOverflow.visible,
-                                      '4.8',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .copyWith(
-                                            color: Colors.black54,
-                                            fontSize: 12,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            // Row(
-                            //   mainAxisAlignment:
-                            //       MainAxisAlignment
-                            //           .start,
-                            //   children: [
-                            //     // const SizedBox(width: 15),
-                            //     for (int i =
-                            //             1;
-                            //         i <=
-                            //             service
-                            //                 .ratings!
-                            //                 .toInt();
-                            //         i++)
-                            //       const Icon(
-                            //         Icons
-                            //             .star,
-                            //         color: Colors
-                            //             .amber,
-                            //         size: 14,
-                            //       ),
-                            //     const SizedBox(
-                            //         width: 5),
-                            //     Text(
-                            //         "(${service.ratings}.5)",
-                            //         style: Theme.of(
-                            //                 context)
-                            //             .textTheme
-                            //             .bodySmall!
-                            //             .copyWith(
-                            //               fontSize:
-                            //                   10,
-                            //               color:
-                            //                   Colors.black,
-                            //             )),
-                            //   ],
-                            // ),
-                          ],
+          child: SizedBox(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: 70,
+                        width: 70,
+                        decoration: BoxDecoration(
+                          image: const DecorationImage(
+                              fit: BoxFit.cover,
+                              image: AssetImage("assets/images/img.jpg")),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      SizedBox(
+                        width: 210,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                overflow: TextOverflow.visible,
+                                'Captain Barbershop',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(
+                                      wordSpacing: 2,
+                                      //color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        overflow: TextOverflow.ellipsis,
+                                        'Lafa Street, Gbawe-Accra',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(
+                                              color: Colors.black45,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 13,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 3),
+                              Row(
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        MingCute.location_fill,
+                                        size: 12,
+                                        color: primaryColor,
+                                      ),
+                                      const SizedBox(width: 2),
+                                      Text(
+                                        overflow: TextOverflow.visible,
+                                        '1.2 km',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(
+                                              color: Colors.black54,
+                                              fontSize: 12,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(width: 17),
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        MingCute.star_fill,
+                                        size: 12,
+                                        color: primaryColor,
+                                      ),
+                                      const SizedBox(width: 2),
+                                      Text(
+                                        overflow: TextOverflow.visible,
+                                        '4.8',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(
+                                              color: Colors.black54,
+                                              fontSize: 12,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              // Row(
+                              //   mainAxisAlignment:
+                              //       MainAxisAlignment
+                              //           .start,
+                              //   children: [
+                              //     // const SizedBox(width: 15),
+                              //     for (int i =
+                              //             1;
+                              //         i <=
+                              //             service
+                              //                 .ratings!
+                              //                 .toInt();
+                              //         i++)
+                              //       const Icon(
+                              //         Icons
+                              //             .star,
+                              //         color: Colors
+                              //             .amber,
+                              //         size: 14,
+                              //       ),
+                              //     const SizedBox(
+                              //         width: 5),
+                              //     Text(
+                              //         "(${service.ratings}.5)",
+                              //         style: Theme.of(
+                              //                 context)
+                              //             .textTheme
+                              //             .bodySmall!
+                              //             .copyWith(
+                              //               fontSize:
+                              //                   10,
+                              //               color:
+                              //                   Colors.black,
+                              //             )),
+                              //   ],
+                              // ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -614,26 +643,32 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildSquareCategoryButton(
       String title, Color bgcolor, Color brcolor, Color textcolor) {
-    return Container(
-      height: 28,
-      width: 90,
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      decoration: BoxDecoration(
-        color: bgcolor,
-        border: Border.all(
-          width: 0.8,
-          color: brcolor,
-        ),
-        borderRadius: BorderRadius.circular(30),
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 15.0,
+        right: 5,
       ),
-      child: Center(
-        child: Text(
-          title,
-          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                fontWeight: FontWeight.w500,
-                color: textcolor,
-                fontSize: 11,
-              ),
+      child: Container(
+        height: 28,
+        width: 90,
+        margin: const EdgeInsets.symmetric(horizontal: 0),
+        decoration: BoxDecoration(
+          color: bgcolor,
+          border: Border.all(
+            width: 0.8,
+            color: brcolor,
+          ),
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Center(
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: textcolor,
+                  fontSize: 11,
+                ),
+          ),
         ),
       ),
     );

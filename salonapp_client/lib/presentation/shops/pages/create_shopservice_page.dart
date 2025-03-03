@@ -123,6 +123,7 @@ class _CreateShopPageState extends State<CreateShopPage> {
                             const SizedBox(height: 20),
                             TextFormField(
                               controller: CreateShopController.profileImg,
+                              onTap: () {},
                               decoration: InputDecoration(
                                 hintText: 'Image',
                                 filled: true,

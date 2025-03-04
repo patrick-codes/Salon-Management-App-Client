@@ -175,7 +175,6 @@ class AppointmentsPage extends StatelessWidget {
                                               .bodyMedium!
                                               .copyWith(
                                                 color: Colors.black45,
-                                                fontWeight: FontWeight.bold,
                                                 fontSize: 11,
                                               ),
                                         ),
@@ -194,7 +193,7 @@ class AppointmentsPage extends StatelessWidget {
                                           .bodyMedium!
                                           .copyWith(
                                             color: Colors.black87,
-                                            fontSize: 10,
+                                            fontSize: 13,
                                             fontWeight: FontWeight.bold,
                                           ),
                                     ),
@@ -208,9 +207,8 @@ class AppointmentsPage extends StatelessWidget {
                                       .textTheme
                                       .bodyMedium!
                                       .copyWith(
-                                        color: Colors.black45,
+                                        color: iconGrey,
                                         fontSize: 10,
-                                        fontWeight: FontWeight.bold,
                                       ),
                                 ),
                               ],

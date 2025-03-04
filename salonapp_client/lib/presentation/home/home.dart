@@ -52,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
     "Natural",
   ];
   String photoUrl =
-      "https://drive.google.com/uc?id=1QhPZ0499c3UtsfNITI5esk9yauYdafjz";
+      "https://drive.google.com/uc?id=1HU8hSaC9_ncfM4_3Uedq_Hj9RR16bzND";
 
   @override
   Widget build(BuildContext context) {
@@ -188,6 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 width: 40,
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
+                                    fit:BoxFit.cover,
                                       image: Image.network(
                                     photoUrl ?? '',
                                     loadingBuilder:

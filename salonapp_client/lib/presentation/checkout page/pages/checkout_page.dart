@@ -6,6 +6,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/widgets/custom_button.dart';
 
 import '../../../helpers/colors/color_constants.dart';
+import '../../../helpers/colors/widgets/style.dart';
 
 class CheckoutPage extends StatefulWidget {
   final String? title;
@@ -178,15 +179,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         children: [
                           GestureDetector(
                             onTap: () => Navigator.pop(context),
-                            child: Text(
-                              "GHC 30.00",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
+                            child: PrimaryText(
+                              text: "GHC 55.00",
+                              size: 15,
+                              color: blackColor,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(width: 5),
@@ -196,7 +193,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   ),
                 ),
                 Container(
-                  height: 140,
+                  height: 160,
                   padding: const EdgeInsets.all(15),
                   width: 350,
                   decoration: const BoxDecoration(
@@ -211,8 +208,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            height: 90,
-                            width: 90,
+                            height: 110,
+                            width: 95,
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 fit: BoxFit.cover,
@@ -224,7 +221,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             ),
                           ),
                           Container(
-                            height: 105,
+                            height: 120,
                             width: 210,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5),

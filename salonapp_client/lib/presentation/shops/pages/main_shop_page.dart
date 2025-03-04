@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:salonapp_client/helpers/colors/widgets/style.dart';
 
 import '../../../helpers/colors/color_constants.dart';
 import '../../../helpers/colors/widgets/custom_button.dart';
@@ -381,29 +382,34 @@ class _DetailsPageState extends State<MainShopinfoPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(
-                  MingCute.scissors_fill,
-                  size: 20,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(
+                      MingCute.scissors_fill,
+                      size: 20,
+                    ),
+                    PrimaryText(
+                      text: prices,
+                      size: 15,
+                      color: blackColor,
+                      fontWeight: FontWeight.bold,
+                      height: 2,
+                    )
+                  ],
                 ),
-                SizedBox(height: 35),
+                SizedBox(height: 25),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       services,
+                      overflow: TextOverflow.fade,
+                      softWrap: true,
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
                             color: Colors.black,
-                          ),
-                    ),
-                    SizedBox(height: 3),
-                    Text(
-                      prices,
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 10,
-                            color: Colors.black54,
                           ),
                     ),
                   ],
@@ -460,9 +466,9 @@ class _DetailsPageState extends State<MainShopinfoPage> {
         Text(
           title,
           style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
                 fontSize: 10,
-                color: Colors.black54,
+                color: iconGrey,
               ),
         ),
       ],

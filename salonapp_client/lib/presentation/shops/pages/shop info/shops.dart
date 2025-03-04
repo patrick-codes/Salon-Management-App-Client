@@ -59,20 +59,19 @@ class _ShopsPageState extends State<ShopsPage> {
               TextFormField(
                 style: Theme.of(context).textTheme.bodySmall!.copyWith(
                       fontSize: 14,
-                      fontWeight: FontWeight.bold,
                     ),
                 decoration: InputDecoration(
                   hintText: "Search....",
-                  hintStyle: TextStyle(fontSize: 13, color: Colors.grey),
-                  prefixIcon: Icon(MingCute.search_3_line, color: Colors.grey),
+                  hintStyle: TextStyle(fontSize: 13, color: iconGrey),
+                  prefixIcon: Icon(MingCute.search_3_line, color: iconGrey),
                   suffixIcon: const SizedBox(
                     width: 60,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Icon(MingCute.close_line, color: Colors.grey),
+                        Icon(MingCute.close_line, color: iconGrey),
                         SizedBox(width: 10),
-                        Icon(MingCute.list_search_line, color: Colors.grey),
+                        Icon(MingCute.list_search_line, color: iconGrey),
                       ],
                     ),
                   ),
@@ -130,11 +129,11 @@ class _ShopsPageState extends State<ShopsPage> {
 
   Container appointmentContainer(BuildContext context, String imgurl) {
     return Container(
-      height: 320,
+      height: 330,
       width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: secondaryColor,
         borderRadius: BorderRadius.circular(13),
         border: Border.all(
           width: 1,
@@ -253,7 +252,6 @@ class _ShopsPageState extends State<ShopsPage> {
                                       .bodyMedium!
                                       .copyWith(
                                         color: Colors.black45,
-                                        fontWeight: FontWeight.bold,
                                         fontSize: 11,
                                       ),
                                 ),
@@ -275,7 +273,6 @@ class _ShopsPageState extends State<ShopsPage> {
                                       .bodyMedium!
                                       .copyWith(
                                         color: Colors.black45,
-                                        fontWeight: FontWeight.bold,
                                         fontSize: 11,
                                       ),
                                 ),
@@ -290,7 +287,7 @@ class _ShopsPageState extends State<ShopsPage> {
                           style:
                               Theme.of(context).textTheme.bodyMedium!.copyWith(
                                     color: Colors.black87,
-                                    fontSize: 10,
+                                    fontSize: 13,
                                     fontWeight: FontWeight.bold,
                                   ),
                         ),
@@ -301,8 +298,7 @@ class _ShopsPageState extends State<ShopsPage> {
                           style:
                               Theme.of(context).textTheme.bodyMedium!.copyWith(
                                     color: Colors.black45,
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
                                   ),
                         ),
                         SizedBox(height: 15),
@@ -367,7 +363,6 @@ class _ShopsPageState extends State<ShopsPage> {
                                             .bodyMedium!
                                             .copyWith(
                                               color: Colors.black45,
-                                              fontWeight: FontWeight.bold,
                                               fontSize: 11,
                                             ),
                                       ),
@@ -396,7 +391,7 @@ class _ShopsPageState extends State<ShopsPage> {
                                         .copyWith(
                                           fontSize: 10,
                                           color: Colors.white,
-                                          fontWeight: FontWeight.bold,
+                                          fontWeight: FontWeight.w700,
                                         ),
                                   ),
                                 ),

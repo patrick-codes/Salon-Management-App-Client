@@ -90,7 +90,11 @@ class _FilterScreenState extends State<FilterScreen> {
                   ],
                 ),
                 SizedBox(height: 15),
-                MinimalHeadingText(leftText: "Services", rightText: ''),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15),
+                  child:
+                      MinimalHeadingText(leftText: "Services", rightText: ''),
+                ),
                 const SizedBox(height: 8),
                 SizedBox(
                   height: 80,
@@ -119,7 +123,10 @@ class _FilterScreenState extends State<FilterScreen> {
                 //   ],
                 // ),
                 const SizedBox(height: 25),
-                MinimalHeadingText(leftText: "Gender", rightText: ''),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15),
+                  child: MinimalHeadingText(leftText: "Gender", rightText: ''),
+                ),
                 SizedBox(height: 8),
                 SizedBox(
                   height: 35,
@@ -138,8 +145,12 @@ class _FilterScreenState extends State<FilterScreen> {
                   ),
                 ),
                 const SizedBox(height: 25),
-                MinimalHeadingText(leftText: "Distance", rightText: ''),
-                SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15),
+                  child:
+                      MinimalHeadingText(leftText: "Distance", rightText: ''),
+                ),
+                SizedBox(height: 3),
                 SizedBox(
                   height: 70,
                   child: Column(
@@ -178,7 +189,10 @@ class _FilterScreenState extends State<FilterScreen> {
                   ),
                 ),
                 const SizedBox(height: 5),
-                MinimalHeadingText(leftText: "Price", rightText: ''),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15),
+                  child: MinimalHeadingText(leftText: "Price", rightText: ''),
+                ),
                 SizedBox(height: 8),
                 SizedBox(
                   height: 35,
@@ -197,12 +211,15 @@ class _FilterScreenState extends State<FilterScreen> {
                   ),
                 ),
                 SizedBox(height: 40),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: CustomButton(
-                    text: 'Apply Filters (5)',
-                    onpressed: () {},
-                    color: primaryColor,
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, right: 15),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: CustomButton(
+                      text: 'Apply Filters (5)',
+                      onpressed: () {},
+                      color: primaryColor,
+                    ),
                   ),
                 ),
               ],
@@ -244,26 +261,29 @@ class _FilterScreenState extends State<FilterScreen> {
 
   Widget buildSquareGenderButton(BuildContext context, String title,
       Color bgcolor, Color brcolor, Color textcolor) {
-    return Container(
-      height: 30,
-      width: 90,
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      decoration: BoxDecoration(
-        color: bgcolor,
-        border: Border.all(
-          width: 1.5,
-          color: brcolor,
+    return Padding(
+      padding: const EdgeInsets.only(left: 15.0, right: 3),
+      child: Container(
+        height: 30,
+        width: 90,
+        margin: const EdgeInsets.symmetric(horizontal: 0),
+        decoration: BoxDecoration(
+          color: bgcolor,
+          border: Border.all(
+            width: 1.5,
+            color: brcolor,
+          ),
+          borderRadius: BorderRadius.circular(30),
         ),
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: Center(
-        child: Text(
-          title,
-          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                fontWeight: FontWeight.bold,
-                color: textcolor,
-                fontSize: 11,
-              ),
+        child: Center(
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: textcolor,
+                  fontSize: 11,
+                ),
+          ),
         ),
       ),
     );
@@ -271,26 +291,29 @@ class _FilterScreenState extends State<FilterScreen> {
 
   Widget buildSquarePriceButton(BuildContext context, String title,
       Color bgcolor, Color brcolor, Color textcolor) {
-    return Container(
-      height: 30,
-      width: 90,
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      decoration: BoxDecoration(
-        color: bgcolor,
-        border: Border.all(
-          width: 1.5,
-          color: brcolor,
+    return Padding(
+      padding: const EdgeInsets.only(left: 15.0, right: 3),
+      child: Container(
+        height: 30,
+        width: 90,
+        margin: const EdgeInsets.symmetric(horizontal: 0),
+        decoration: BoxDecoration(
+          color: bgcolor,
+          border: Border.all(
+            width: 1.5,
+            color: brcolor,
+          ),
+          borderRadius: BorderRadius.circular(30),
         ),
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: Center(
-        child: Text(
-          title,
-          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                fontWeight: FontWeight.bold,
-                color: textcolor,
-                fontSize: 11,
-              ),
+        child: Center(
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: textcolor,
+                  fontSize: 11,
+                ),
+          ),
         ),
       ),
     );

@@ -25,8 +25,7 @@ class MinimalHeadingText extends StatelessWidget {
         Text(
           rightText,
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                fontWeight: FontWeight.bold,
-                color: primaryColor,
+                color: secondaryColor3,
                 fontSize: 13,
               ),
         ),

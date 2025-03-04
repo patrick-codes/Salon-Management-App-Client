@@ -303,7 +303,7 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                 itemCount: icons.length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (BuildContext context, int index) {
-                  return buildCategorySquare(icons[index], title[index]);
+                  return buildCategorySquare(icons[index], title[index], index);
                 },
               ),
             ),
@@ -447,19 +447,26 @@ class _DetailsPageState extends State<MainShopinfoPage> {
     );
   }
 
-  Widget buildCategorySquare(Icon icons, String title) {
+  Widget buildCategorySquare(Icon icons, String title, index) {
     return Column(
       children: [
-        Container(
-          height: 63,
-          width: 63,
-          margin: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: tertiaryColor.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Center(
-            child: icons,
+        GestureDetector(
+          onTap: () {
+            if (index == 2) {
+              Navigator.pushNamed(context, '/map');
+            }
+          },
+          child: Container(
+            height: 63,
+            width: 63,
+            margin: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              color: tertiaryColor.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Center(
+              child: icons,
+            ),
           ),
         ),
         const SizedBox(height: 6),

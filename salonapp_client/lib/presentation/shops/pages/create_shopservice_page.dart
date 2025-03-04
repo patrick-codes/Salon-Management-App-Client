@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:salonapp_client/presentation/authentication%20screens/bloc/auth_bloc.dart';
 import 'package:salonapp_client/presentation/shops/bloc/shops_bloc.dart';
 
 import '../components/createservice_controllers.dart';
@@ -122,8 +123,11 @@ class _CreateShopPageState extends State<CreateShopPage> {
                             ),
                             const SizedBox(height: 20),
                             TextFormField(
+                              readOnly: true,
                               controller: CreateShopController.profileImg,
-                              onTap: () {},
+                              onTap: () {
+                                context.read<AuthBloc>().add(PickImageEvent());
+                              },
                               decoration: InputDecoration(
                                 hintText: 'Image',
                                 filled: true,

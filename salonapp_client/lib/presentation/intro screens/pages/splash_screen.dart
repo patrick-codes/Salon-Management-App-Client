@@ -53,7 +53,6 @@ class _SplashScreenState extends State<SplashScreen>
         }
       },
       child: Scaffold(
-        appBar: AppBar(),
         backgroundColor: Colors.white,
         body: SafeArea(
           child: Stack(

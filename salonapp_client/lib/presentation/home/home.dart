@@ -188,22 +188,24 @@ class _MyHomePageState extends State<MyHomePage> {
                                 width: 40,
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
-                                    fit:BoxFit.cover,
+                                      fit: BoxFit.cover,
                                       image: Image.network(
-                                    photoUrl ?? '',
-                                    loadingBuilder:
-                                        (context, child, loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    },
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Icon(Icons.error,
-                                          size: 50, color: Colors.red);
-                                    },
-                                    fit: BoxFit.cover,
-                                  ).image),
+                                        photoUrl ?? '',
+                                        loadingBuilder:
+                                            (context, child, loadingProgress) {
+                                          if (loadingProgress == null)
+                                            return child;
+                                          return Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        },
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return Icon(Icons.error,
+                                              size: 50, color: Colors.red);
+                                        },
+                                        fit: BoxFit.cover,
+                                      ).image),
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(40),
                                 ),
@@ -250,16 +252,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         const SizedBox(height: 20),
                         TextFormField(
-                          readOnly: true,
-                          onTap: () {
-                            scrollBottomSheet(context);
-                          },
                           // controller: controller.emailController,
                           style:
                               Theme.of(context).textTheme.bodySmall!.copyWith(
-                                    color: Colors.black87,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
                                   ),
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -270,23 +267,27 @@ class _MyHomePageState extends State<MyHomePage> {
                           },
                           decoration: InputDecoration(
                             hintText: "Search",
-                            hintStyle: const TextStyle(
-                                color: Colors.grey, fontSize: 15),
+                            hintStyle:
+                                const TextStyle(color: iconGrey, fontSize: 15),
                             prefixIcon: const Icon(
                               MingCute.search_2_line,
-                              color: Colors.grey,
+                              color: iconGrey,
                               size: 23,
                             ),
-                            suffixIcon: const SizedBox(
-                              width: 60,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(MingCute.close_line, color: Colors.grey),
-                                  SizedBox(width: 10),
-                                  Icon(MingCute.list_search_line,
-                                      color: Colors.grey),
-                                ],
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                scrollBottomSheet(context);
+                              },
+                              child: const SizedBox(
+                                width: 60,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    SizedBox(width: 20),
+                                    Icon(MingCute.list_search_line,
+                                        color: iconGrey),
+                                  ],
+                                ),
                               ),
                             ),
                             filled: true,

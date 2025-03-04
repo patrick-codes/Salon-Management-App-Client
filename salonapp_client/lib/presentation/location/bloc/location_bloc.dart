@@ -36,7 +36,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
       if (!serviceEnabled) {
         emit(LocationOff(message: 'Turn on location service'));
-        // throw Exception("Location service is disabled");
+        // throw Exception("Location service is disabled....");
       } else if (serviceEnabled) {
         await Geolocator.getCurrentPosition();
         emit(CordinatesLoaded(message: currentAddress));

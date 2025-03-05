@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-//import 'package:latlong2/latlong.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+import '../../location/bloc/location_bloc.dart';
+import 'dart:convert';
 
 class MapDirectionScreen extends StatefulWidget {
   const MapDirectionScreen({super.key});
@@ -11,70 +13,122 @@ class MapDirectionScreen extends StatefulWidget {
 }
 
 class _MapDirectionScreenState extends State<MapDirectionScreen> {
-  final Completer<MapLibreMapController> mapController = Completer();
+  MapLibreMapController? mapController;
 
   bool canInteractWithMap = false;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.miniCenterFloat,
-      floatingActionButton: canInteractWithMap
-          ? FloatingActionButton(
-              onPressed: _moveCameraToNullIsland,
-              mini: true,
-              child: const Icon(Icons.restore),
-            )
-          : null,
-      body: MapLibreMap(
-        onMapCreated: (controller) => mapController.complete(controller),
-        initialCameraPosition: CameraPosition(
-          target: LatLng(51.509364, -0.128928),
-        ),
-        onStyleLoadedCallback: () => setState(() => canInteractWithMap = true),
+  Future<void> _addPolyline() async {
+    if (mapController == null) return;
+
+    Map<String, dynamic> geoJson = jsonDecode('''
+  {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [-122.4194, 37.7749], // Start (Longitude, Latitude)
+            [-122.4294, 37.7849]  // End (Longitude, Latitude)
+          ]
+        },
+        "properties": {}
+      }
+    ]
+  }
+  ''');
+
+    await mapController!.addGeoJsonSource("polyline-source", geoJson);
+
+    await mapController!.addLineLayer(
+      "polyline-source",
+      "polyline-layer",
+      LineLayerProperties(
+        lineColor: "#FF0000",
+        lineWidth: 5.0,
+        lineOpacity: 0.8,
       ),
     );
   }
 
-  void _moveCameraToNullIsland() => mapController.future.then(
-        (c) => c.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              target: LatLng(51.509364, -0.128928),
-            ),
-          ),
+  /// Moves the camera to the user's current location after it's loaded
+  void moveCameraToUserLocation(BuildContext context) async {
+    if (mapController == null) return;
+
+    final locationBloc = context.read<LocationBloc>();
+
+    if (locationBloc.userLatitude != null &&
+        locationBloc.userLongitude != null) {
+      LatLng userLatLng = LatLng(
+        locationBloc.userLatitude!,
+        locationBloc.userLongitude!,
+      );
+
+      await Future.delayed(
+          Duration(milliseconds: 500)); // Ensures map is loaded
+
+      mapController!.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(target: userLatLng, zoom: 14),
         ),
       );
-}
-   /*
-     return Scaffold(
-      body: 
-      
-      FlutterMap(
-    options: MapOptions(
-      initialCenter: LatLng(51.509364, -0.128928), // Center the map over London
-      initialZoom: 9.2,
-    ),
-    children: [
-      TileLayer( // Bring your own tiles
-        urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // For demonstration only
-        userAgentPackageName: 'com.example.app', // Add your app identifier
-        // And many more recommended properties!
-      ),
-      RichAttributionWidget( // Include a stylish prebuilt attribution widget that meets all requirments
-        attributions: [
-          TextSourceAttribution(
-            'OpenStreetMap contributors',
-            onTap: (){},
-            //launchUrl(Uri.parse('https://openstreetmap.org/copyright')), // (external)
-          ),
-          // Also add images...
-        ],
-      ),
-    ],
-      ),
-    );
-    */
-  
+    }
+  }
 
+  LatLng userLocation = LatLng(0.0, 0.0);
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<LocationBloc, LocationState>(
+        listener: (context, state) {
+      if (state is CordinatesLoaded) {
+        final locationBloc = context.read<LocationBloc>();
+        userLocation = LatLng(
+          locationBloc.userLatitude ?? 0.0,
+          locationBloc.userLongitude ?? 0.0,
+        );
+        moveCameraToUserLocation(context);
+      } else if (state is LocationLoading) {
+        Center(child: CircularProgressIndicator());
+      } else {
+        const Center(child: Text("Failed to load location"));
+      }
+    }, builder: (BuildContext context, state) {
+      return Scaffold(
+        floatingActionButtonLocation:
+            FloatingActionButtonLocation.miniCenterFloat,
+        floatingActionButton: canInteractWithMap
+            ? FloatingActionButton(
+                onPressed: () => moveCameraToUserLocation(context),
+                mini: true,
+                child: const Icon(Icons.restore),
+              )
+            : null,
+        body: MapLibreMap(
+          myLocationEnabled: true,
+          myLocationTrackingMode: MyLocationTrackingMode.tracking,
+          myLocationRenderMode: MyLocationRenderMode.normal,
+          styleString:
+              "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json",
+          onMapCreated: (controller) async {
+            mapController = controller;
+            await Future.delayed(Duration(seconds: 1));
+            moveCameraToUserLocation(context);
+            await _addPolyline();
+            mapController!.animateCamera(
+              CameraUpdate.newCameraPosition(
+                CameraPosition(target: userLocation, zoom: 14),
+              ),
+            );
+          },
+          initialCameraPosition: CameraPosition(
+            target: userLocation,
+          ),
+          onStyleLoadedCallback: () {
+            _addPolyline();
+          },
+        ),
+      );
+    });
+  }
+}

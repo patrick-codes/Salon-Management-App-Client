@@ -21,7 +21,6 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   double? userLatitude;
   double? userLongitude;
   LatLng? coordinates;
-  LatLng initialCenter = const LatLng(5.7931065, -0.7893054);
   bool isLoading = false;
 
   LocationBloc() : super(InitLocation()) {

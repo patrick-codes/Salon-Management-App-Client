@@ -37,7 +37,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
       emit(ShopsLoadingState());
       if (event.query.isNotEmpty) {
         onSearchChanged(event.query);
-        emit(ShopsFetchedState(message: "Shop fetched!!"));
+        emit(ShopsFetchedState(shop: serviceman2!));
       }
     } catch (e) {
       print(e);
@@ -75,6 +75,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
 
   Future<List<ShopModel>?> fetchShops(
       ViewShopsEvent event, Emitter<ShopsState> emit) async {
+    emit(ShopsLoadingState());
     try {
       if (serviceman == null) {
         serviceman = await salonHelper.fetchAllSalonShops();
@@ -83,13 +84,15 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
         serviceman2 = serviceman;
         serviceman3 = serviceman2;
         total = num;
-
+        emit(ShopsFetchedState(shop: serviceman));
         debugPrint("Total Services is $num");
       }
     } on FirebaseAuthException catch (error) {
+      emit(ShopsFetchFailureState(errorMessage: error.toString()));
       debugPrint(error.toString());
-    } catch (e) {
-      debugPrint('Error:${e.toString()}');
+    } catch (error) {
+      emit(ShopsFetchFailureState(errorMessage: error.toString()));
+      debugPrint('Error:${error.toString()}');
     }
     return serviceman;
   }

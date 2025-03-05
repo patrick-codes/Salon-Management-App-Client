@@ -4,6 +4,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import '../appointments/pages/appointments_page.dart';
+import '../shops/components/map_directions_screen.dart';
 import '../shops/pages/create_shopservice_page.dart';
 import '../shops/pages/shop info/shops.dart';
 import 'home.dart';
@@ -23,10 +24,11 @@ class _MainHomePageState extends State<MainHomePage> {
 
   List<Widget> pages = [
     MyHomePage(),
-    AppointmentsPage(),
+    MapDirectionScreen(),
+    //AppointmentsPage(),
     ShopsPage(),
     CreateShopPage(),
-    Container(),
+    AppointmentsPage(),
   ];
 
   int initPage = 0;

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:salonapp_client/presentation/shops/repository/data%20rmodel/service_model.dart';
 
 import '../../../helpers/colors/color_constants.dart';
+import '../bloc/shops_bloc.dart';
 
 class ShopsPage extends StatefulWidget {
   ShopsPage({super.key});
@@ -12,6 +15,7 @@ class ShopsPage extends StatefulWidget {
 }
 
 class _ShopsPageState extends State<ShopsPage> {
+  List<ShopModel>? shops;
   List<String> imgs = <String>[
     "assets/images/img8.jpg",
     "assets/images/img.jpg",
@@ -23,108 +27,123 @@ class _ShopsPageState extends State<ShopsPage> {
   bool isFavClicked = false;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(124),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              AppBar(
-                systemOverlayStyle: const SystemUiOverlayStyle(
-                  statusBarColor: primaryColor,
-                  statusBarIconBrightness: Brightness.light,
-                ),
-                backgroundColor: Colors.transparent,
-                leading: const Icon(
-                  MingCute.arrow_left_fill,
-                ),
-                centerTitle: true,
-                title: Text(
-                  "Shops",
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        fontWeight: FontWeight.bold,
+    return BlocConsumer<ShopsBloc, ShopsState>(
+      listener: (context, state) {
+        if (state is ShopsLoadingState) {
+          CircularProgressIndicator();
+        } else if (state is ShopsFetchFailureState) {
+          Center(child: Text(state.errorMessage));
+        } else if (state is ShopsFetchedState) {
+          state.shop = shops;
+          debugPrint("Shops Fetched:$shops");
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(124),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  AppBar(
+                    systemOverlayStyle: const SystemUiOverlayStyle(
+                      statusBarColor: primaryColor,
+                      statusBarIconBrightness: Brightness.light,
+                    ),
+                    backgroundColor: Colors.transparent,
+                    leading: const Icon(
+                      MingCute.arrow_left_fill,
+                    ),
+                    centerTitle: true,
+                    title: Text(
+                      "Shops",
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    actions: [
+                      GestureDetector(
+                        onTap: () {},
+                        child: Icon(
+                          MingCute.more_2_fill,
+                        ),
                       ),
-                ),
-                actions: [
-                  GestureDetector(
-                    onTap: () {},
-                    child: Icon(
-                      MingCute.more_2_fill,
+                      SizedBox(width: 8),
+                    ],
+                  ),
+                  TextFormField(
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                    decoration: InputDecoration(
+                      hintText: "Search....",
+                      hintStyle: TextStyle(fontSize: 13, color: Colors.grey),
+                      prefixIcon:
+                          Icon(MingCute.search_3_line, color: Colors.grey),
+                      suffixIcon: const SizedBox(
+                        width: 60,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(MingCute.close_line, color: Colors.grey),
+                            SizedBox(width: 10),
+                            Icon(MingCute.list_search_line, color: Colors.grey),
+                          ],
+                        ),
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.black12,
+                        ),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      isDense: true,
+                      fillColor: tertiaryColor,
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.black12,
+                        ),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.black12,
+                        ),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
                     ),
                   ),
-                  SizedBox(width: 8),
                 ],
               ),
-              TextFormField(
-                style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                decoration: InputDecoration(
-                  hintText: "Search....",
-                  hintStyle: TextStyle(fontSize: 13, color: Colors.grey),
-                  prefixIcon: Icon(MingCute.search_3_line, color: Colors.grey),
-                  suffixIcon: const SizedBox(
-                    width: 60,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(MingCute.close_line, color: Colors.grey),
-                        SizedBox(width: 10),
-                        Icon(MingCute.list_search_line, color: Colors.grey),
-                      ],
-                    ),
-                  ),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.black12,
-                    ),
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  isDense: true,
-                  fillColor: tertiaryColor,
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.black12,
-                    ),
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.black12,
-                    ),
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height - 270,
-                  width: MediaQuery.of(context).size.width,
-                  child: ListView.builder(
-                    itemCount: imgs.length,
-                    scrollDirection: Axis.vertical,
-                    itemBuilder: (BuildContext context, int index) {
-                      return appointmentContainer(context, imgs[index]);
-                    },
+          body: SafeArea(
+            child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height - 270,
+                      width: MediaQuery.of(context).size.width,
+                      child: ListView.builder(
+                        itemCount: imgs.length,
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (BuildContext context, int index) {
+                          return appointmentContainer(context, imgs[index]);
+                        },
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

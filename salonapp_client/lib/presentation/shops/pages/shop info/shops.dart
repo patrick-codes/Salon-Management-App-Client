@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
-
+import 'package:salonapp_client/helpers/colors/widgets/style.dart';
 import '../../../../helpers/colors/color_constants.dart';
+import '../../bloc/shops_bloc.dart';
+import '../../repository/data rmodel/service_model.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ShopsPage extends StatefulWidget {
   ShopsPage({super.key});
@@ -12,6 +16,8 @@ class ShopsPage extends StatefulWidget {
 }
 
 class _ShopsPageState extends State<ShopsPage> {
+  List<ShopModel>? shops;
+
   List<String> imgs = <String>[
     "assets/images/img8.jpg",
     "assets/images/img.jpg",
@@ -19,115 +25,186 @@ class _ShopsPageState extends State<ShopsPage> {
     "assets/images/img5.jpg",
     "assets/images/img9.jpg",
     "assets/images/img6.jpg",
+    "assets/images/img3.jpg",
+    "assets/images/img5.jpg",
+    "assets/images/img9.jpg",
+    "assets/images/img6.jpg",
   ];
   bool isFavClicked = false;
+
+  final searchController = TextEditingController();
+  String text = 'No shops available !!';
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(124),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              AppBar(
-                systemOverlayStyle: const SystemUiOverlayStyle(
-                  statusBarColor: primaryColor,
-                  statusBarIconBrightness: Brightness.light,
-                ),
-                backgroundColor: Colors.transparent,
-                leading: const Icon(
-                  MingCute.arrow_left_fill,
-                ),
-                centerTitle: true,
-                title: Text(
-                  "Shops",
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        fontWeight: FontWeight.bold,
+    return BlocConsumer<ShopsBloc, ShopsState>(
+      listener: (context, state) {
+        if (state is ShopsLoadingState) {
+          CircularProgressIndicator();
+        } else if (state is ShopsFetchFailureState) {
+          Center(child: Text(state.errorMessage));
+        } else if (state is ShopsFetchedState) {
+          shops = state.shop;
+          debugPrint("Shops Fetched:${shops}");
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(128),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    AppBar(
+                      systemOverlayStyle: const SystemUiOverlayStyle(
+                        statusBarColor: primaryColor,
+                        statusBarIconBrightness: Brightness.light,
                       ),
+                      backgroundColor: Colors.transparent,
+                      leading: const Icon(
+                        MingCute.arrow_left_fill,
+                      ),
+                      centerTitle: true,
+                      title: Text(
+                        "Shops (${shops?.length})",
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      actions: [
+                        GestureDetector(
+                          onTap: () {},
+                          child: Icon(
+                            MingCute.more_2_fill,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                      ],
+                    ),
+                    TextFormField(
+                      controller: searchController,
+                      onChanged: (value) => context
+                          .read<ShopsBloc>()
+                          .add(SearchShopEvent(query: searchController.text)),
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            fontSize: 14,
+                          ),
+                      decoration: InputDecoration(
+                        hintText: "Search....",
+                        hintStyle: TextStyle(fontSize: 13, color: iconGrey),
+                        prefixIcon:
+                            Icon(MingCute.search_3_line, color: iconGrey),
+                        suffixIcon: const SizedBox(
+                          width: 60,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(MingCute.close_line, color: iconGrey),
+                              SizedBox(width: 10),
+                              Icon(MingCute.list_search_line, color: iconGrey),
+                            ],
+                          ),
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.black12,
+                          ),
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        isDense: true,
+                        fillColor: tertiaryColor,
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.black12,
+                          ),
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.black12,
+                          ),
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                actions: [
-                  GestureDetector(
-                    onTap: () {},
-                    child: Icon(
-                      MingCute.more_2_fill,
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                ],
               ),
-              TextFormField(
-                style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      fontSize: 14,
-                    ),
-                decoration: InputDecoration(
-                  hintText: "Search....",
-                  hintStyle: TextStyle(fontSize: 13, color: iconGrey),
-                  prefixIcon: Icon(MingCute.search_3_line, color: iconGrey),
-                  suffixIcon: const SizedBox(
-                    width: 60,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+            ),
+          ),
+          body: shops == null || shops == 0 || shops!.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/svgs/undraw_file-search_cbur.svg',
+                        height: 150,
+                        width: 150,
+                      ),
+                      SizedBox(height: 20),
+                      PrimaryText(
+                        text: text,
+                        color: iconGrey,
+                        size: 15,
+                      ),
+                    ],
+                  ),
+                )
+              : SafeArea(
+                  child: SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
+                    child: Column(
                       children: [
-                        Icon(MingCute.close_line, color: iconGrey),
-                        SizedBox(width: 10),
-                        Icon(MingCute.list_search_line, color: iconGrey),
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height - 270,
+                            width: MediaQuery.of(context).size.width,
+                            child: ListView.builder(
+                              itemCount: shops?.length,
+                              scrollDirection: Axis.vertical,
+                              itemBuilder: (BuildContext context, int index) {
+                                final shopInfo = shops?[index];
+                                return appointmentContainer(
+                                  context,
+                                  shopInfo?.profileImg,
+                                  shopInfo?.shopName,
+                                  shopInfo?.location,
+                                  shopInfo?.openingDays,
+                                  shopInfo?.operningTimes,
+                                  shopInfo?.services,
+                                );
+                              },
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.black12,
-                    ),
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  isDense: true,
-                  fillColor: tertiaryColor,
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.black12,
-                    ),
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.black12,
-                    ),
-                    borderRadius: BorderRadius.circular(100),
-                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height - 270,
-                  width: MediaQuery.of(context).size.width,
-                  child: ListView.builder(
-                    itemCount: imgs.length,
-                    scrollDirection: Axis.vertical,
-                    itemBuilder: (BuildContext context, int index) {
-                      return appointmentContainer(context, imgs[index]);
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-  Container appointmentContainer(BuildContext context, String imgurl) {
+  Container appointmentContainer(
+    BuildContext context,
+    String? imgurl,
+    String? name,
+    String? location,
+    String? openingDays,
+    String? openingTime,
+    String? services,
+  ) {
     return Container(
       height: 330,
       width: MediaQuery.of(context).size.width,
@@ -156,7 +233,19 @@ class _ShopsPageState extends State<ShopsPage> {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.fitWidth,
-                      image: AssetImage(imgurl),
+                      image: Image.network(
+                        imgurl ?? '',
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(Icons.error, size: 50, color: Colors.red);
+                        },
+                        fit: BoxFit.cover,
+                      ).image,
                     ),
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -195,7 +284,7 @@ class _ShopsPageState extends State<ShopsPage> {
                                 SizedBox(width: 3),
                                 Text(
                                   overflow: TextOverflow.ellipsis,
-                                  'Lafa Street, Gbawe-Accra',
+                                  location ?? '',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium!
@@ -223,7 +312,7 @@ class _ShopsPageState extends State<ShopsPage> {
                         Text(
                           overflow: TextOverflow.visible,
                           softWrap: true,
-                          'Captain Barbershop Captain',
+                          name ?? '',
                           style:
                               Theme.of(context).textTheme.bodyLarge!.copyWith(
                                     wordSpacing: 2,
@@ -246,7 +335,7 @@ class _ShopsPageState extends State<ShopsPage> {
                                 SizedBox(width: 3),
                                 Text(
                                   overflow: TextOverflow.ellipsis,
-                                  'Opening Days: Monday - Saturday',
+                                  'Days: $openingDays',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium!
@@ -267,7 +356,7 @@ class _ShopsPageState extends State<ShopsPage> {
                                 SizedBox(width: 3),
                                 Text(
                                   overflow: TextOverflow.ellipsis,
-                                  '8am - 10pm',
+                                  openingTime!,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium!
@@ -294,7 +383,7 @@ class _ShopsPageState extends State<ShopsPage> {
                         const SizedBox(height: 3),
                         Text(
                           overflow: TextOverflow.visible,
-                          'Undercut Haircut, Regular Shaving, Natural Hair Wash, Regular Shaving,',
+                          services!,
                           style:
                               Theme.of(context).textTheme.bodyMedium!.copyWith(
                                     color: Colors.black45,

@@ -188,24 +188,25 @@ class _MyHomePageState extends State<MyHomePage> {
                                 width: 40,
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: Image.network(
+                                      photoUrl ?? '',
+                                      loadingBuilder:
+                                          (context, child, loadingProgress) {
+                                        if (loadingProgress == null)
+                                          return child;
+                                        return Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      },
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Icon(Icons.error,
+                                            size: 50, color: Colors.red);
+                                      },
                                       fit: BoxFit.cover,
-                                      image: Image.network(
-                                        photoUrl ?? '',
-                                        loadingBuilder:
-                                            (context, child, loadingProgress) {
-                                          if (loadingProgress == null)
-                                            return child;
-                                          return Center(
-                                            child: CircularProgressIndicator(),
-                                          );
-                                        },
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          return Icon(Icons.error,
-                                              size: 50, color: Colors.red);
-                                        },
-                                        fit: BoxFit.cover,
-                                      ).image),
+                                    ).image,
+                                  ),
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(40),
                                 ),

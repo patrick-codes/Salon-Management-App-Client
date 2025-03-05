@@ -52,7 +52,6 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
     );
   }
 
-  /// Moves the camera to the user's current location after it's loaded
   void moveCameraToUserLocation(BuildContext context) async {
     if (mapController == null) return;
 
@@ -65,12 +64,11 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
         locationBloc.userLongitude!,
       );
 
-      await Future.delayed(
-          Duration(milliseconds: 500)); // Ensures map is loaded
+      await Future.delayed(Duration(milliseconds: 300));
 
       mapController!.animateCamera(
         CameraUpdate.newCameraPosition(
-          CameraPosition(target: userLatLng, zoom: 14),
+          CameraPosition(target: userLatLng, zoom: 12),
         ),
       );
     }
@@ -97,13 +95,12 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
       return Scaffold(
         floatingActionButtonLocation:
             FloatingActionButtonLocation.miniCenterFloat,
-        floatingActionButton: canInteractWithMap
-            ? FloatingActionButton(
-                onPressed: () => moveCameraToUserLocation(context),
-                mini: true,
-                child: const Icon(Icons.restore),
-              )
-            : null,
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.black,
+          onPressed: () => moveCameraToUserLocation(context),
+          mini: true,
+          child: const Icon(Icons.restore, color: Colors.white),
+        ),
         body: MapLibreMap(
           myLocationEnabled: true,
           myLocationTrackingMode: MyLocationTrackingMode.tracking,
@@ -117,7 +114,7 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
             await _addPolyline();
             mapController!.animateCamera(
               CameraUpdate.newCameraPosition(
-                CameraPosition(target: userLocation, zoom: 14),
+                CameraPosition(target: userLocation, zoom: 12),
               ),
             );
           },

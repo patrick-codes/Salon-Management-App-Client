@@ -7,9 +7,9 @@ class ShopInitial extends ShopsState {}
 class ShopsLoadingState extends ShopsState {}
 
 class ShopsFetchedState extends ShopsState {
-  final String message;
+  List<ShopModel>? shop;
 
-  ShopsFetchedState({required this.message});
+  ShopsFetchedState({required this.shop});
 }
 
 class ShopsFetchFailureState extends ShopsState {
@@ -56,4 +56,10 @@ class SeachFailureState extends ShopsState {
   final String error;
 
   SeachFailureState({required this.error});
+}
+
+class EmptyShopState extends ShopsState {
+  final String message;
+
+  EmptyShopState({required this.message});
 }

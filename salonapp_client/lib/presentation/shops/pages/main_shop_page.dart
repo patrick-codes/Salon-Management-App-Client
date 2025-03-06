@@ -1,14 +1,23 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
-
+import 'package:salonapp_client/presentation/shops/bloc/shops_bloc.dart';
 import '../../../helpers/colors/color_constants.dart';
 import '../../../helpers/colors/widgets/custom_button.dart';
 import '../../../helpers/colors/widgets/minimal_heading.dart';
 import '../../checkout page/pages/checkout_page.dart';
+import '../repository/data rmodel/service_model.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MainShopinfoPage extends StatefulWidget {
-  const MainShopinfoPage({super.key});
+  String? id;
+  MainShopinfoPage({
+    Key? key,
+    required this.id,
+  }) : super(key: key);
 
   @override
   State<MainShopinfoPage> createState() => _DetailsPageState();
@@ -68,294 +77,354 @@ class _DetailsPageState extends State<MainShopinfoPage> {
     "Share",
   ];
   bool isOpen = true;
+  ShopModel? shop;
+  String text = 'No shops available !!';
+  @override
+  void initState() {
+    super.initState();
+    context.read<ShopsBloc>().add(ViewSingleShopEvent(widget.id));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        leading: const Icon(
-          MingCute.arrow_left_fill,
-          color: Colors.white,
-        ),
-        actions: [
-          Container(
-            height: 25,
-            width: 70,
-            decoration: BoxDecoration(
-              color: isOpen == false ? Colors.red : Colors.green,
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Center(
-              child: Text(
-                isOpen == false ? "CLOSED" : "OPENED",
-                style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+    return BlocConsumer<ShopsBloc, ShopsState>(
+      listener: (context, state) {
+        if (state is ShopsLoadingState) {
+          CircularProgressIndicator();
+        } else if (state is ShopsFetchFailureState) {
+          Center(child: Text(state.errorMessage));
+        } else if (state is SingleShopsFetchedState) {
+          shop = state.shop;
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            leading: shop == null
+                ? SizedBox.shrink()
+                : const Icon(
+                    MingCute.arrow_left_fill,
+                    color: Colors.white,
+                  ),
+            actions: [
+              shop == null
+                  ? SizedBox.shrink()
+                  : Container(
+                      height: 25,
+                      width: 70,
+                      decoration: BoxDecoration(
+                        color: isOpen == false ? Colors.red : Colors.green,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Center(
+                        child: Text(
+                          isOpen == false ? "CLOSED" : "OPENED",
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                        ),
+                      ),
                     ),
-              ),
-            ),
+              SizedBox(width: 8),
+            ],
+            backgroundColor: Colors.transparent,
           ),
-          SizedBox(width: 8),
-        ],
-        backgroundColor: Colors.transparent,
-      ),
-      extendBodyBehindAppBar: true,
-      bottomNavigationBar: Container(
-        height: 90,
-        width: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(
-            width: 1,
-            color: Colors.grey.shade100,
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(18.0),
-          child: Center(
-            child: CustomButton(
-              text: "Book Now",
-              onpressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => CheckoutPage(
-                      title: 'Captain Salon Captain',
-                      quantity: 20,
-                      amount: 30,
-                      img: 'assets/images/img-sixteen.jpg',
+          extendBodyBehindAppBar: true,
+          bottomNavigationBar: shop == null
+              ? SizedBox.shrink()
+              : Container(
+                  height: 90,
+                  width: MediaQuery.of(context).size.height,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(
+                      width: 1,
+                      color: Colors.grey.shade100,
                     ),
                   ),
-                );
-              },
-              color: primaryColor,
-            ),
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.zero,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height * 0.35,
-              //padding: const EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                image: const DecorationImage(
-                  image: AssetImage("assets/images/img3.jpg"),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Stack(
-                children: [
-                  Positioned(
-                    bottom: 0,
-                    child: Container(
-                      height: 137,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        border: Border(top: BorderSide.none),
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            backgroundColor.withOpacity(0.2),
-                            backgroundColor
-                          ],
-                        ),
-                        color: backgroundColor,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Captain Barbershop Captain Captain",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineSmall!
-                                      .copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        height: 1.25,
-                                        color: Colors.white,
-                                      ),
-                                ),
-                                SizedBox(height: 5),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          MingCute.calendar_2_fill,
-                                          size: 20,
-                                          color: primaryColor,
-                                        ),
-                                        SizedBox(width: 3),
-                                        Text(
-                                          overflow: TextOverflow.ellipsis,
-                                          'Opening Days: Monday - Saturday',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .copyWith(
-                                                color: Colors.white,
-                                                fontSize: 11,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          MingCute.clock_2_fill,
-                                          size: 20,
-                                          color: primaryColor,
-                                        ),
-                                        SizedBox(width: 3),
-                                        Text(
-                                          overflow: TextOverflow.ellipsis,
-                                          '8am - 10pm',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .copyWith(
-                                                color: Colors.white,
-                                                fontSize: 11,
-                                              ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                                SizedBox(height: 5),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          MingCute.location_fill,
-                                          color: primaryColor,
-                                          size: 20,
-                                        ),
-                                        const SizedBox(width: 3),
-                                        Text(
-                                          "GBAWE - ACCRA",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall!
-                                              .copyWith(
-                                                color: Colors.white,
-                                                fontSize: 12,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          MingCute.route_fill,
-                                          size: 20,
-                                          color: primaryColor,
-                                        ),
-                                        const SizedBox(width: 3),
-                                        Text(
-                                          "5KM AWAY",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall!
-                                              .copyWith(
-                                                color: Colors.white,
-                                                fontSize: 12,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Center(
+                      child: CustomButton(
+                        text: "Book Now",
+                        onpressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => CheckoutPage(
+                                title: 'Captain Salon Captain',
+                                quantity: 20,
+                                amount: 30,
+                                img: 'assets/images/img-sixteen.jpg',
+                              ),
                             ),
-                          ],
-                        ),
+                          );
+                        },
+                        color: primaryColor,
                       ),
                     ),
-                  )
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              height: 85,
-              width: MediaQuery.of(context).size.width,
-              child: ListView.builder(
-                itemCount: icons.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (BuildContext context, int index) {
-                  return buildCategorySquare(icons[index], title[index], index);
-                },
-              ),
-            ),
-            const SizedBox(height: 15),
-            Padding(
-              padding: const EdgeInsets.only(left: 15.0, right: 15),
-              child: MinimalHeadingText(
-                leftText: 'What service we provide',
-                rightText: 'View all',
-              ),
-            ),
-            const SizedBox(height: 13),
-            SizedBox(
-              height: 125,
-              width: MediaQuery.of(context).size.width,
-              child: ListView.builder(
-                itemCount: imgs.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (BuildContext context, int index) {
-                  return buildServicesSquare(
-                    imgs[index],
-                    services[index],
-                    prices[index],
-                    index == 1 ? primaryColor : Colors.grey.shade200,
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 15),
-            Padding(
-              padding: const EdgeInsets.only(left: 15.0, right: 15),
-              child: MinimalHeadingText(
-                leftText: 'Our latest works',
-                rightText: 'View all',
-              ),
-            ),
-            const SizedBox(height: 13),
-            SizedBox(
-              height: 125,
-              width: MediaQuery.of(context).size.width,
-              child: ListView.builder(
-                itemCount: imgs.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (BuildContext context, int index) {
-                  return buildLatestWorksSquare(
-                      imgs[index], services[index], prices[index]);
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
+                  ),
+                ),
+          body: shop == null
+              ? const Center(
+                  child: SpinKitDoubleBounce(
+                    // lineWidth: 3,
+                    size: 60,
+                    color: primaryColor,
+                  ),
+                )
+              : SingleChildScrollView(
+                  padding: EdgeInsets.zero,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        height: MediaQuery.of(context).size.height * 0.35,
+                        //padding: const EdgeInsets.symmetric(vertical: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: shop!.profileImg != null
+                              ? DecorationImage(
+                                  image: Image.network(
+                                    shop!.profileImg ?? '',
+                                    loadingBuilder:
+                                        (context, child, loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    },
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Icon(Icons.error,
+                                          size: 50, color: Colors.red);
+                                    },
+                                    fit: BoxFit.cover,
+                                  ).image,
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
+                        ),
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              bottom: 0,
+                              child: Container(
+                                height: 137,
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                  border: Border(top: BorderSide.none),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      backgroundColor.withOpacity(0.2),
+                                      backgroundColor
+                                    ],
+                                  ),
+                                  color: backgroundColor,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            shop!.shopName ?? '',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineSmall!
+                                                .copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  height: 1.25,
+                                                  color: Colors.white,
+                                                ),
+                                          ),
+                                          SizedBox(height: 5),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    MingCute.calendar_2_fill,
+                                                    size: 20,
+                                                    color: primaryColor,
+                                                  ),
+                                                  SizedBox(width: 3),
+                                                  Text(
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    'Days: ${shop!.openingDays}',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyMedium!
+                                                        .copyWith(
+                                                          color: Colors.white,
+                                                          fontSize: 11,
+                                                        ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    MingCute.clock_2_fill,
+                                                    size: 20,
+                                                    color: primaryColor,
+                                                  ),
+                                                  SizedBox(width: 3),
+                                                  Text(
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    shop!.operningTimes ?? '',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyMedium!
+                                                        .copyWith(
+                                                          color: Colors.white,
+                                                          fontSize: 11,
+                                                        ),
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                          SizedBox(height: 5),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    MingCute.location_fill,
+                                                    color: primaryColor,
+                                                    size: 20,
+                                                  ),
+                                                  const SizedBox(width: 3),
+                                                  Text(
+                                                    shop!.location ?? '',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall!
+                                                        .copyWith(
+                                                          color: Colors.white,
+                                                          fontSize: 12,
+                                                        ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    MingCute.scissors_3_fill,
+                                                    size: 20,
+                                                    color: primaryColor,
+                                                  ),
+                                                  const SizedBox(width: 3),
+                                                  Text(
+                                                    "${shop!.category}",
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall!
+                                                        .copyWith(
+                                                          color: Colors.white,
+                                                          fontSize: 12,
+                                                        ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        height: 85,
+                        width: MediaQuery.of(context).size.width,
+                        child: ListView.builder(
+                          itemCount: icons.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (BuildContext context, int index) {
+                            return buildCategorySquare(
+                                icons[index], title[index], index);
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: MinimalHeadingText(
+                          leftText: 'What service we provide',
+                          rightText: 'View all',
+                        ),
+                      ),
+                      const SizedBox(height: 13),
+                      SizedBox(
+                        height: 125,
+                        width: MediaQuery.of(context).size.width,
+                        child: ListView.builder(
+                          itemCount: imgs.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (BuildContext context, int index) {
+                            return buildServicesSquare(
+                              imgs[index],
+                              services[index],
+                              prices[index],
+                              index == 1 ? primaryColor : Colors.grey.shade200,
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: MinimalHeadingText(
+                          leftText: 'Our latest works',
+                          rightText: 'View all',
+                        ),
+                      ),
+                      const SizedBox(height: 13),
+                      SizedBox(
+                        height: 125,
+                        width: MediaQuery.of(context).size.width,
+                        child: ListView.builder(
+                          itemCount: shop!.workImgs!.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (BuildContext context, int index) {
+                            return buildLatestWorksSquare(
+                              shop!.workImgs![index],
+                              // services[index],
+                              // prices[index],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+        );
+      },
     );
   }
 
@@ -385,14 +454,10 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(
-                      MingCute.scissors_fill,
-                      size: 20,
-                    ),
                     PrimaryText(
                       text: prices,
                       size: 15,
-                      color: blackColor,
+                      color: Colors.red[500]!,
                       fontWeight: FontWeight.bold,
                       height: 2,
                     )
@@ -422,7 +487,11 @@ class _DetailsPageState extends State<MainShopinfoPage> {
     );
   }
 
-  Widget buildLatestWorksSquare(String imgurl, String title, String prices) {
+  Widget buildLatestWorksSquare(
+    String imgurl,
+    // String title,
+    // String prices,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -432,10 +501,24 @@ class _DetailsPageState extends State<MainShopinfoPage> {
           margin: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
             color: Colors.white,
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: Image.asset(imgurl).image,
-            ),
+            image: shop!.workImgs != null
+                ? DecorationImage(
+                    image: Image.network(
+                      imgurl ?? '',
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(Icons.error, size: 50, color: Colors.red);
+                      },
+                      fit: BoxFit.cover,
+                    ).image,
+                    fit: BoxFit.cover,
+                  )
+                : null,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               width: 1,

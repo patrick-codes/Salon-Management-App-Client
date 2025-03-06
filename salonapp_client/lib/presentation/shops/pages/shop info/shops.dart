@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
+import 'package:salonapp_client/presentation/shops/pages/main_shop_page.dart';
 import '../../../../helpers/colors/color_constants.dart';
 import '../../bloc/shops_bloc.dart';
 import '../../repository/data rmodel/service_model.dart';
@@ -78,11 +80,28 @@ class _ShopsPageState extends State<ShopsPage> {
                         MingCute.arrow_left_fill,
                       ),
                       centerTitle: true,
-                      title: Text(
-                        "Shops (${shops?.length})",
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Nearby Shops",
+                            style:
+                                Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                          ),
+                          shops == null || shops == 0 || shops!.isEmpty
+                              ? SizedBox.shrink()
+                              : Text(
+                                  " (${shops?.length})",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
+                        ],
                       ),
                       actions: [
                         GestureDetector(
@@ -145,61 +164,105 @@ class _ShopsPageState extends State<ShopsPage> {
               ),
             ),
           ),
-          body: shops == null || shops == 0 || shops!.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset(
-                        'assets/svgs/undraw_file-search_cbur.svg',
-                        height: 150,
-                        width: 150,
-                      ),
-                      SizedBox(height: 20),
-                      PrimaryText(
-                        text: text,
-                        color: iconGrey,
-                        size: 15,
-                      ),
-                    ],
-                  ),
-                )
-              : SafeArea(
-                  child: SingleChildScrollView(
-                    physics: BouncingScrollPhysics(),
-                    child: RefreshIndicator(
-                      onRefresh: () => refresh(context),
+          body:
+              // (shops == null || shops == 0 || shops!.isEmpty)
+              //     ? Center(
+              //         child: Column(
+              //           mainAxisAlignment: MainAxisAlignment.center,
+              //           crossAxisAlignment: CrossAxisAlignment.center,
+              //           children: [
+              //             SvgPicture.asset(
+              //               'assets/svgs/undraw_file-search_cbur.svg',
+              //               height: 150,
+              //               width: 150,
+              //             ),
+              //             SizedBox(height: 20),
+              //             PrimaryText(
+              //               text: text,
+              //               color: iconGrey,
+              //               size: 15,
+              //             ),
+              //           ],
+              //         ),
+              //       )
+              shops == null
+                  ? const Center(
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height - 270,
-                              width: MediaQuery.of(context).size.width,
-                              child: ListView.builder(
-                                itemCount: shops?.length,
-                                scrollDirection: Axis.vertical,
-                                itemBuilder: (BuildContext context, int index) {
-                                  final shopInfo = shops?[index];
-                                  return appointmentContainer(
-                                    context,
-                                    shopInfo?.profileImg,
-                                    shopInfo?.shopName,
-                                    shopInfo?.location,
-                                    shopInfo?.openingDays,
-                                    shopInfo?.operningTimes,
-                                    shopInfo?.services,
-                                  );
-                                },
-                              ),
-                            ),
+                          SpinKitDoubleBounce(
+                            // lineWidth: 3,
+                            size: 60,
+                            color: primaryColor,
+                          ),
+                          SizedBox(height: 20),
+                          PrimaryText(
+                            text: 'Loading nearby shops....',
+                            color: secondaryColor3,
+                            size: 13,
                           ),
                         ],
                       ),
-                    ),
-                  ),
-                ),
+                    )
+                  : (shops == null || shops == 0 || shops!.isEmpty)
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/svgs/undraw_file-search_cbur.svg',
+                                height: 150,
+                                width: 150,
+                              ),
+                              SizedBox(height: 20),
+                              PrimaryText(
+                                text: text,
+                                color: iconGrey,
+                                size: 15,
+                              ),
+                            ],
+                          ),
+                        )
+                      : SafeArea(
+                          child: SingleChildScrollView(
+                            physics: BouncingScrollPhysics(),
+                            child: RefreshIndicator(
+                              onRefresh: () => refresh(context),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height -
+                                              270,
+                                      width: MediaQuery.of(context).size.width,
+                                      child: ListView.builder(
+                                        itemCount: shops?.length,
+                                        scrollDirection: Axis.vertical,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          final shopInfo = shops?[index];
+                                          return appointmentContainer(
+                                            context,
+                                            shopInfo?.shopId,
+                                            shopInfo?.profileImg,
+                                            shopInfo?.shopName,
+                                            shopInfo?.location,
+                                            shopInfo?.openingDays,
+                                            shopInfo?.operningTimes,
+                                            shopInfo?.services,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
         );
       },
     );
@@ -207,6 +270,7 @@ class _ShopsPageState extends State<ShopsPage> {
 
   Container appointmentContainer(
     BuildContext context,
+    String? id,
     String? imgurl,
     String? name,
     String? location,
@@ -471,7 +535,14 @@ class _ShopsPageState extends State<ShopsPage> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                Navigator.pushNamed(context, '/mainshopinfo');
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MainShopinfoPage(
+                                      id: id,
+                                    ),
+                                  ),
+                                );
                               },
                               child: Container(
                                 height: 30,

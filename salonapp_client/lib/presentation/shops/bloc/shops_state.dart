@@ -12,6 +12,12 @@ class ShopsFetchedState extends ShopsState {
   ShopsFetchedState({required this.shop});
 }
 
+class SingleShopsFetchedState extends ShopsState {
+  ShopModel? shop;
+
+  SingleShopsFetchedState({required this.shop});
+}
+
 class ShopsFetchFailureState extends ShopsState {
   final String errorMessage;
 

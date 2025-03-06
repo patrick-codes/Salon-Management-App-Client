@@ -28,7 +28,7 @@ class SalonApp extends StatelessWidget {
           '/main': (context) => const MyHomePage(),
           '/mainhome': (context) => const MainHomePage(),
           '/shopinfo': (context) => const ShopInfo(),
-          '/mainshopinfo': (context) => const MainShopinfoPage(),
+          // '/mainshopinfo': (context) => const MainShopinfoPage(),
           '/map': (context) => const MapDirectionScreen(),
         },
         theme: ThemeData(

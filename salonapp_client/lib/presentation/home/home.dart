@@ -52,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
     "Natural",
   ];
   String photoUrl =
-      "https://drive.google.com/uc?id=1HU8hSaC9_ncfM4_3Uedq_Hj9RR16bzND";
+      "https://media.istockphoto.com/id/2166854040/photo/chairs-by-sink-bowl-at-hair-salon.webp?a=1&b=1&s=612x612&w=0&k=20&c=UltW4fSClI85zl07M0pmi4-uqjcUC4ADd4xfwBS6nWc=";
 
   @override
   Widget build(BuildContext context) {

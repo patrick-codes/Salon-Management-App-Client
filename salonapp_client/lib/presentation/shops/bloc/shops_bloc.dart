@@ -9,6 +9,9 @@ part 'shops_state.dart';
 
 class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
   List<ShopModel>? serviceman;
+  ShopModel? singleServiceMan;
+  ShopModel? singleService;
+
   List<ShopModel>? serviceman2 = [];
   List<ShopModel>? serviceman3 = [];
   static SalonServiceHelper salonHelper = SalonServiceHelper();
@@ -21,6 +24,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
     on<ViewShopsEvent>(fetchShops);
     on<SearchShopEvent>(searchShops);
     on<CreateShopEvent>(createShop);
+    on<ViewSingleShopEvent>(fetchSingleShop);
   }
   void onSearchChanged(String query) {
     serviceman = serviceman2!
@@ -95,5 +99,35 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
       debugPrint('Error:${error.toString()}');
     }
     return serviceman;
+  }
+
+  Future<ShopModel?> fetchSingleShop(
+      ViewSingleShopEvent event, Emitter<ShopsState> emit) async {
+    try {
+      String? userId = event.id;
+      //  if (userId != null) {
+      emit(ShopsLoadingState());
+      singleServiceMan = await salonHelper.fetchSinglesalonshops(userId);
+
+      if (singleServiceMan != null) {
+        singleService = singleServiceMan;
+        emit(SingleShopsFetchedState(shop: singleService));
+        debugPrint("Single Shop: $singleService");
+        total = serviceNum;
+      } else {
+        emit(ShopsFetchFailureState(errorMessage: "Shop not found"));
+        debugPrint("Single Shop not found");
+      }
+      //}
+      print(total);
+    } on FirebaseAuthException catch (error) {
+      emit(ShopsFetchFailureState(errorMessage: error.toString()));
+      debugPrint(error.toString());
+    } catch (error) {
+      emit(ShopsFetchFailureState(errorMessage: error.toString()));
+      debugPrint('Error:${error.toString()}');
+    }
+
+    return singleService;
   }
 }

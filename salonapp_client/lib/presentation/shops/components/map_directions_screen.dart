@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import '../../location/bloc/location_bloc.dart';
 import 'dart:convert';
 
@@ -99,13 +100,14 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
           backgroundColor: Colors.black,
           onPressed: () => moveCameraToUserLocation(context),
           mini: true,
-          child: const Icon(Icons.restore, color: Colors.white),
+          child: const Icon(Icons.restore, color: primaryColor),
         ),
         body: MapLibreMap(
           myLocationEnabled: true,
           myLocationTrackingMode: MyLocationTrackingMode.tracking,
           myLocationRenderMode: MyLocationRenderMode.normal,
           styleString:
+              // "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
               "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json",
           onMapCreated: (controller) async {
             mapController = controller;

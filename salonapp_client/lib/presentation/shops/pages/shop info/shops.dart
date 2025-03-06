@@ -34,9 +34,15 @@ class _ShopsPageState extends State<ShopsPage> {
 
   final searchController = TextEditingController();
   String text = 'No shops available !!';
+  ShopsBloc? shopsBloc;
   void dispose() {
     searchController.dispose();
     super.dispose();
+  }
+
+  Future<void> refresh(BuildContext context) async {
+    context.read<ShopsBloc>().add(ViewShopsEvent());
+    debugPrint("Refreshed");
   }
 
   @override
@@ -162,32 +168,35 @@ class _ShopsPageState extends State<ShopsPage> {
               : SafeArea(
                   child: SingleChildScrollView(
                     physics: BouncingScrollPhysics(),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: SizedBox(
-                            height: MediaQuery.of(context).size.height - 270,
-                            width: MediaQuery.of(context).size.width,
-                            child: ListView.builder(
-                              itemCount: shops?.length,
-                              scrollDirection: Axis.vertical,
-                              itemBuilder: (BuildContext context, int index) {
-                                final shopInfo = shops?[index];
-                                return appointmentContainer(
-                                  context,
-                                  shopInfo?.profileImg,
-                                  shopInfo?.shopName,
-                                  shopInfo?.location,
-                                  shopInfo?.openingDays,
-                                  shopInfo?.operningTimes,
-                                  shopInfo?.services,
-                                );
-                              },
+                    child: RefreshIndicator(
+                      onRefresh: () => refresh(context),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height - 270,
+                              width: MediaQuery.of(context).size.width,
+                              child: ListView.builder(
+                                itemCount: shops?.length,
+                                scrollDirection: Axis.vertical,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final shopInfo = shops?[index];
+                                  return appointmentContainer(
+                                    context,
+                                    shopInfo?.profileImg,
+                                    shopInfo?.shopName,
+                                    shopInfo?.location,
+                                    shopInfo?.openingDays,
+                                    shopInfo?.operningTimes,
+                                    shopInfo?.services,
+                                  );
+                                },
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

@@ -273,8 +273,7 @@ class _SignupScrenState extends State<SignupScren> {
                               const SizedBox(height: 10),
                               TextFormField(
                                 controller: SignupController.password,
-                                obscureText: false,
-                                // isVisible,
+                                obscureText: isVisible,
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return 'Enter Password';
@@ -290,12 +289,7 @@ class _SignupScrenState extends State<SignupScren> {
                                   labelStyle: const TextStyle(fontSize: 13),
                                   prefixIcon: const Icon(MingCute.lock_fill),
                                   suffixIcon: GestureDetector(
-                                    onTap: () {
-                                      // setState(() {
-                                      //   isVisible = !isVisible;
-                                      // });
-                                      // setState(() {});
-                                    },
+                                    onTap: () {},
                                     child: isVisible
                                         ? const Icon(Icons.visibility)
                                         : const Icon(Icons.visibility_off),

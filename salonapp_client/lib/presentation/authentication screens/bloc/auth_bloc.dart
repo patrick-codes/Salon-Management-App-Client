@@ -187,6 +187,11 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
 
       emit(AuthenticatedState(message: 'Login Succesful!!'));
       debugPrint('Login Succesful!!');
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('authToken', _auth.currentUser!.uid);
+
+      debugPrint('AuthToken saved locally.');
+      debugPrint('AuthToken saved: ${_auth.currentUser!.uid}');
     } on FirebaseAuthException catch (error) {
       final exception = SignUpWithEmailAndPasswordFailure(error.code);
       emit(AuthFailureState(errorMessage: exception.message));

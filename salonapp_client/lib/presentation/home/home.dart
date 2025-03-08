@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import 'package:salonapp_client/helpers/colors/widgets/minimal_heading.dart';
-import 'package:salonapp_client/presentation/authentication%20screens/bloc/auth_bloc.dart';
 import 'package:salonapp_client/presentation/location/bloc/location_bloc.dart';
-import 'package:toastification/toastification.dart';
-
+import 'package:salonapp_client/presentation/shops/bloc/shops_bloc.dart';
 import '../filter screen/pages/filter_screen.dart';
+import '../shops/components/gridview.dart';
+import '../shops/repository/data rmodel/service_model.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -53,20 +53,29 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
   String photoUrl =
       "https://media.istockphoto.com/id/2166854040/photo/chairs-by-sink-bowl-at-hair-salon.webp?a=1&b=1&s=612x612&w=0&k=20&c=UltW4fSClI85zl07M0pmi4-uqjcUC4ADd4xfwBS6nWc=";
+  List<ShopModel>? shops;
+  bool isLoaded = false;
+  final searchController = TextEditingController();
+  // String text = 'No shops available !!';
+  Future<void> refresh(BuildContext context) async {
+    setState(() {
+      context.read<ShopsBloc>().add(ViewShopsEvent());
+      debugPrint("Refreshed");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthBloc, AuthState>(
-      listener: (BuildContext context, AuthState state) {
-        if (state is AuthLogoutSuccesState) {
-          Navigator.pushReplacementNamed(context, '/welcome');
-          toastification.show(
-            showProgressBar: false,
-            title: Text(state.message),
-            autoCloseDuration: const Duration(seconds: 7),
-            style: ToastificationStyle.minimal,
-            type: ToastificationType.warning,
-          );
+    return BlocConsumer<ShopsBloc, ShopsState>(
+      listener: (context, state) {
+        if (state is ShopsLoadingState) {
+          CircularProgressIndicator();
+        } else if (state is ShopsFetchFailureState) {
+          Center(child: Text(state.errorMessage));
+        } else if (state is ShopsFetchedState) {
+          shops = state.shop;
+          isLoaded = true;
+          debugPrint("Shops Fetched:${shops}");
         }
       },
       builder: (BuildContext context, state) {
@@ -228,7 +237,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             children: [
                               TextSpan(
                                 text:
-                                    "Let's Find                                        ",
+                                    "Let's find your                                       ",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
@@ -239,7 +248,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     ),
                               ),
                               TextSpan(
-                                text: "your top Barber!",
+                                text: "top Salon & Barber shop!",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
@@ -253,12 +262,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         const SizedBox(height: 20),
                         TextFormField(
-                          // controller: controller.emailController,
+                          controller: searchController,
                           style:
                               Theme.of(context).textTheme.bodySmall!.copyWith(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w500,
                                   ),
+                          onChanged: (value) => context.read<ShopsBloc>().add(
+                              SearchShopEvent(query: searchController.text)),
                           validator: (value) {
                             if (value!.isEmpty) {
                               print('Type something');
@@ -383,22 +394,25 @@ class _MyHomePageState extends State<MyHomePage> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 8),
-                SizedBox(
-                  height: 300,
-                  width: MediaQuery.of(context).size.width,
-                  child: SizedBox(
-                    height: 200,
-                    width: MediaQuery.of(context).size.width,
-                    child: ListView.builder(
-                      itemCount: icons.length,
-                      scrollDirection: Axis.vertical,
-                      itemBuilder: (BuildContext context, int index) {
-                        return shopContainer(context);
-                      },
-                    ),
-                  ),
+                GridViewComponent(
+                  shops: shops!,
                 ),
+                const SizedBox(height: 8),
+                // SizedBox(
+                //   height: 300,
+                //   width: MediaQuery.of(context).size.width,
+                //   child: SizedBox(
+                //     height: 200,
+                //     width: MediaQuery.of(context).size.width,
+                //     child: ListView.builder(
+                //       itemCount: icons.length,
+                //       scrollDirection: Axis.vertical,
+                //       itemBuilder: (BuildContext context, int index) {
+                //         return shopContainer(context);
+                //       },
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),

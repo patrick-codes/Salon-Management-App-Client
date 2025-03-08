@@ -5,10 +5,13 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
 import 'package:salonapp_client/presentation/shops/pages/main_shop_page.dart';
+import 'package:salonapp_client/presentation/shops/pages/shop%20info/shop_info.dart';
 import '../../../../helpers/colors/color_constants.dart';
 import '../../bloc/shops_bloc.dart';
 import '../../repository/data rmodel/service_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ShopsPage extends StatefulWidget {
   ShopsPage({super.key});
@@ -19,7 +22,7 @@ class ShopsPage extends StatefulWidget {
 
 class _ShopsPageState extends State<ShopsPage> {
   List<ShopModel>? shops;
-
+  bool isLoaded = false;
   List<String> imgs = <String>[
     "assets/images/img8.jpg",
     "assets/images/img.jpg",
@@ -33,7 +36,6 @@ class _ShopsPageState extends State<ShopsPage> {
     "assets/images/img6.jpg",
   ];
   bool isFavClicked = false;
-
   final searchController = TextEditingController();
   String text = 'No shops available !!';
   ShopsBloc? shopsBloc;
@@ -43,8 +45,10 @@ class _ShopsPageState extends State<ShopsPage> {
   }
 
   Future<void> refresh(BuildContext context) async {
-    context.read<ShopsBloc>().add(ViewShopsEvent());
-    debugPrint("Refreshed");
+    setState(() {
+      context.read<ShopsBloc>().add(ViewShopsEvent());
+      debugPrint("Refreshed");
+    });
   }
 
   @override
@@ -57,6 +61,7 @@ class _ShopsPageState extends State<ShopsPage> {
           Center(child: Text(state.errorMessage));
         } else if (state is ShopsFetchedState) {
           shops = state.shop;
+          isLoaded = true;
           debugPrint("Shops Fetched:${shops}");
         }
       },
@@ -253,6 +258,7 @@ class _ShopsPageState extends State<ShopsPage> {
                                             shopInfo?.openingDays,
                                             shopInfo?.operningTimes,
                                             shopInfo?.services,
+                                            isLoaded,
                                           );
                                         },
                                       ),
@@ -277,6 +283,7 @@ class _ShopsPageState extends State<ShopsPage> {
     String? openingDays,
     String? openingTime,
     String? services,
+    bool? isLoaded,
   ) {
     return Container(
       height: 330,
@@ -300,79 +307,107 @@ class _ShopsPageState extends State<ShopsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Container(
-                  height: 150,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.fitWidth,
-                      image: Image.network(
-                        imgurl ?? '',
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) {
-                          return Icon(Icons.error, size: 50, color: Colors.red);
-                        },
-                        fit: BoxFit.cover,
-                      ).image,
-                    ),
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(8),
-                      topLeft: Radius.circular(8),
+                Visibility(
+                  visible: isLoaded!,
+                  replacement: Shimmer.fromColors(
+                    baseColor: Colors.grey[300]!,
+                    highlightColor: Colors.grey[200]!,
+                    child: Container(
+                      height: 150,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        color: secondaryColor3,
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(8),
+                          topLeft: Radius.circular(8),
+                        ),
+                      ),
                     ),
                   ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        bottom: 0,
+                  child: CachedNetworkImage(
+                    imageUrl: imgurl ?? '',
+                    imageBuilder: (context, imageProvider) => Container(
+                      height: 150,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.fitWidth,
+                          image: imageProvider,
+                        ),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(8),
+                          topLeft: Radius.circular(8),
+                        ),
+                      ),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            bottom: 0,
+                            child: Container(
+                              height: 50,
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                border: Border(top: BorderSide.none),
+                                gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      backgroundColor.withOpacity(0.2),
+                                      backgroundColor
+                                    ]),
+                                color: backgroundColor,
+                              ),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5.0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      MingCute.location_fill,
+                                      size: 20,
+                                      color: primaryColor,
+                                    ),
+                                    SizedBox(width: 3),
+                                    Text(
+                                      overflow: TextOverflow.ellipsis,
+                                      location ?? '',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    placeholder: (context, url) => Center(
+                      child: Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[200]!,
                         child: Container(
-                          height: 50,
+                          height: 150,
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
-                            border: Border(top: BorderSide.none),
-                            gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  backgroundColor.withOpacity(0.2),
-                                  backgroundColor
-                                ]),
-                            color: backgroundColor,
-                          ),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 5.0),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  MingCute.location_fill,
-                                  size: 20,
-                                  color: primaryColor,
-                                ),
-                                SizedBox(width: 3),
-                                Text(
-                                  overflow: TextOverflow.ellipsis,
-                                  location ?? '',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 13,
-                                      ),
-                                ),
-                              ],
+                            color: secondaryColor3,
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(8),
+                              topLeft: Radius.circular(8),
                             ),
                           ),
                         ),
-                      )
-                    ],
+                      ),
+                    ),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                   ),
                 ),
                 SizedBox(

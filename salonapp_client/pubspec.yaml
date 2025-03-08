@@ -75,6 +75,7 @@ dependencies:
   flutter_map: ^8.1.0
   maplibre_gl: ^0.21.0
   latlng: ^2.0.7
+  shimmer: ^3.0.0
 
 
 

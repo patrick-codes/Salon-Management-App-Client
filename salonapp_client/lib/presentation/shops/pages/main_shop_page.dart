@@ -1,10 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
 import 'package:salonapp_client/presentation/shops/bloc/shops_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../helpers/colors/color_constants.dart';
 import '../../../helpers/colors/widgets/custom_button.dart';
 import '../../../helpers/colors/widgets/minimal_heading.dart';
@@ -182,181 +184,187 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        width: double.infinity,
-                        height: MediaQuery.of(context).size.height * 0.35,
-                        //padding: const EdgeInsets.symmetric(vertical: 10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          image: shop!.profileImg != null
-                              ? DecorationImage(
-                                  image: Image.network(
-                                    shop!.profileImg ?? '',
-                                    loadingBuilder:
-                                        (context, child, loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    },
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Icon(Icons.error,
-                                          size: 50, color: Colors.red);
-                                    },
+                      CachedNetworkImage(
+                        imageUrl: shop!.profileImg ?? '',
+                        imageBuilder: (context, imageProvider) => Container(
+                          width: double.infinity,
+                          height: MediaQuery.of(context).size.height * 0.35,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            image: shop!.profileImg != null
+                                ? DecorationImage(
+                                    image: imageProvider,
                                     fit: BoxFit.cover,
-                                  ).image,
-                                  fit: BoxFit.cover,
-                                )
-                              : null,
-                        ),
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              bottom: 0,
-                              child: Container(
-                                height: 137,
-                                width: MediaQuery.of(context).size.width,
-                                decoration: BoxDecoration(
-                                  border: Border(top: BorderSide.none),
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      backgroundColor.withOpacity(0.2),
-                                      backgroundColor
-                                    ],
+                                  )
+                                : null,
+                          ),
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                bottom: 0,
+                                child: Container(
+                                  height: 137,
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                    border: Border(top: BorderSide.none),
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        backgroundColor.withOpacity(0.2),
+                                        backgroundColor
+                                      ],
+                                    ),
+                                    color: backgroundColor,
                                   ),
-                                  color: backgroundColor,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            shop!.shopName ?? '',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headlineSmall!
-                                                .copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                  height: 1.25,
-                                                  color: Colors.white,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              shop!.shopName ?? '',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headlineSmall!
+                                                  .copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    height: 1.25,
+                                                    color: Colors.white,
+                                                  ),
+                                            ),
+                                            SizedBox(height: 5),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      MingCute.calendar_2_fill,
+                                                      size: 20,
+                                                      color: primaryColor,
+                                                    ),
+                                                    SizedBox(width: 3),
+                                                    Text(
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      'Days: ${shop!.openingDays}',
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyMedium!
+                                                          .copyWith(
+                                                            color: Colors.white,
+                                                            fontSize: 11,
+                                                          ),
+                                                    ),
+                                                  ],
                                                 ),
-                                          ),
-                                          SizedBox(height: 5),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    MingCute.calendar_2_fill,
-                                                    size: 20,
-                                                    color: primaryColor,
-                                                  ),
-                                                  SizedBox(width: 3),
-                                                  Text(
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    'Days: ${shop!.openingDays}',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyMedium!
-                                                        .copyWith(
-                                                          color: Colors.white,
-                                                          fontSize: 11,
-                                                        ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    MingCute.clock_2_fill,
-                                                    size: 20,
-                                                    color: primaryColor,
-                                                  ),
-                                                  SizedBox(width: 3),
-                                                  Text(
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    shop!.operningTimes ?? '',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyMedium!
-                                                        .copyWith(
-                                                          color: Colors.white,
-                                                          fontSize: 11,
-                                                        ),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                          SizedBox(height: 5),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    MingCute.location_fill,
-                                                    color: primaryColor,
-                                                    size: 20,
-                                                  ),
-                                                  const SizedBox(width: 3),
-                                                  Text(
-                                                    shop!.location ?? '',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodySmall!
-                                                        .copyWith(
-                                                          color: Colors.white,
-                                                          fontSize: 12,
-                                                        ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    MingCute.scissors_3_fill,
-                                                    size: 20,
-                                                    color: primaryColor,
-                                                  ),
-                                                  const SizedBox(width: 3),
-                                                  Text(
-                                                    "${shop!.category}",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodySmall!
-                                                        .copyWith(
-                                                          color: Colors.white,
-                                                          fontSize: 12,
-                                                        ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      MingCute.clock_2_fill,
+                                                      size: 20,
+                                                      color: primaryColor,
+                                                    ),
+                                                    SizedBox(width: 3),
+                                                    Text(
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      shop!.operningTimes ?? '',
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyMedium!
+                                                          .copyWith(
+                                                            color: Colors.white,
+                                                            fontSize: 11,
+                                                          ),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(height: 5),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      MingCute.location_fill,
+                                                      color: primaryColor,
+                                                      size: 20,
+                                                    ),
+                                                    const SizedBox(width: 3),
+                                                    Text(
+                                                      shop!.location ?? '',
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodySmall!
+                                                          .copyWith(
+                                                            color: Colors.white,
+                                                            fontSize: 12,
+                                                          ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      MingCute.scissors_3_fill,
+                                                      size: 20,
+                                                      color: primaryColor,
+                                                    ),
+                                                    const SizedBox(width: 3),
+                                                    Text(
+                                                      "${shop!.category}",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodySmall!
+                                                          .copyWith(
+                                                            color: Colors.white,
+                                                            fontSize: 12,
+                                                          ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            )
-                          ],
+                              )
+                            ],
+                          ),
                         ),
+                        placeholder: (context, url) => Center(
+                          child: Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.grey[200]!,
+                            child: Container(
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.height * 0.35,
+                              decoration: BoxDecoration(
+                                color: secondaryColor3,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                       ),
                       const SizedBox(height: 20),
                       SizedBox(
@@ -495,36 +503,41 @@ class _DetailsPageState extends State<MainShopinfoPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          height: 115,
-          width: 100,
-          margin: const EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            image: shop!.workImgs != null
-                ? DecorationImage(
-                    image: Image.network(
-                      imgurl ?? '',
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(Icons.error, size: 50, color: Colors.red);
-                      },
-                      fit: BoxFit.cover,
-                    ).image,
-                    fit: BoxFit.cover,
-                  )
-                : null,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              width: 1,
-              color: Colors.grey.shade200,
+        CachedNetworkImage(
+          imageUrl: imgurl,
+          imageBuilder: (context, imageProvider) => Container(
+            height: 115,
+            width: 100,
+            margin: const EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              image: DecorationImage(
+                image: imageProvider,
+                fit: BoxFit.cover,
+              ),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                width: 1,
+                color: Colors.grey.shade200,
+              ),
             ),
           ),
+          placeholder: (context, url) => Center(
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[200]!,
+              child: Container(
+                height: 115,
+                width: 100,
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  color: secondaryColor3,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+          ),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
         ),
       ],
     );

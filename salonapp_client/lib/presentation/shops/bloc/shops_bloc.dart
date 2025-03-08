@@ -41,7 +41,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
       emit(ShopsLoadingState());
       if (event.query.isNotEmpty) {
         onSearchChanged(event.query);
-        emit(ShopsFetchedState(shop: serviceman2!));
+        emit(ShopsFetchedState(shop: serviceman!));
       }
     } catch (e) {
       print(e);

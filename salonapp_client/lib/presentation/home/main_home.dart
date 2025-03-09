@@ -4,6 +4,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import '../appointments/pages/appointments_page.dart';
+import '../profile screen/pages/profile_page.dart';
 import '../shops/components/map_directions_screen.dart';
 import '../shops/pages/create_shopservice_page.dart';
 import '../shops/pages/shop info/shops.dart';
@@ -25,10 +26,10 @@ class _MainHomePageState extends State<MainHomePage> {
   List<Widget> pages = [
     MyHomePage(),
     MapDirectionScreen(),
-    //AppointmentsPage(),
     ShopsPage(),
-    CreateShopPage(),
+    // CreateShopPage(),
     AppointmentsPage(),
+    ProfilePage(),
   ];
 
   int initPage = 0;
@@ -41,7 +42,7 @@ class _MainHomePageState extends State<MainHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: secondaryColor2,
         bottomNavigationBar: GNav(
           selectedIndex: _selectedIndex,
           onTabChange: (index) {
@@ -49,7 +50,7 @@ class _MainHomePageState extends State<MainHomePage> {
               _selectedIndex = index;
             });
           },
-          backgroundColor: Colors.white,
+          backgroundColor: secondaryColor,
           hoverColor: Colors.orange,
           activeColor: Colors.white,
           iconSize: 25,
@@ -69,16 +70,16 @@ class _MainHomePageState extends State<MainHomePage> {
               text: 'Home',
             ),
             GButton(
-              icon: MingCute.map_line,
-              text: 'Track',
+              icon: MingCute.location_line,
+              text: 'Explore',
             ),
             GButton(
               icon: MingCute.scissors_line,
               text: 'Shops',
             ),
             GButton(
-              icon: MingCute.chat_1_line,
-              text: 'Message',
+              icon: MingCute.list_check_3_line,
+              text: 'Bookings',
             ),
             GButton(
               icon: MingCute.user_1_line,

@@ -5,7 +5,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
 import 'package:salonapp_client/presentation/shops/pages/main_shop_page.dart';
-import 'package:salonapp_client/presentation/shops/pages/shop%20info/shop_info.dart';
 import '../../../../helpers/colors/color_constants.dart';
 import '../../bloc/shops_bloc.dart';
 import '../../repository/data rmodel/service_model.dart';
@@ -69,10 +68,10 @@ class _ShopsPageState extends State<ShopsPage> {
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(128),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                color: Colors.white,
+            child: Container(
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
                     AppBar(

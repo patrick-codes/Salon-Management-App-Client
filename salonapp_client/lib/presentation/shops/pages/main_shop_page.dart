@@ -12,7 +12,6 @@ import '../../../helpers/colors/widgets/custom_button.dart';
 import '../../../helpers/colors/widgets/minimal_heading.dart';
 import '../../checkout page/pages/checkout_page.dart';
 import '../repository/data rmodel/service_model.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class MainShopinfoPage extends StatefulWidget {
   String? id;

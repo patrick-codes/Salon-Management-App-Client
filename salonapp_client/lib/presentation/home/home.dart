@@ -54,6 +54,12 @@ class _MyHomePageState extends State<MyHomePage> {
     "Locking",
     "Natural",
   ];
+  List<String> svgs = <String>[
+    "undraw_barber_utly",
+    "undraw_people_ka7y",
+    "undraw_pie-graph_8m6b",
+  ];
+
   String photoUrl =
       "https://media.istockphoto.com/id/2166854040/photo/chairs-by-sink-bowl-at-hair-salon.webp?a=1&b=1&s=612x612&w=0&k=20&c=UltW4fSClI85zl07M0pmi4-uqjcUC4ADd4xfwBS6nWc=";
   List<ShopModel>? shops;
@@ -83,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
       },
       builder: (BuildContext context, state) {
         return Scaffold(
-          backgroundColor: secondaryBg,
+          backgroundColor: secondaryColor,
           //Colors.grey[300]!.withOpacity(0.28),
           body: SingleChildScrollView(
             child: Column(
@@ -335,7 +341,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 const SizedBox(height: 8),
                 SizedBox(
-                  height: 85,
+                  height: 140,
                   width: MediaQuery.of(context).size.width,
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
@@ -345,16 +351,16 @@ class _MyHomePageState extends State<MyHomePage> {
                       children: [
                         const SizedBox(height: 8),
                         SizedBox(
-                          height: 70,
+                          height: 140,
                           width: MediaQuery.of(context).size.width,
                           child: ListView.builder(
-                            itemCount: icons.length,
+                            itemCount: svgs.length,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (BuildContext context, int index) {
-                              return _buildCategoryCircle(
-                                icons[index],
-                                title[index],
-                              );
+                              return buildDisCountCard(
+                                  icons[index],
+                                  title[index],
+                                  "assets/svgs/${svgs[index]}.svg");
                             },
                           ),
                         ),
@@ -402,8 +408,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-           SizedBox(height: 50),
-
+                            SizedBox(height: 50),
                             SpinKitDoubleBounce(
                               // lineWidth: 3,
                               size: 40,
@@ -424,7 +429,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                   SizedBox(height: 45),
+                                SizedBox(height: 45),
                                 SvgPicture.asset(
                                   'assets/svgs/undraw_file-search_cbur.svg',
                                   height: 80,
@@ -463,6 +468,88 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         );
       },
+    );
+  }
+
+  Widget buildDisCountCard(
+    Icon icon,
+    String title,
+    String imgs,
+  ) {
+    return Column(
+      children: [
+        Container(
+          height: 130,
+          width: 340,
+          margin: const EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            color: secondaryColor2,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 2,
+                spreadRadius: 1,
+                color: secondaryColor2,
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    PrimaryText(
+                      text: "25 % Discount",
+                      color: blackColor,
+                      fontWeight: FontWeight.w600,
+                      size: 20,
+                    ),
+                    SizedBox(height: 2),
+                    PrimaryText(
+                      text: "Learn style, Kumasi",
+                      color: Colors.black54,
+                      fontWeight: FontWeight.w500,
+                      size: 11,
+                    ),
+                    SizedBox(height: 25),
+                    Container(
+                      height: 30,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        color: blackColor,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Book Now",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    SvgPicture.asset(
+                      imgs,
+                      height: 106,
+                      width: 108,
+                      fit: BoxFit.cover,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -673,7 +760,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget _buildCategoryCircle(Icon icon, String title) {
+  Widget buildCategoryCircle(Icon icon, String title) {
     return Column(
       children: [
         Container(

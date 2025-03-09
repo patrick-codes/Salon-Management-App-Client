@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import 'package:salonapp_client/helpers/colors/widgets/minimal_heading.dart';
 import 'package:salonapp_client/presentation/location/bloc/location_bloc.dart';
 import 'package:salonapp_client/presentation/shops/bloc/shops_bloc.dart';
+import '../../helpers/colors/widgets/style.dart';
 import '../filter screen/pages/filter_screen.dart';
 import '../shops/components/gridview.dart';
 import '../shops/repository/data rmodel/service_model.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -56,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<ShopModel>? shops;
   bool isLoaded = false;
   final searchController = TextEditingController();
-  // String text = 'No shops available !!';
+  String text = 'No shops available !!';
   Future<void> refresh(BuildContext context) async {
     setState(() {
       context.read<ShopsBloc>().add(ViewShopsEvent());
@@ -394,9 +397,51 @@ class _MyHomePageState extends State<MyHomePage> {
                     ],
                   ),
                 ),
-                GridViewComponent(
-                  shops: shops!,
-                ),
+                shops == null
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+           SizedBox(height: 50),
+
+                            SpinKitDoubleBounce(
+                              // lineWidth: 3,
+                              size: 40,
+                              color: primaryColor,
+                            ),
+                            SizedBox(height: 8),
+                            PrimaryText(
+                              text: 'Loading nearby shops....',
+                              color: secondaryColor3,
+                              size: 12,
+                            ),
+                          ],
+                        ),
+                      )
+                    : (shops == null || shops == 0 || shops!.isEmpty)
+                        ? Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                   SizedBox(height: 45),
+                                SvgPicture.asset(
+                                  'assets/svgs/undraw_file-search_cbur.svg',
+                                  height: 80,
+                                  width: 80,
+                                ),
+                                SizedBox(height: 14),
+                                PrimaryText(
+                                  text: text,
+                                  color: iconGrey,
+                                  size: 11,
+                                ),
+                              ],
+                            ),
+                          )
+                        : GridViewComponent(
+                            shops: shops!,
+                          ),
                 const SizedBox(height: 8),
                 // SizedBox(
                 //   height: 300,

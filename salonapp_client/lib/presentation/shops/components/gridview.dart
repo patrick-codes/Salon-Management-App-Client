@@ -11,7 +11,7 @@ class GridViewComponent extends StatelessWidget {
   GridViewComponent({
     required this.shops,
   });
-  bool isOpen = true;
+  bool isOpen = false;
 
   @override
   Widget build(BuildContext context) {

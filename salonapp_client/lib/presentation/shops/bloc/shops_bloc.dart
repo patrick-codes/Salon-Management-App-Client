@@ -88,7 +88,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
         serviceman2 = serviceman;
         serviceman3 = serviceman2;
         total = num;
-        emit(ShopsFetchedState(shop: serviceman));
+        emit(ShopsFetchedState(shop: serviceman2));
         debugPrint("Total Services is $num");
       }
     } on FirebaseAuthException catch (error) {
@@ -98,7 +98,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
       emit(ShopsFetchFailureState(errorMessage: error.toString()));
       debugPrint('Error:${error.toString()}');
     }
-    return serviceman;
+    return serviceman2;
   }
 
   Future<ShopModel?> fetchSingleShop(

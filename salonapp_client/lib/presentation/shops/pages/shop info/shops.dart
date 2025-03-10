@@ -5,6 +5,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
 import 'package:salonapp_client/presentation/shops/pages/main_shop_page.dart';
+import 'package:salonapp_client/presentation/shops/pages/shop%20info/shop_info.dart';
 import '../../../../helpers/colors/color_constants.dart';
 import '../../bloc/shops_bloc.dart';
 import '../../repository/data rmodel/service_model.dart';
@@ -19,7 +20,9 @@ class ShopsPage extends StatefulWidget {
   State<ShopsPage> createState() => _ShopsPageState();
 }
 
-class _ShopsPageState extends State<ShopsPage> {
+class _ShopsPageState extends State<ShopsPage>
+    with AutomaticKeepAliveClientMixin {
+  bool get wantKeepAlive => true;
   List<ShopModel>? shops;
   bool isLoaded = false;
   List<String> imgs = <String>[
@@ -52,19 +55,24 @@ class _ShopsPageState extends State<ShopsPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocConsumer<ShopsBloc, ShopsState>(
       listener: (context, state) {
         if (state is ShopsLoadingState) {
           CircularProgressIndicator();
-        } else if (state is ShopsFetchFailureState) {
+        }
+        if (state is ShopInitial) {
+          context.read<ShopsBloc>().add(ViewShopsEvent());
+        }
+      },
+      builder: (context, state) {
+        if (state is ShopsFetchFailureState) {
           Center(child: Text(state.errorMessage));
         } else if (state is ShopsFetchedState) {
           shops = state.shop;
           isLoaded = true;
-          debugPrint("Shops Fetched:${shops}");
+          debugPrint("Shops Fetched:${state.shop!.length}");
         }
-      },
-      builder: (context, state) {
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(128),
@@ -94,7 +102,7 @@ class _ShopsPageState extends State<ShopsPage> {
                                       fontWeight: FontWeight.bold,
                                     ),
                           ),
-                          shops == null || shops == 0 || shops!.isEmpty
+                          shops == null || shops!.isEmpty
                               ? SizedBox.shrink()
                               : Text(
                                   " (${shops?.length})",
@@ -168,106 +176,84 @@ class _ShopsPageState extends State<ShopsPage> {
               ),
             ),
           ),
-          body:
-              // (shops == null || shops == 0 || shops!.isEmpty)
-              //     ? Center(
-              //         child: Column(
-              //           mainAxisAlignment: MainAxisAlignment.center,
-              //           crossAxisAlignment: CrossAxisAlignment.center,
-              //           children: [
-              //             SvgPicture.asset(
-              //               'assets/svgs/undraw_file-search_cbur.svg',
-              //               height: 150,
-              //               width: 150,
-              //             ),
-              //             SizedBox(height: 20),
-              //             PrimaryText(
-              //               text: text,
-              //               color: iconGrey,
-              //               size: 15,
-              //             ),
-              //           ],
-              //         ),
-              //       )
-              shops == null
-                  ? const Center(
+          body: shops == null
+              ? const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SpinKitDoubleBounce(
+                        // lineWidth: 3,
+                        size: 60,
+                        color: primaryColor,
+                      ),
+                      SizedBox(height: 20),
+                      PrimaryText(
+                        text: 'Loading nearby shops....',
+                        color: secondaryColor3,
+                        size: 13,
+                      ),
+                    ],
+                  ),
+                )
+              : shops == null || shops!.isEmpty
+                  ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SpinKitDoubleBounce(
-                            // lineWidth: 3,
-                            size: 60,
-                            color: primaryColor,
+                          SvgPicture.asset(
+                            'assets/svgs/undraw_file-search_cbur.svg',
+                            height: 150,
+                            width: 150,
                           ),
                           SizedBox(height: 20),
                           PrimaryText(
-                            text: 'Loading nearby shops....',
-                            color: secondaryColor3,
-                            size: 13,
+                            text: text,
+                            color: iconGrey,
+                            size: 15,
                           ),
                         ],
                       ),
                     )
-                  : (shops == null || shops == 0 || shops!.isEmpty)
-                      ? Center(
+                  : SafeArea(
+                      child: SingleChildScrollView(
+                        physics: BouncingScrollPhysics(),
+                        child: RefreshIndicator(
+                          onRefresh: () => refresh(context),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              SvgPicture.asset(
-                                'assets/svgs/undraw_file-search_cbur.svg',
-                                height: 150,
-                                width: 150,
-                              ),
-                              SizedBox(height: 20),
-                              PrimaryText(
-                                text: text,
-                                color: iconGrey,
-                                size: 15,
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height - 270,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: ListView.builder(
+                                    itemCount: shops?.length,
+                                    scrollDirection: Axis.vertical,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      final shopInfo = shops?[index];
+                                      return appointmentContainer(
+                                        context,
+                                        shopInfo?.shopId,
+                                        shopInfo?.profileImg,
+                                        shopInfo?.shopName,
+                                        shopInfo?.location,
+                                        shopInfo?.openingDays,
+                                        shopInfo?.operningTimes,
+                                        shopInfo?.services,
+                                        isLoaded,
+                                      );
+                                    },
+                                  ),
+                                ),
                               ),
                             ],
                           ),
-                        )
-                      : SafeArea(
-                          child: SingleChildScrollView(
-                            physics: BouncingScrollPhysics(),
-                            child: RefreshIndicator(
-                              onRefresh: () => refresh(context),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height -
-                                              270,
-                                      width: MediaQuery.of(context).size.width,
-                                      child: ListView.builder(
-                                        itemCount: shops?.length,
-                                        scrollDirection: Axis.vertical,
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          final shopInfo = shops?[index];
-                                          return appointmentContainer(
-                                            context,
-                                            shopInfo?.shopId,
-                                            shopInfo?.profileImg,
-                                            shopInfo?.shopName,
-                                            shopInfo?.location,
-                                            shopInfo?.openingDays,
-                                            shopInfo?.operningTimes,
-                                            shopInfo?.services,
-                                            isLoaded,
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
                         ),
+                      ),
+                    ),
         );
       },
     );

@@ -8,6 +8,7 @@ import 'presentation/home/main_home.dart';
 import 'presentation/intro screens/pages/splash_screen.dart';
 import 'presentation/intro screens/pages/welcome_screen.dart';
 import 'presentation/shops/components/map_directions_screen.dart';
+import 'presentation/shops/pages/main_shop_page.dart';
 import 'package:toastification/toastification.dart';
 
 class SalonApp extends StatelessWidget {

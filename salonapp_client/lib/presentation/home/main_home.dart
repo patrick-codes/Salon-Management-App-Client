@@ -1,8 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/color_constants.dart';
+import 'package:salonapp_client/presentation/shops/bloc/shops_bloc.dart';
 import '../appointments/pages/appointments_page.dart';
 import '../profile screen/pages/profile_page.dart';
 import '../shops/components/map_directions_screen.dart';
@@ -41,52 +43,55 @@ class _MainHomePageState extends State<MainHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: secondaryColor2,
-        bottomNavigationBar: GNav(
-          selectedIndex: _selectedIndex,
-          onTabChange: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
-          },
-          backgroundColor: secondaryColor,
-          hoverColor: Colors.orange,
-          activeColor: Colors.white,
-          iconSize: 25,
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          duration: const Duration(milliseconds: 300),
-          color: Colors.black45,
-          curve: Curves.bounceIn,
-          style: GnavStyle.oldSchool,
-          tabBackgroundColor: backgroundColor,
-          tabBorderRadius: 100.0,
-          tabMargin: EdgeInsets.all(5),
-          textSize: 8,
-          gap: 0,
-          tabs: const [
-            GButton(
-              icon: MingCute.home_5_line,
-              text: 'Home',
-            ),
-            GButton(
-              icon: MingCute.location_line,
-              text: 'Explore',
-            ),
-            GButton(
-              icon: MingCute.scissors_line,
-              text: 'Shops',
-            ),
-            GButton(
-              icon: MingCute.list_check_3_line,
-              text: 'Bookings',
-            ),
-            GButton(
-              icon: MingCute.user_1_line,
-              text: 'Profile',
-            ),
-          ],
-        ),
-        body: pages.elementAt(_selectedIndex));
+    return BlocProvider.value(
+      value: BlocProvider.of<ShopsBloc>(context),
+      child: Scaffold(
+          backgroundColor: secondaryColor2,
+          bottomNavigationBar: GNav(
+            selectedIndex: _selectedIndex,
+            onTabChange: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
+            backgroundColor: secondaryColor,
+            hoverColor: Colors.orange,
+            activeColor: Colors.white,
+            iconSize: 25,
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            duration: const Duration(milliseconds: 300),
+            color: Colors.black45,
+            curve: Curves.bounceIn,
+            style: GnavStyle.oldSchool,
+            tabBackgroundColor: backgroundColor,
+            tabBorderRadius: 100.0,
+            tabMargin: EdgeInsets.all(5),
+            textSize: 8,
+            gap: 0,
+            tabs: const [
+              GButton(
+                icon: MingCute.home_5_line,
+                text: 'Home',
+              ),
+              GButton(
+                icon: MingCute.location_line,
+                text: 'Explore',
+              ),
+              GButton(
+                icon: MingCute.scissors_line,
+                text: 'Shops',
+              ),
+              GButton(
+                icon: MingCute.list_check_3_line,
+                text: 'Bookings',
+              ),
+              GButton(
+                icon: MingCute.user_1_line,
+                text: 'Profile',
+              ),
+            ],
+          ),
+          body: pages.elementAt(_selectedIndex)),
+    );
   }
 }

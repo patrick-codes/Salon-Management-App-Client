@@ -12,6 +12,7 @@ import '../../../helpers/colors/widgets/custom_button.dart';
 import '../../../helpers/colors/widgets/minimal_heading.dart';
 import '../../checkout page/pages/checkout_page.dart';
 import '../repository/data rmodel/service_model.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MainShopinfoPage extends StatefulWidget {
   String? id;
@@ -80,11 +81,11 @@ class _DetailsPageState extends State<MainShopinfoPage> {
   bool isOpen = true;
   ShopModel? shop;
   String text = 'No shops available !!';
-  @override
-  void initState() {
-    super.initState();
-    context.read<ShopsBloc>().add(ViewSingleShopEvent(widget.id));
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   context.read<ShopsBloc>().add(ViewSingleShopEvent(widget.id));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -92,13 +93,17 @@ class _DetailsPageState extends State<MainShopinfoPage> {
       listener: (context, state) {
         if (state is ShopsLoadingState) {
           CircularProgressIndicator();
-        } else if (state is ShopsFetchFailureState) {
+        }
+      },
+      builder: (context, state) {
+        if (state is ShopInitial) {
+          context.read<ShopsBloc>().add(ViewSingleShopEvent(widget.id));
+        }
+        if (state is ShopsFetchFailureState) {
           Center(child: Text(state.errorMessage));
         } else if (state is SingleShopsFetchedState) {
           shop = state.shop;
         }
-      },
-      builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,

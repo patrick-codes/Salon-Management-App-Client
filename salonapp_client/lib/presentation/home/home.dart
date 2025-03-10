@@ -79,15 +79,19 @@ class _MyHomePageState extends State<MyHomePage> {
       listener: (context, state) {
         if (state is ShopsLoadingState) {
           CircularProgressIndicator();
-        } else if (state is ShopsFetchFailureState) {
+        }
+        if (state is ShopInitial) {
+          context.read<ShopsBloc>().add(ViewShopsEvent());
+        }
+      },
+      builder: (BuildContext context, state) {
+        if (state is ShopsFetchFailureState) {
           Center(child: Text(state.errorMessage));
         } else if (state is ShopsFetchedState) {
           shops = state.shop;
           isLoaded = true;
-          debugPrint("Shops Fetched:${shops}");
+          debugPrint("Shops Fetched:${state.shop!.length}");
         }
-      },
-      builder: (BuildContext context, state) {
         return Scaffold(
           backgroundColor: secondaryColor,
           //Colors.grey[300]!.withOpacity(0.28),

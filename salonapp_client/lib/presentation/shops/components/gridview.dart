@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../../../helpers/colors/color_constants.dart';
+import '../../../helpers/colors/widgets/style.dart';
 import '../pages/main_shop_page.dart';
 import '../repository/data rmodel/service_model.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class GridViewComponent extends StatelessWidget {
   List<ShopModel>? shops;

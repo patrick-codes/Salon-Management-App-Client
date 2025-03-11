@@ -20,6 +20,20 @@ class SalonApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Hairvana',
+
+        // routes: {
+        //   '/': (context) => const SplashScreen(),
+        //   '/welcome': (context) => const WelcomeScreen(),
+        //   '/login': (context) => const LoginScreen(),
+        //   '/signup': (context) => const SignupScren(),
+        //   '/main': (context) => const MyHomePage(),
+        //   '/mainhome': (context) => const MainHomePage(),
+        //   '/shopinfo': (context) => const ShopInfo(),
+        //   // '/mainshopinfo': (context) => const MainShopinfoPage(),
+
+        //   '/map': (context) => const MapDirectionScreen(),
+        // },
+        initialRoute: '/',
         routes: {
           '/': (context) => const SplashScreen(),
           '/welcome': (context) => const WelcomeScreen(),
@@ -28,8 +42,16 @@ class SalonApp extends StatelessWidget {
           '/main': (context) => const MyHomePage(),
           '/mainhome': (context) => const MainHomePage(),
           '/shopinfo': (context) => const ShopInfo(),
-          // '/mainshopinfo': (context) => const MainShopinfoPage(),
           '/map': (context) => const MapDirectionScreen(),
+        },
+        onGenerateRoute: (settings) {
+          if (settings.name == '/mainshopinfo') {
+            final args = settings.arguments as Map<String, dynamic>;
+            return MaterialPageRoute(
+              builder: (context) => MainShopinfoPage(id: args['id']),
+            );
+          }
+          return null;
         },
         theme: ThemeData(
           fontFamily: 'Poppins',

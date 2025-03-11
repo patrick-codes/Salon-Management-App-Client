@@ -392,7 +392,7 @@ class _ShopsPageState extends State<ShopsPage>
                       ),
                     ),
                     errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+                        Center(child: const Icon(Icons.error)),
                   ),
                 ),
                 SizedBox(
@@ -555,13 +555,10 @@ class _ShopsPageState extends State<ShopsPage>
                             ),
                             GestureDetector(
                               onTap: () {
-                                Navigator.push(
+                                Navigator.pushNamed(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) => MainShopinfoPage(
-                                      id: id,
-                                    ),
-                                  ),
+                                  '/mainshopinfo',
+                                  arguments: {'id': id},
                                 );
                               },
                               child: Container(

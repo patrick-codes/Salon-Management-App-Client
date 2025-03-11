@@ -81,11 +81,11 @@ class _DetailsPageState extends State<MainShopinfoPage> {
   bool isOpen = true;
   ShopModel? shop;
   String text = 'No shops available !!';
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   context.read<ShopsBloc>().add(ViewSingleShopEvent(widget.id));
-  // }
+  @override
+  void initState() {
+    super.initState();
+    context.read<ShopsBloc>().add(ViewSingleShopEvent(widget.id));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,17 +93,13 @@ class _DetailsPageState extends State<MainShopinfoPage> {
       listener: (context, state) {
         if (state is ShopsLoadingState) {
           CircularProgressIndicator();
-        }
-      },
-      builder: (context, state) {
-        if (state is ShopInitial) {
-          context.read<ShopsBloc>().add(ViewSingleShopEvent(widget.id));
-        }
-        if (state is ShopsFetchFailureState) {
+        } else if (state is ShopsFetchFailureState) {
           Center(child: Text(state.errorMessage));
         } else if (state is SingleShopsFetchedState) {
           shop = state.shop;
         }
+      },
+      builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,

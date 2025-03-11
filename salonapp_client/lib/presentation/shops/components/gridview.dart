@@ -31,13 +31,12 @@ class GridViewComponent extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
             onTap: () {
-              Navigator.push(
+              Navigator.pushNamed(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => MainShopinfoPage(
-                    id: shops![index].shopId,
-                  ),
-                ),
+                '/mainshopinfo',
+                arguments: {
+                  'id': shops![index].shopId,
+                },
               );
             },
             child: Container(

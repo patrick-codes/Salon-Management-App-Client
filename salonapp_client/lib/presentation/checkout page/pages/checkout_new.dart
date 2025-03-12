@@ -1,3 +1,4 @@
+import 'package:currency_code_to_currency_symbol/currency_code_to_currency_symbol.dart';
 import 'package:flutter/material.dart';
 import '../../../helpers/colors/color_constants.dart';
 import '../components/Transaction/other/data/flight_data.dart';
@@ -14,8 +15,12 @@ class CheckoutScreen extends StatefulWidget {
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
   String process = "Pay";
+  CurrencyCode selectedCurrency = CurrencyCode.GHS;
+  String symbol = getCurrencySymbol("GHS");
   @override
   Widget build(BuildContext context) {
+    print("GHS ${symbol}");
+
     return Scaffold(
       backgroundColor: primaryColor,
       body: Center(
@@ -47,11 +52,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 Column(
                                   children: [
                                     SizedBox(
-                                      height: 50,
-                                      width: 50,
-                                      child: SvgPicture.asset(
-                                        "assets/svgs/undraw_barber_utly.svg",
-                                        color: Theme.of(context).primaryColor,
+                                      height: 80,
+                                      width: 80,
+                                      child: Image.asset(
+                                        "assets/pngs/play_store_512.png",
                                       ),
                                     ),
                                     Icon(
@@ -60,11 +64,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       color: Theme.of(context).indicatorColor,
                                     ),
                                     TextUtil(
-                                      text: "Total Price",
+                                      text: "Total Fee",
                                       size: 12,
                                     ),
                                     TextUtil(
-                                      text: "\$ ${flightList[0].price}",
+                                      text: "$symbol ${flightList[0].price}",
                                       size: 22,
                                       weight: true,
                                       //color: Theme.of(context).primaryColor,
@@ -78,7 +82,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     width: 200,
                                     child: SvgPicture.asset(
                                       "assets/svgs/undraw_barber_utly.svg",
-                                      // color: Theme.of(context).primaryColor,
+                                      // color: blackColor,
                                     ),
                                   ),
                                 ),
@@ -133,9 +137,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               )
                             ],
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
+                          const SizedBox(height: 20),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -204,7 +206,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       child: Container(
                                         color: index % 2 == 0
                                             ? Colors.transparent
-                                            : Theme.of(context).canvasColor,
+                                            : secondaryColor3,
                                         height: 2,
                                       ),
                                     ),
@@ -220,7 +222,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         bottom: 0,
                         child: CircleAvatar(
                           radius: 12,
-                          backgroundColor: Theme.of(context).primaryColor,
+                          backgroundColor: primaryColor,
                         ),
                       ),
                       Positioned(
@@ -228,7 +230,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         bottom: 0,
                         child: CircleAvatar(
                           radius: 12,
-                          backgroundColor: Theme.of(context).primaryColor,
+                          backgroundColor: primaryColor,
                         ),
                       ),
                     ],
@@ -240,7 +242,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         Center(
                             child: TextUtil(
                           text: "Check Out Now",
-                          color: Theme.of(context).primaryColor,
+                          // color: Theme.of(context).primaryColor,
                           weight: true,
                         )),
                         Padding(
@@ -260,15 +262,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   borderRadius: BorderRadius.circular(15)),
                               alignment: Alignment.center,
                               child: process == "Load"
-                                  ? CircularProgressIndicator(
-                                      color: Theme.of(context).primaryColor,
+                                  ? SizedBox(
+                                      width: 22,
+                                      height: 22,
+                                      child: CircularProgressIndicator(
+                                        color: whiteColor,
+                                      ),
                                     )
                                   : TextUtil(
                                       text: process == "Pay"
                                           ? "Pay Now"
-                                          : "Flight Booked",
+                                          : "Appointment Booked",
                                       weight: true,
-                                      color: Theme.of(context).primaryColor,
+                                      color: whiteColor,
                                       size: 16,
                                     ),
                             ),

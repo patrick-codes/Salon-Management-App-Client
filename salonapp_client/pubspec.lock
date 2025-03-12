@@ -185,6 +185,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  currency_code_to_currency_symbol:
+    dependency: "direct main"
+    description:
+      name: currency_code_to_currency_symbol
+      sha256: a8eccc7a10460f6c70e2b0b125e36f19db4531e54528d3426107726aa5c668d0
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   dart_earcut:
     dependency: transitive
     description:

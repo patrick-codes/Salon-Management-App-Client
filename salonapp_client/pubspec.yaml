@@ -76,6 +76,7 @@ dependencies:
   maplibre_gl: ^0.21.0
   latlng: ^2.0.7
   shimmer: ^3.0.0
+  currency_code_to_currency_symbol: ^0.0.4
 
 
 

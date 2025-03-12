@@ -10,6 +10,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../../helpers/colors/color_constants.dart';
 import '../../../helpers/colors/widgets/custom_button.dart';
 import '../../../helpers/colors/widgets/minimal_heading.dart';
+import '../../checkout page/pages/checkout_new.dart';
 import '../../checkout page/pages/checkout_page.dart';
 import '../repository/data rmodel/service_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -156,12 +157,14 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (BuildContext context) => CheckoutPage(
-                                title: 'Captain Salon Captain',
-                                quantity: 20,
-                                amount: 30,
-                                img: 'assets/images/img-sixteen.jpg',
-                              ),
+                              builder: (BuildContext context) =>
+                                  // CheckoutPage(
+                                  //   title: 'Captain Salon Captain',
+                                  //   quantity: 20,
+                                  //   amount: 30,
+                                  //   img: 'assets/images/img-sixteen.jpg',
+                                  // ),
+                                  CheckoutScreen(),
                             ),
                           );
                         },

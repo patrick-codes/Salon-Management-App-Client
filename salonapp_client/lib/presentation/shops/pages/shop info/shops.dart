@@ -7,6 +7,7 @@ import 'package:salonapp_client/helpers/colors/widgets/style.dart';
 import 'package:salonapp_client/presentation/shops/pages/main_shop_page.dart';
 import 'package:salonapp_client/presentation/shops/pages/shop%20info/shop_info.dart';
 import '../../../../helpers/colors/color_constants.dart';
+import '../../../checkout page/components/Transaction/other/show_up_animation.dart';
 import '../../bloc/shops_bloc.dart';
 import '../../repository/data rmodel/service_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -125,49 +126,53 @@ class _ShopsPageState extends State<ShopsPage>
                         SizedBox(width: 8),
                       ],
                     ),
-                    TextFormField(
-                      controller: searchController,
-                      onChanged: (value) => context
-                          .read<ShopsBloc>()
-                          .add(SearchShopEvent(query: searchController.text)),
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            fontSize: 14,
+                    ShowUpAnimation(
+                      delay: 150,
+                      child: TextFormField(
+                        controller: searchController,
+                        onChanged: (value) => context
+                            .read<ShopsBloc>()
+                            .add(SearchShopEvent(query: searchController.text)),
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              fontSize: 14,
+                            ),
+                        decoration: InputDecoration(
+                          hintText: "Search....",
+                          hintStyle: TextStyle(fontSize: 13, color: iconGrey),
+                          prefixIcon:
+                              Icon(MingCute.search_3_line, color: iconGrey),
+                          suffixIcon: const SizedBox(
+                            width: 60,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Icon(MingCute.close_line, color: iconGrey),
+                                SizedBox(width: 10),
+                                Icon(MingCute.list_search_line,
+                                    color: iconGrey),
+                              ],
+                            ),
                           ),
-                      decoration: InputDecoration(
-                        hintText: "Search....",
-                        hintStyle: TextStyle(fontSize: 13, color: iconGrey),
-                        prefixIcon:
-                            Icon(MingCute.search_3_line, color: iconGrey),
-                        suffixIcon: const SizedBox(
-                          width: 60,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(MingCute.close_line, color: iconGrey),
-                              SizedBox(width: 10),
-                              Icon(MingCute.list_search_line, color: iconGrey),
-                            ],
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(100),
                           ),
-                        ),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.black12,
+                          isDense: true,
+                          fillColor: tertiaryColor,
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(100),
                           ),
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        isDense: true,
-                        fillColor: tertiaryColor,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.black12,
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.black12,
+                            ),
+                            borderRadius: BorderRadius.circular(100),
                           ),
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.black12,
-                          ),
-                          borderRadius: BorderRadius.circular(100),
                         ),
                       ),
                     ),
@@ -234,16 +239,19 @@ class _ShopsPageState extends State<ShopsPage>
                                     itemBuilder:
                                         (BuildContext context, int index) {
                                       final shopInfo = shops?[index];
-                                      return appointmentContainer(
-                                        context,
-                                        shopInfo?.shopId,
-                                        shopInfo?.profileImg,
-                                        shopInfo?.shopName,
-                                        shopInfo?.location,
-                                        shopInfo?.openingDays,
-                                        shopInfo?.operningTimes,
-                                        shopInfo?.services,
-                                        isLoaded,
+                                      return ShowUpAnimation(
+                                        delay: 150,
+                                        child: appointmentContainer(
+                                          context,
+                                          shopInfo?.shopId,
+                                          shopInfo?.profileImg,
+                                          shopInfo?.shopName,
+                                          shopInfo?.location,
+                                          shopInfo?.openingDays,
+                                          shopInfo?.operningTimes,
+                                          shopInfo?.services,
+                                          isLoaded,
+                                        ),
                                       );
                                     },
                                   ),

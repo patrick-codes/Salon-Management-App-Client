@@ -7,6 +7,7 @@ import 'package:salonapp_client/helpers/colors/widgets/minimal_heading.dart';
 import 'package:salonapp_client/presentation/location/bloc/location_bloc.dart';
 import 'package:salonapp_client/presentation/shops/bloc/shops_bloc.dart';
 import '../../helpers/colors/widgets/style.dart';
+import '../checkout page/components/Transaction/other/show_up_animation.dart';
 import '../filter screen/pages/filter_screen.dart';
 import '../shops/components/gridview.dart';
 import '../shops/repository/data rmodel/service_model.dart';
@@ -361,10 +362,13 @@ class _MyHomePageState extends State<MyHomePage> {
                             itemCount: svgs.length,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (BuildContext context, int index) {
-                              return buildDisCountCard(
-                                  icons[index],
-                                  title[index],
-                                  "assets/svgs/${svgs[index]}.svg");
+                              return ShowUpAnimation(
+                                delay: 300,
+                                child: buildDisCountCard(
+                                    icons[index],
+                                    title[index],
+                                    "assets/svgs/${svgs[index]}.svg"),
+                              );
                             },
                           ),
                         ),
@@ -392,15 +396,18 @@ class _MyHomePageState extends State<MyHomePage> {
                           itemCount: icons.length,
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (BuildContext context, int index) {
-                            return _buildSquareCategoryButton(
-                                title[index],
-                                index == 0
-                                    ? tertiaryColor.withOpacity(0.2)
-                                    : Colors.grey.shade300,
-                                index == 0
-                                    ? primaryColor
-                                    : Colors.grey.shade300,
-                                index == 0 ? primaryColor : Colors.black54);
+                            return ShowUpAnimation(
+                              delay: 300,
+                              child: _buildSquareCategoryButton(
+                                  title[index],
+                                  index == 0
+                                      ? tertiaryColor.withOpacity(0.2)
+                                      : Colors.grey.shade300,
+                                  index == 0
+                                      ? primaryColor
+                                      : Colors.grey.shade300,
+                                  index == 0 ? primaryColor : Colors.black54),
+                            );
                           },
                         ),
                       ),
@@ -448,8 +455,11 @@ class _MyHomePageState extends State<MyHomePage> {
                               ],
                             ),
                           )
-                        : GridViewComponent(
-                            shops: shops!,
+                        : ShowUpAnimation(
+                            delay: 300,
+                            child: GridViewComponent(
+                              shops: shops!,
+                            ),
                           ),
                 const SizedBox(height: 8),
                 // SizedBox(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:salonapp_client/presentation/checkout%20page/components/Transaction/other/show_up_animation.dart';
 
 import '../../../helpers/colors/color_constants.dart';
 
@@ -61,7 +62,13 @@ class AppointmentsPage extends StatelessWidget {
                     itemCount: imgs.length,
                     scrollDirection: Axis.vertical,
                     itemBuilder: (BuildContext context, int index) {
-                      return appointmentContainer(context, imgs[index]);
+                      return ShowUpAnimation(
+                        delay: 150,
+                        child: appointmentContainer(
+                          context,
+                          imgs[index],
+                        ),
+                      );
                     },
                   ),
                 ),

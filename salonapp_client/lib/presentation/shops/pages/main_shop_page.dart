@@ -10,6 +10,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../../helpers/colors/color_constants.dart';
 import '../../../helpers/colors/widgets/custom_button.dart';
 import '../../../helpers/colors/widgets/minimal_heading.dart';
+import '../../checkout page/components/Transaction/other/show_up_animation.dart';
 import '../../checkout page/pages/checkout_new.dart';
 import '../../checkout page/pages/checkout_page.dart';
 import '../repository/data rmodel/service_model.dart';
@@ -151,24 +152,27 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(18.0),
                     child: Center(
-                      child: CustomButton(
-                        text: "Book Now",
-                        onpressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  // CheckoutPage(
-                                  //   title: 'Captain Salon Captain',
-                                  //   quantity: 20,
-                                  //   amount: 30,
-                                  //   img: 'assets/images/img-sixteen.jpg',
-                                  // ),
-                                  CheckoutScreen(),
-                            ),
-                          );
-                        },
-                        color: primaryColor,
+                      child: ShowUpAnimation(
+                        delay: 300,
+                        child: CustomButton(
+                          text: "Book Now",
+                          onpressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    // CheckoutPage(
+                                    //   title: 'Captain Salon Captain',
+                                    //   quantity: 20,
+                                    //   amount: 30,
+                                    //   img: 'assets/images/img-sixteen.jpg',
+                                    // ),
+                                    CheckoutScreen(),
+                              ),
+                            );
+                          },
+                          color: primaryColor,
+                        ),
                       ),
                     ),
                   ),
@@ -370,16 +374,19 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                             const Icon(Icons.error),
                       ),
                       const SizedBox(height: 20),
-                      SizedBox(
-                        height: 85,
-                        width: MediaQuery.of(context).size.width,
-                        child: ListView.builder(
-                          itemCount: icons.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (BuildContext context, int index) {
-                            return buildCategorySquare(
-                                icons[index], title[index], index);
-                          },
+                      ShowUpAnimation(
+                        delay: 300,
+                        child: SizedBox(
+                          height: 85,
+                          width: MediaQuery.of(context).size.width,
+                          child: ListView.builder(
+                            itemCount: icons.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (BuildContext context, int index) {
+                              return buildCategorySquare(
+                                  icons[index], title[index], index);
+                            },
+                          ),
                         ),
                       ),
                       const SizedBox(height: 15),
@@ -391,20 +398,25 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                         ),
                       ),
                       const SizedBox(height: 13),
-                      SizedBox(
-                        height: 125,
-                        width: MediaQuery.of(context).size.width,
-                        child: ListView.builder(
-                          itemCount: imgs.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (BuildContext context, int index) {
-                            return buildServicesSquare(
-                              imgs[index],
-                              services[index],
-                              prices[index],
-                              index == 1 ? primaryColor : Colors.grey.shade200,
-                            );
-                          },
+                      ShowUpAnimation(
+                        delay: 300,
+                        child: SizedBox(
+                          height: 125,
+                          width: MediaQuery.of(context).size.width,
+                          child: ListView.builder(
+                            itemCount: imgs.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (BuildContext context, int index) {
+                              return buildServicesSquare(
+                                imgs[index],
+                                services[index],
+                                prices[index],
+                                index == 1
+                                    ? primaryColor
+                                    : Colors.grey.shade200,
+                              );
+                            },
+                          ),
                         ),
                       ),
                       const SizedBox(height: 15),
@@ -416,19 +428,22 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                         ),
                       ),
                       const SizedBox(height: 13),
-                      SizedBox(
-                        height: 125,
-                        width: MediaQuery.of(context).size.width,
-                        child: ListView.builder(
-                          itemCount: shop!.workImgs!.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (BuildContext context, int index) {
-                            return buildLatestWorksSquare(
-                              shop!.workImgs![index],
-                              // services[index],
-                              // prices[index],
-                            );
-                          },
+                      ShowUpAnimation(
+                        delay: 300,
+                        child: SizedBox(
+                          height: 125,
+                          width: MediaQuery.of(context).size.width,
+                          child: ListView.builder(
+                            itemCount: shop!.workImgs!.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (BuildContext context, int index) {
+                              return buildLatestWorksSquare(
+                                shop!.workImgs![index],
+                                // services[index],
+                                // prices[index],
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ],

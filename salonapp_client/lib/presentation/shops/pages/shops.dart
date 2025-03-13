@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:salonapp_client/presentation/checkout%20page/components/Transaction/other/show_up_animation.dart';
 import 'package:salonapp_client/presentation/shops/repository/data%20rmodel/service_model.dart';
 
 import '../../../helpers/colors/color_constants.dart';
@@ -72,46 +73,50 @@ class _ShopsPageState extends State<ShopsPage> {
                       SizedBox(width: 8),
                     ],
                   ),
-                  TextFormField(
-                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
+                  ShowUpAnimation(
+                    delay: 150,
+                    child: TextFormField(
+                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                      decoration: InputDecoration(
+                        hintText: "Search....",
+                        hintStyle: TextStyle(fontSize: 13, color: Colors.grey),
+                        prefixIcon:
+                            Icon(MingCute.search_3_line, color: Colors.grey),
+                        suffixIcon: const SizedBox(
+                          width: 60,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(MingCute.close_line, color: Colors.grey),
+                              SizedBox(width: 10),
+                              Icon(MingCute.list_search_line,
+                                  color: Colors.grey),
+                            ],
+                          ),
                         ),
-                    decoration: InputDecoration(
-                      hintText: "Search....",
-                      hintStyle: TextStyle(fontSize: 13, color: Colors.grey),
-                      prefixIcon:
-                          Icon(MingCute.search_3_line, color: Colors.grey),
-                      suffixIcon: const SizedBox(
-                        width: 60,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(MingCute.close_line, color: Colors.grey),
-                            SizedBox(width: 10),
-                            Icon(MingCute.list_search_line, color: Colors.grey),
-                          ],
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.black12,
+                          ),
+                          borderRadius: BorderRadius.circular(100),
                         ),
-                      ),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.black12,
+                        isDense: true,
+                        fillColor: tertiaryColor,
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.black12,
+                          ),
+                          borderRadius: BorderRadius.circular(100),
                         ),
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      isDense: true,
-                      fillColor: tertiaryColor,
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.black12,
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.black12,
+                          ),
+                          borderRadius: BorderRadius.circular(100),
                         ),
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.black12,
-                        ),
-                        borderRadius: BorderRadius.circular(100),
                       ),
                     ),
                   ),

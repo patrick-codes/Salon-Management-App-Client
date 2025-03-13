@@ -5,6 +5,7 @@ import 'package:googleapis/admob/v1.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
 import '../../../helpers/colors/color_constants.dart';
+import '../../checkout page/components/Transaction/other/show_up_animation.dart';
 
 class ProfilePage extends StatelessWidget {
   ProfilePage({super.key});
@@ -51,64 +52,73 @@ class ProfilePage extends StatelessWidget {
       body: Column(
         children: [
           const SizedBox(height: 60),
-          Center(
-            child: GestureDetector(
-              onTap: () {},
-              //  context.read<AuthBloc>().add(PickImageEvent()),
-              child: Stack(
-                children: [
-                  Container(
-                    height: 120,
-                    width: 120,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: image != null
-                            ? Image.file(image!).image
-                            : Image.asset(
-                                    fit: BoxFit.fitHeight,
-                                    height: 120,
-                                    width: 120,
-                                    "assets/images/userImage.png")
-                                .image,
-                      ),
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(200),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 2,
-                    left: 80,
-                    child: Container(
-                      height: 30,
-                      width: 30,
+          ShowUpAnimation(
+            delay: 300,
+            child: Center(
+              child: GestureDetector(
+                onTap: () {},
+                //  context.read<AuthBloc>().add(PickImageEvent()),
+                child: Stack(
+                  children: [
+                    Container(
+                      height: 120,
+                      width: 120,
                       decoration: BoxDecoration(
-                        color: primaryColor2,
-                        borderRadius: BorderRadius.circular(50),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: image != null
+                              ? Image.file(image!).image
+                              : Image.asset(
+                                      fit: BoxFit.fitHeight,
+                                      height: 120,
+                                      width: 120,
+                                      "assets/images/userImage.png")
+                                  .image,
+                        ),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(200),
                       ),
-                      child: const Center(
-                        child: Icon(
-                          MingCute.edit_4_line,
-                          color: whiteColor,
-                          size: 16,
+                    ),
+                    Positioned(
+                      bottom: 2,
+                      left: 80,
+                      child: Container(
+                        height: 30,
+                        width: 30,
+                        decoration: BoxDecoration(
+                          color: primaryColor2,
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            MingCute.edit_4_line,
+                            color: whiteColor,
+                            size: 16,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
           const SizedBox(height: 15),
-          PrimaryText(
-            text: "Flint Banaman",
-            fontWeight: FontWeight.bold,
-            color: blackColor,
+          ShowUpAnimation(
+            delay: 300,
+            child: PrimaryText(
+              text: "Flint Banaman",
+              fontWeight: FontWeight.bold,
+              color: blackColor,
+            ),
           ),
-          PrimaryText(
-            text: "(+233) 2455 13607",
-            color: iconGrey,
-            size: 15,
+          ShowUpAnimation(
+            delay: 300,
+            child: PrimaryText(
+              text: "(+233) 2455 13607",
+              color: iconGrey,
+              size: 15,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -119,10 +129,13 @@ class ProfilePage extends StatelessWidget {
                 itemCount: icons.length,
                 scrollDirection: Axis.vertical,
                 itemBuilder: (BuildContext context, int index) {
-                  return shopContainer(
-                    context,
-                    title[index],
-                    icons[index],
+                  return ShowUpAnimation(
+                    delay: 300,
+                    child: shopContainer(
+                      context,
+                      title[index],
+                      icons[index],
+                    ),
                   );
                 },
               ),

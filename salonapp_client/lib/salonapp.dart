@@ -10,6 +10,7 @@ import 'presentation/intro screens/pages/welcome_screen.dart';
 import 'presentation/shops/components/map_directions_screen.dart';
 import 'presentation/shops/pages/main_shop_page.dart';
 import 'package:toastification/toastification.dart';
+import 'presentation/shops/pages/shop info/shops.dart';
 
 class SalonApp extends StatelessWidget {
   const SalonApp({super.key});
@@ -20,19 +21,6 @@ class SalonApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Hairvana',
-
-        // routes: {
-        //   '/': (context) => const SplashScreen(),
-        //   '/welcome': (context) => const WelcomeScreen(),
-        //   '/login': (context) => const LoginScreen(),
-        //   '/signup': (context) => const SignupScren(),
-        //   '/main': (context) => const MyHomePage(),
-        //   '/mainhome': (context) => const MainHomePage(),
-        //   '/shopinfo': (context) => const ShopInfo(),
-        //   // '/mainshopinfo': (context) => const MainShopinfoPage(),
-
-        //   '/map': (context) => const MapDirectionScreen(),
-        // },
         initialRoute: '/',
         routes: {
           '/': (context) => const SplashScreen(),
@@ -42,6 +30,7 @@ class SalonApp extends StatelessWidget {
           '/main': (context) => const MyHomePage(),
           '/mainhome': (context) => const MainHomePage(),
           '/shopinfo': (context) => const ShopInfo(),
+          '/shops': (context) => ShopsPage(),
           '/map': (context) => const MapDirectionScreen(),
         },
         onGenerateRoute: (settings) {

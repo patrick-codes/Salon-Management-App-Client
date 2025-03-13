@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -28,8 +27,8 @@ class _MainHomePageState extends State<MainHomePage> {
   List<Widget> pages = [
     MyHomePage(),
     MapDirectionScreen(),
-    ShopsPage(),
-    // CreateShopPage(),
+    //ShopsPage(),
+    CreateShopPage(),
     AppointmentsPage(),
     ProfilePage(),
   ];

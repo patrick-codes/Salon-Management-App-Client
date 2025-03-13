@@ -5,10 +5,10 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import 'package:salonapp_client/helpers/colors/widgets/minimal_heading.dart';
 import 'package:salonapp_client/presentation/location/bloc/location_bloc.dart';
-import 'package:salonapp_client/presentation/shops/bloc/shops_bloc.dart';
 import '../../helpers/colors/widgets/style.dart';
 import '../checkout page/components/Transaction/other/show_up_animation.dart';
 import '../filter screen/pages/filter_screen.dart';
+import '../shops/bloc/home shop bloc/h_shops_bloc.dart';
 import '../shops/components/gridview.dart';
 import '../shops/repository/data rmodel/service_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -69,20 +69,20 @@ class _MyHomePageState extends State<MyHomePage> {
   String text = 'No shops available !!';
   Future<void> refresh(BuildContext context) async {
     setState(() {
-      context.read<ShopsBloc>().add(ViewShopsEvent());
+      context.read<HomeShopsBloc>().add(ViewHomeShopsEvent());
       debugPrint("Refreshed");
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ShopsBloc, ShopsState>(
+    return BlocConsumer<HomeShopsBloc, HomeShopsState>(
       listener: (context, state) {
         if (state is ShopsLoadingState) {
           CircularProgressIndicator();
         }
-        if (state is ShopInitial) {
-          context.read<ShopsBloc>().add(ViewShopsEvent());
+        if (state is HomeShopInitial) {
+          context.read<HomeShopsBloc>().add(ViewHomeShopsEvent());
         }
       },
       builder: (BuildContext context, state) {
@@ -282,8 +282,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                     fontSize: 15,
                                     fontWeight: FontWeight.w500,
                                   ),
-                          onChanged: (value) => context.read<ShopsBloc>().add(
-                              SearchShopEvent(query: searchController.text)),
+                          onChanged: (value) => context
+                              .read<HomeShopsBloc>()
+                              .add(SearchShopEvent(
+                                  query: searchController.text)),
                           validator: (value) {
                             if (value!.isEmpty) {
                               print('Type something');
@@ -462,21 +464,6 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           ),
                 const SizedBox(height: 8),
-                // SizedBox(
-                //   height: 300,
-                //   width: MediaQuery.of(context).size.width,
-                //   child: SizedBox(
-                //     height: 200,
-                //     width: MediaQuery.of(context).size.width,
-                //     child: ListView.builder(
-                //       itemCount: icons.length,
-                //       scrollDirection: Axis.vertical,
-                //       itemBuilder: (BuildContext context, int index) {
-                //         return shopContainer(context);
-                //       },
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -529,20 +516,25 @@ class _MyHomePageState extends State<MyHomePage> {
                       size: 11,
                     ),
                     SizedBox(height: 25),
-                    Container(
-                      height: 30,
-                      width: 80,
-                      decoration: BoxDecoration(
-                        color: blackColor,
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Book Now",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: 11,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/shops');
+                      },
+                      child: Container(
+                        height: 30,
+                        width: 105,
+                        decoration: BoxDecoration(
+                          color: blackColor,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "View all Shops",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 11,
+                            ),
                           ),
                         ),
                       ),

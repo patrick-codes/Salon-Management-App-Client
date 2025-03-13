@@ -1,13 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../repository/data rmodel/service_model.dart';
-import '../repository/salonservices helper/fetch_services_helper.dart';
+import '../../repository/data rmodel/service_model.dart';
+import '../../repository/salonservices helper/fetch_services_helper.dart';
+import '../shops_bloc.dart';
+part 'h_shops_events.dart';
+part 'h_shops_state.dart';
 
-part 'shops_events.dart';
-part 'shops_state.dart';
-
-class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
+class HomeShopsBloc extends Bloc<HomeShopsEvent, HomeShopsState> {
   List<ShopModel>? serviceman;
   ShopModel? singleServiceMan;
   ShopModel? singleService;
@@ -20,8 +20,8 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
   int num = 0;
   int total = 0;
 
-  ShopsBloc() : super(ShopInitial()) {
-    on<ViewShopsEvent>(fetchShops);
+  HomeShopsBloc() : super(HomeShopInitial()) {
+    on<ViewHomeShopsEvent>(fetchShops);
     on<SearchShopEvent>(searchShops);
     on<CreateShopEvent>(createShop);
     on<ViewSingleShopEvent>(fetchSingleShop);
@@ -36,7 +36,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
   }
 
   Future<void> searchShops(
-      SearchShopEvent event, Emitter<ShopsState> emit) async {
+      SearchShopEvent event, Emitter<HomeShopsState> emit) async {
     try {
       emit(ShopsLoadingState());
       if (event.query.isNotEmpty) {
@@ -49,7 +49,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
   }
 
   Future<void> createShop(
-      CreateShopEvent event, Emitter<ShopsState> emit) async {
+      CreateShopEvent event, Emitter<HomeShopsState> emit) async {
     try {
       emit(ShopsLoadingState());
       debugPrint("Creating shop service......");
@@ -78,7 +78,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
   }
 
   Future<List<ShopModel>?> fetchShops(
-      ViewShopsEvent event, Emitter<ShopsState> emit) async {
+      ViewHomeShopsEvent event, Emitter<HomeShopsState> emit) async {
     emit(ShopsLoadingState());
     try {
       if (serviceman == null) {
@@ -88,7 +88,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
         serviceman2 = serviceman;
         serviceman3 = serviceman2;
         total = num;
-        emit(ShopsFetchedState(shop: serviceman));
+        emit(ShopsFetchedState(shop: serviceman2));
         debugPrint("Total Services is $num");
       }
     } on FirebaseAuthException catch (error) {
@@ -98,13 +98,14 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
       emit(ShopsFetchFailureState(errorMessage: error.toString()));
       debugPrint('Error:${error.toString()}');
     }
-    return serviceman;
+    return serviceman2;
   }
 
   Future<ShopModel?> fetchSingleShop(
-      ViewSingleShopEvent event, Emitter<ShopsState> emit) async {
+      ViewSingleShopEvent event, Emitter<HomeShopsState> emit) async {
     try {
       String? userId = event.id;
+      //  if (userId != null) {
       emit(ShopsLoadingState());
       singleServiceMan = await salonHelper.fetchSinglesalonshops(userId);
 

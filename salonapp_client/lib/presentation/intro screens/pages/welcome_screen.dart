@@ -3,6 +3,7 @@ import 'package:salonapp_client/helpers/colors/widgets/custom_button.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../helpers/colors/color_constants.dart';
+import '../../checkout page/components/Transaction/other/show_up_animation.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -47,11 +48,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ),
             Padding(
               padding: const EdgeInsets.all(20.0),
-              child: CustomButton(
-                text: "Get Started",
-                onpressed: () =>
-                    Navigator.pushReplacementNamed(context, '/login'),
-                color: primaryColor,
+              child: ShowUpAnimation(
+                delay: 300,
+                child: CustomButton(
+                  text: "Get Started",
+                  onpressed: () =>
+                      Navigator.pushReplacementNamed(context, '/login'),
+                  color: primaryColor,
+                ),
               ),
             ),
           ],
@@ -86,7 +90,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     ),
                   ),
                   child: SizedBox(
-                    height: 290,
+                    height: 300,
                     width: MediaQuery.of(context).size.width,
                     child: PageView.builder(
                       itemCount: infos.length,
@@ -95,7 +99,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       itemBuilder: (BuildContext context, int index) {
                         titleText = infos[index];
                         return SizedBox(
-                          height: 120,
+                          height: 130,
                           width: 90,
                           child: Padding(
                             padding: const EdgeInsets.all(35.0),
@@ -104,51 +108,57 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Expanded(
-                                  child: RichText(
-                                    textAlign: TextAlign.center,
-                                    text: TextSpan(
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .displaySmall!
-                                          .copyWith(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 25,
+                                  child: ShowUpAnimation(
+                                    delay: 300,
+                                    child: RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .displaySmall!
+                                            .copyWith(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 25,
+                                            ),
+                                        children: [
+                                          TextSpan(
+                                            text: titleText!.title,
                                           ),
-                                      children: [
-                                        TextSpan(
-                                          text: titleText!.title,
-                                        ),
-                                        TextSpan(
-                                          text: titleText!.waitingText,
-                                          style: const TextStyle(
-                                            color: primaryColor,
+                                          TextSpan(
+                                            text: titleText!.waitingText,
+                                            style: const TextStyle(
+                                              color: primaryColor,
+                                            ),
                                           ),
-                                        ),
-                                        TextSpan(
-                                          text: titleText!.middleText,
-                                        ),
-                                        TextSpan(
-                                          text: titleText!.appointmentText,
-                                          style: const TextStyle(
-                                            color: primaryColor,
+                                          TextSpan(
+                                            text: titleText!.middleText,
                                           ),
-                                        ),
-                                      ],
+                                          TextSpan(
+                                            text: titleText!.appointmentText,
+                                            style: const TextStyle(
+                                              color: primaryColor,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                                 const SizedBox(height: 15),
-                                Text(
-                                  textAlign: TextAlign.center,
-                                  titleText!.subtitle,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall!
-                                      .copyWith(
-                                        color: Colors.grey,
-                                        fontSize: 15,
-                                      ),
+                                ShowUpAnimation(
+                                  delay: 300,
+                                  child: Text(
+                                    textAlign: TextAlign.center,
+                                    titleText!.subtitle,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall!
+                                        .copyWith(
+                                          color: Colors.grey,
+                                          fontSize: 15,
+                                        ),
+                                  ),
                                 ),
                               ],
                             ),

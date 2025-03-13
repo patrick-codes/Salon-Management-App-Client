@@ -60,71 +60,76 @@ class GridViewComponent extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CachedNetworkImage(
-                          imageUrl: shops![index].profileImg ?? '',
-                          imageBuilder: (context, imageProvider) => Container(
-                                height: 90,
-                                width: MediaQuery.of(context).size.width,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: imageProvider,
-                                  ),
-                                  color: Colors.white,
-                                  // color: const Color.fromARGB(
-                                  //   255, 233, 248, 255),
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(8),
-                                    topRight: Radius.circular(8),
-                                  ),
-                                ),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          height: 18,
-                                          width: 18,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                blurRadius: 2,
-                                                spreadRadius: 1,
-                                                color: Colors.grey
-                                                    .withOpacity(0.5),
-                                              ),
-                                            ],
-                                          ),
-                                          child: const Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.favorite_border_outlined,
-                                                color: Colors.red,
-                                                size: 12,
-                                              )
-                                            ],
-                                          ),
+                        imageUrl: shops![index].profileImg ?? '',
+                        imageBuilder: (context, imageProvider) => Container(
+                          height: 90,
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: imageProvider,
+                            ),
+                            color: Colors.white,
+                            // color: const Color.fromARGB(
+                            //   255, 233, 248, 255),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              topRight: Radius.circular(8),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Container(
+                                    height: 18,
+                                    width: 18,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(20),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          blurRadius: 2,
+                                          spreadRadius: 1,
+                                          color: Colors.grey.withOpacity(0.5),
                                         ),
                                       ],
                                     ),
-                                  ],
-                                ),
+                                    child: const Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.favorite_border_outlined,
+                                          color: Colors.red,
+                                          size: 12,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
-                          placeholder: (context, url) => const Center(
-                                child: SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child:
-                                      CircularProgressIndicator(strokeWidth: 2),
-                                ),
+                            ],
+                          ),
+                        ),
+                        placeholder: (context, url) => SizedBox(
+                          height: 90,
+                          child: const Center(
+                            child: SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: blackColor,
                               ),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error)),
+                            ),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Center(
+                          child: const Icon(Icons.error),
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: Column(

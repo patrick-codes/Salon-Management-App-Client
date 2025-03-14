@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:googleapis/admob/v1.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
 import '../../../helpers/colors/color_constants.dart';

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../data rmodel/h_shop_service_model.dart';
 import '../data rmodel/service_model.dart';
 
 class SalonServiceHelper {
@@ -23,6 +24,22 @@ class SalonServiceHelper {
           await _db.collection("salonshops").get();
       final salonShops =
           querySnapshot.docs.map((doc) => ShopModel.fromSnapshot(doc)).toList();
+      print("Fetched ${salonShops.length} salonShops successfully");
+      totalService = salonShops.length;
+      return salonShops;
+    } catch (error) {
+      print("Error fetching salonShops: $error");
+      return [];
+    }
+  }
+
+  Future<List<HomeShopModel>?> fetchHomeSalonShops() async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await _db.collection("salonshops").get();
+      final salonShops = querySnapshot.docs
+          .map((doc) => HomeShopModel.fromSnapshot(doc))
+          .toList();
       print("Fetched ${salonShops.length} salonShops successfully");
       totalService = salonShops.length;
       return salonShops;
@@ -56,6 +73,25 @@ class SalonServiceHelper {
           await _db.collection("salonshops").doc(id).get();
       if (documentSnapshot.exists) {
         final salonshops = ShopModel.fromSnapshot(documentSnapshot);
+        print("Fetched salonshop with id: $id successfully");
+        return salonshops;
+      } else {
+        print("No salonshop found with id: $id");
+        return null;
+      }
+    } catch (error) {
+      print("Error fetching salonshop by id: $error");
+      return null;
+    }
+  }
+
+  Future<HomeShopModel?> fetchSingleHomeSalonshops(String? id) async {
+    try {
+      if (id == null) return null;
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+          await _db.collection("salonshops").doc(id).get();
+      if (documentSnapshot.exists) {
+        final salonshops = HomeShopModel.fromSnapshot(documentSnapshot);
         print("Fetched salonshop with id: $id successfully");
         return salonshops;
       } else {

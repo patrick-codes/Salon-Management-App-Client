@@ -4,8 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
-import 'package:salonapp_client/presentation/shops/pages/main_shop_page.dart';
-import 'package:salonapp_client/presentation/shops/pages/shop%20info/shop_info.dart';
 import '../../../../helpers/colors/color_constants.dart';
 import '../../../checkout page/components/Transaction/other/show_up_animation.dart';
 import '../../bloc/shops_bloc.dart';

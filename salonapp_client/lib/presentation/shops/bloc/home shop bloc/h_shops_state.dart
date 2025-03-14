@@ -7,13 +7,13 @@ class HomeShopInitial extends HomeShopsState {}
 class ShopsLoadingState extends HomeShopsState {}
 
 class ShopsFetchedState extends HomeShopsState {
-  List<ShopModel>? shop;
+  List<HomeShopModel>? shop;
 
   ShopsFetchedState({required this.shop});
 }
 
 class SingleShopsFetchedState extends HomeShopsState {
-  ShopModel? shop;
+  HomeShopModel? shop;
 
   SingleShopsFetchedState({required this.shop});
 }

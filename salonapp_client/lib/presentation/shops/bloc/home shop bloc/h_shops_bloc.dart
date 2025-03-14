@@ -1,19 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../repository/data rmodel/service_model.dart';
+import '../../repository/data rmodel/h_shop_service_model.dart';
 import '../../repository/salonservices helper/fetch_services_helper.dart';
-import '../shops_bloc.dart';
 part 'h_shops_events.dart';
 part 'h_shops_state.dart';
 
 class HomeShopsBloc extends Bloc<HomeShopsEvent, HomeShopsState> {
-  List<ShopModel>? serviceman;
-  ShopModel? singleServiceMan;
-  ShopModel? singleService;
+  List<HomeShopModel>? serviceman;
+  HomeShopModel? singleServiceMan;
+  HomeShopModel? singleService;
 
-  List<ShopModel>? serviceman2 = [];
-  List<ShopModel>? serviceman3 = [];
+  List<HomeShopModel>? serviceman2 = [];
+  List<HomeShopModel>? serviceman3 = [];
   static SalonServiceHelper salonHelper = SalonServiceHelper();
   final firebaseUser = FirebaseAuth.instance.currentUser!.uid;
   int serviceNum = 0;
@@ -23,7 +22,6 @@ class HomeShopsBloc extends Bloc<HomeShopsEvent, HomeShopsState> {
   HomeShopsBloc() : super(HomeShopInitial()) {
     on<ViewHomeShopsEvent>(fetchShops);
     on<SearchShopEvent>(searchShops);
-    on<CreateShopEvent>(createShop);
     on<ViewSingleShopEvent>(fetchSingleShop);
   }
   void onSearchChanged(String query) {
@@ -48,41 +46,13 @@ class HomeShopsBloc extends Bloc<HomeShopsEvent, HomeShopsState> {
     }
   }
 
-  Future<void> createShop(
-      CreateShopEvent event, Emitter<HomeShopsState> emit) async {
-    try {
-      emit(ShopsLoadingState());
-      debugPrint("Creating shop service......");
-      final shop = ShopModel(
-        shopOwnerId: event.shopOwnerId,
-        shopName: event.shopName,
-        category: event.category,
-        openingDays: event.openingDays,
-        operningTimes: event.operningTimes,
-        location: event.location,
-        phone: event.phone,
-        whatsapp: event.whatsapp,
-        services: event.services,
-        profileImg: event.profileImg,
-        dateJoined: event.dateJoined,
-        workImgs: event.workImgs,
-      );
-      salonHelper.createService(shop);
-      emit(
-          ShopCreatedSuccesState(message: 'Shop service created succesfuly!!'));
-      debugPrint("Shop service created succesfuly!!");
-    } catch (e) {
-      emit(ShopCreateFailureState(error: e.toString()));
-      debugPrint(e.toString());
-    }
-  }
-
-  Future<List<ShopModel>?> fetchShops(
+  
+  Future<List<HomeShopModel>?> fetchShops(
       ViewHomeShopsEvent event, Emitter<HomeShopsState> emit) async {
     emit(ShopsLoadingState());
     try {
       if (serviceman == null) {
-        serviceman = await salonHelper.fetchAllSalonShops();
+        serviceman = await salonHelper.fetchHomeSalonShops();
         num = serviceman?.length ?? 0;
 
         serviceman2 = serviceman;
@@ -101,13 +71,13 @@ class HomeShopsBloc extends Bloc<HomeShopsEvent, HomeShopsState> {
     return serviceman2;
   }
 
-  Future<ShopModel?> fetchSingleShop(
+  Future<HomeShopModel?> fetchSingleShop(
       ViewSingleShopEvent event, Emitter<HomeShopsState> emit) async {
     try {
       String? userId = event.id;
       //  if (userId != null) {
       emit(ShopsLoadingState());
-      singleServiceMan = await salonHelper.fetchSinglesalonshops(userId);
+      singleServiceMan = await salonHelper.fetchSingleHomeSalonshops(userId);
 
       if (singleServiceMan != null) {
         singleService = singleServiceMan;

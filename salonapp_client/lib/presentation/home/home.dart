@@ -10,7 +10,7 @@ import '../checkout page/components/Transaction/other/show_up_animation.dart';
 import '../filter screen/pages/filter_screen.dart';
 import '../shops/bloc/home shop bloc/h_shops_bloc.dart';
 import '../shops/components/gridview.dart';
-import '../shops/repository/data rmodel/service_model.dart';
+import '../shops/repository/data rmodel/h_shop_service_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String photoUrl =
       "https://media.istockphoto.com/id/2166854040/photo/chairs-by-sink-bowl-at-hair-salon.webp?a=1&b=1&s=612x612&w=0&k=20&c=UltW4fSClI85zl07M0pmi4-uqjcUC4ADd4xfwBS6nWc=";
-  List<ShopModel>? shops;
+  List<HomeShopModel>? shops;
   bool isLoaded = false;
   final searchController = TextEditingController();
   String text = 'No shops available !!';

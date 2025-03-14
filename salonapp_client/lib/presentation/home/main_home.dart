@@ -8,7 +8,6 @@ import '../appointments/pages/appointments_page.dart';
 import '../profile screen/pages/profile_page.dart';
 import '../shops/components/map_directions_screen.dart';
 import '../shops/pages/create_shopservice_page.dart';
-import '../shops/pages/shop info/shops.dart';
 import 'home.dart';
 
 class MainHomePage extends StatefulWidget {

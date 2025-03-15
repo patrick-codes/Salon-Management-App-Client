@@ -229,7 +229,7 @@ class _ShopsPageState extends State<ShopsPage>
                                 padding: const EdgeInsets.all(10.0),
                                 child: SizedBox(
                                   height:
-                                      MediaQuery.of(context).size.height - 270,
+                                      MediaQuery.of(context).size.height - 200,
                                   width: MediaQuery.of(context).size.width,
                                   child: ListView.builder(
                                     itemCount: shops?.length,

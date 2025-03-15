@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../location/bloc/location_bloc.dart';
 import '../repository/data rmodel/service_model.dart';
 import '../repository/salonservices helper/fetch_services_helper.dart';
 
@@ -11,6 +12,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
   List<ShopModel>? serviceman;
   ShopModel? singleServiceMan;
   ShopModel? singleService;
+  final LocationBloc locationBloc = LocationBloc(); // Inject LocationBloc
 
   List<ShopModel>? serviceman2 = [];
   List<ShopModel>? serviceman3 = [];
@@ -66,6 +68,8 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
         profileImg: event.profileImg,
         dateJoined: event.dateJoined,
         workImgs: event.workImgs,
+        cordinates: event.cordinates,
+        distanceToUser: event.distanceToUser,
       );
       salonHelper.createService(shop);
       emit(
@@ -77,6 +81,42 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
     }
   }
 
+  Future<List<ShopModel>?> fetchShops(
+      ViewShopsEvent event, Emitter<ShopsState> emit) async {
+    emit(ShopsLoadingState());
+    try {
+      final locationState = locationBloc.state;
+
+      if (locationState is LocationFetchedState) {
+        double? userLatitude = locationState.latitude;
+        double? userLongitude = locationState.longitude;
+
+        if (serviceman == null) {
+          serviceman =
+              await salonHelper.fetchAllSalonShops(userLatitude, userLongitude);
+          num = serviceman?.length ?? 0;
+
+          serviceman2 = serviceman;
+          serviceman3 = serviceman2;
+          total = num;
+          emit(ShopsFetchedState(shop: serviceman));
+          debugPrint("Total Nearby Shops: $num");
+        }
+      } else {
+        emit(ShopsFetchFailureState(
+            errorMessage: "User location not available."));
+      }
+    } on FirebaseAuthException catch (error) {
+      emit(ShopsFetchFailureState(errorMessage: error.toString()));
+      debugPrint(error.toString());
+    } catch (error) {
+      emit(ShopsFetchFailureState(errorMessage: error.toString()));
+      debugPrint('Error: ${error.toString()}');
+    }
+    return serviceman;
+  }
+
+/*
   Future<List<ShopModel>?> fetchShops(
       ViewShopsEvent event, Emitter<ShopsState> emit) async {
     emit(ShopsLoadingState());
@@ -100,7 +140,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
     }
     return serviceman;
   }
-
+*/
   Future<ShopModel?> fetchSingleShop(
       ViewSingleShopEvent event, Emitter<ShopsState> emit) async {
     try {

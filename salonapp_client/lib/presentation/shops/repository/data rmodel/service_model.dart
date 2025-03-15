@@ -6,6 +6,7 @@ class ShopModel {
   late String? shopOwnerId;
   late String? shopName;
   late String? category;
+  late List<double?> cordinates;
   //late int? ratings;
   late String? openingDays;
   late String? operningTimes;
@@ -16,12 +17,14 @@ class ShopModel {
   late String? profileImg;
   late String? dateJoined;
   late List<String>? workImgs;
+  late double distanceToUser;
 
   ShopModel({
     this.shopId,
     this.shopOwnerId,
     required this.shopName,
     required this.category,
+    required this.cordinates,
     required this.openingDays,
     required this.operningTimes,
     required this.location,
@@ -31,6 +34,7 @@ class ShopModel {
     required this.profileImg,
     required this.dateJoined,
     required this.workImgs,
+    required this.distanceToUser,
   });
 
   Map<String, dynamic> toJson() {
@@ -39,6 +43,7 @@ class ShopModel {
       "ownerID": shopOwnerId,
       "shopName": shopName,
       "category": category,
+      "cordinates": List<dynamic>.from(cordinates.map((x) => x)),
       "openingDays": openingDays,
       "operningTimes": operningTimes,
       "location": location,
@@ -48,6 +53,7 @@ class ShopModel {
       "profileImg": profileImg,
       "dateJoined": dateJoined,
       "workImgs": workImgs,
+      "distanceToUser": distanceToUser,
     };
   }
 
@@ -56,6 +62,7 @@ class ShopModel {
     shopOwnerId = "ownerID";
     shopName = "shopName";
     category = "category";
+    cordinates = [];
     openingDays = "openingDays";
     operningTimes = "operningTimes";
     location = "location";
@@ -65,6 +72,7 @@ class ShopModel {
     profileImg = "profileImg";
     dateJoined = "dateJoined";
     workImgs = [];
+    distanceToUser = 0;
   }
 
   factory ShopModel.fromSnapshot(
@@ -76,6 +84,7 @@ class ShopModel {
         shopOwnerId: data["shopOwnerId"] ?? '',
         shopName: data["shopName"] ?? '',
         category: data["category"] ?? '',
+        cordinates: data['cordinates'],
         openingDays: data["openingDays"] ?? '',
         operningTimes: data["operningTimes"] ?? '',
         location: data["location"] ?? '',
@@ -86,6 +95,7 @@ class ShopModel {
         dateJoined: data["dateJoined"] ?? '',
         workImgs:
             data["workImgs"] != null ? List<String>.from(data["workImgs"]) : [],
+        distanceToUser: 0,
 
         // ratings: data["Ratings"] is int
         //     ? data["Ratings"]

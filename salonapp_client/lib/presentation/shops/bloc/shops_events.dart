@@ -17,6 +17,8 @@ class CreateShopEvent extends ShopsEvent {
   final String profileImg;
   final String dateJoined;
   final List<String> workImgs = [];
+  late double distanceToUser;
+  late List<double?> cordinates;
 
   CreateShopEvent(
       {this.shopId,

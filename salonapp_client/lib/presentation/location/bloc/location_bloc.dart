@@ -92,6 +92,12 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       placeLoc = place.street ?? '';
       placeAdm = place.country;
 
+      emit(LocationFetchedState(
+        latitude: userLatitude,
+        longitude: userLongitude,
+        address: currentAddress,
+      ));
+
       debugPrint('Location: $currentAddress');
       debugPrint('Latitude: $userLatitude');
       debugPrint('Longitude: $userLongitude');
@@ -99,4 +105,28 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       debugPrint('Error fetching address: $e');
     }
   }
+
+/*
+  Future<void> _addressFromCoordinates(Emitter<LocationState> emit) async {
+    try {
+      if (_currentUserLocation == null) return;
+
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          _currentUserLocation!.latitude, _currentUserLocation!.longitude);
+      Placemark place = placemarks.first;
+
+      currentAddress = '${place.locality} - ${place.administrativeArea}';
+      userLatitude = _currentUserLocation!.latitude;
+      userLongitude = _currentUserLocation!.longitude;
+      placeLoc = place.street ?? '';
+      placeAdm = place.country;
+
+      debugPrint('Location: $currentAddress');
+      debugPrint('Latitude: $userLatitude');
+      debugPrint('Longitude: $userLongitude');
+    } catch (e) {
+      debugPrint('Error fetching address: $e');
+    }
+  }
+*/
 }

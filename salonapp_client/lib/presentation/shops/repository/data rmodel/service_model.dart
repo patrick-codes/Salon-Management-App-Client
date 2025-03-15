@@ -84,7 +84,9 @@ class ShopModel {
         shopOwnerId: data["shopOwnerId"] ?? '',
         shopName: data["shopName"] ?? '',
         category: data["category"] ?? '',
-        cordinates: data['cordinates'],
+        cordinates: data["cordinates"] != null
+            ? List<double>.from(data["cordinates"].map((x) => x.toDouble()))
+            : [],
         openingDays: data["openingDays"] ?? '',
         operningTimes: data["operningTimes"] ?? '',
         location: data["location"] ?? '',
@@ -96,10 +98,6 @@ class ShopModel {
         workImgs:
             data["workImgs"] != null ? List<String>.from(data["workImgs"]) : [],
         distanceToUser: 0,
-
-        // ratings: data["Ratings"] is int
-        //     ? data["Ratings"]
-        //     : int.tryParse(data["Ratings"].toString()) ?? 0,
       );
     } else {
       print('Document not found for id: ${document.id}');

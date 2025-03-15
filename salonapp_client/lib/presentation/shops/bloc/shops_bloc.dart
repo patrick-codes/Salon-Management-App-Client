@@ -86,32 +86,46 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
     emit(ShopsLoadingState());
     try {
       final locationState = locationBloc.state;
+      debugPrint("LocationBloc State: $locationState");
 
       if (locationState is LocationFetchedState) {
         double? userLatitude = locationState.latitude;
         double? userLongitude = locationState.longitude;
+        debugPrint("✅ Location Fetched: $userLatitude, $userLongitude");
 
-        if (serviceman == null) {
-          serviceman =
-              await salonHelper.fetchAllSalonShops(userLatitude, userLongitude);
-          num = serviceman?.length ?? 0;
+        // Fetch shops again, even if serviceman is not null
+        serviceman =
+            await salonHelper.fetchAllSalonShops(userLatitude, userLongitude);
+        num = serviceman?.length ?? 0;
+        serviceman2 = serviceman;
+        serviceman3 = serviceman2;
+        total = num;
 
-          serviceman2 = serviceman;
-          serviceman3 = serviceman2;
-          total = num;
-          emit(ShopsFetchedState(shop: serviceman));
-          debugPrint("Total Nearby Shops: $num");
+        debugPrint("✅ Total Nearby Shops: $num");
+        emit(ShopsFetchedState(shop: serviceman));
+        if (locationState is LocationFetchedState) {
+          double? userLatitude = locationState.latitude;
+          double? userLongitude = locationState.longitude;
+
+          debugPrint("Fetched User Location: $userLatitude, $userLongitude");
+
+          if (userLatitude == null || userLongitude == null) {
+            debugPrint("Error: Latitude or Longitude is null!");
+            emit(ShopsFetchFailureState(
+                errorMessage: "User location not available."));
+          }
         }
       } else {
+        debugPrint("❌ Error: User location not available.");
         emit(ShopsFetchFailureState(
             errorMessage: "User location not available."));
       }
     } on FirebaseAuthException catch (error) {
+      debugPrint("❌ Firebase Error: $error");
       emit(ShopsFetchFailureState(errorMessage: error.toString()));
-      debugPrint(error.toString());
     } catch (error) {
+      debugPrint("❌ Error: $error");
       emit(ShopsFetchFailureState(errorMessage: error.toString()));
-      debugPrint('Error: ${error.toString()}');
     }
     return serviceman;
   }

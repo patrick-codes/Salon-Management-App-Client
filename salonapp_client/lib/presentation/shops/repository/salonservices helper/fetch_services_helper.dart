@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import '../data rmodel/h_shop_service_model.dart';
 import '../data rmodel/service_model.dart';
 import 'package:geodesy/geodesy.dart';
@@ -140,6 +141,44 @@ class SalonServiceHelper {
 
   static bool isShopNearby(
       ShopModel shop, double? userLatitude, double? userLongitude) {
+    if (shop.cordinates.length < 2) {
+      debugPrint("Error: Shop coordinates are missing or incomplete.");
+      return false;
+    }
+
+    try {
+      final Geodesy geodesy = Geodesy();
+
+      double? shopLatitude = shop.cordinates[0] is double
+          ? shop.cordinates[0]
+          : double.parse(shop.cordinates[0].toString());
+
+      double? shopLongitude = shop.cordinates[1] is double
+          ? shop.cordinates[1]
+          : double.parse(shop.cordinates[1].toString());
+
+      LatLng userLatLng = LatLng(userLatitude!, userLongitude!);
+      LatLng shopLatLng = LatLng(shopLatitude!, shopLongitude!);
+
+      num distanceNum =
+          geodesy.distanceBetweenTwoGeoPoints(userLatLng, shopLatLng);
+
+      double distanceInKm = (distanceNum as double) / 1000.0;
+      shop.distanceToUser = distanceInKm;
+
+      const double maxDistance = 6.0; // Maximum distance in km
+      debugPrint('Distance to ${shop.shopName}: $distanceInKm km');
+
+      return distanceInKm <= maxDistance;
+    } catch (e) {
+      debugPrint("Error calculating distance: $e");
+      return false;
+    }
+  }
+
+/*
+  static bool isShopNearby(
+      ShopModel shop, double? userLatitude, double? userLongitude) {
     final Geodesy geodesy = Geodesy();
 
     LatLng userLatLng = LatLng(userLatitude!, userLongitude!);
@@ -159,4 +198,5 @@ class SalonServiceHelper {
 
     return distanceInKm <= maxDistance;
   }
+*/
 }

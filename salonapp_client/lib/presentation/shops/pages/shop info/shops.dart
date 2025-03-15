@@ -6,6 +6,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
 import '../../../../helpers/colors/color_constants.dart';
 import '../../../checkout page/components/Transaction/other/show_up_animation.dart';
+import '../../../location/bloc/location_bloc.dart';
 import '../../bloc/shops_bloc.dart';
 import '../../repository/data rmodel/service_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -55,212 +56,259 @@ class _ShopsPageState extends State<ShopsPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final locationState = context.watch<LocationBloc>().state;
+    debugPrint("🔍 Current Location State: $locationState");
+
     return BlocConsumer<ShopsBloc, ShopsState>(
       listener: (context, state) {
-        if (state is ShopsLoadingState) {
-          CircularProgressIndicator();
-        }
-        if (state is ShopInitial) {
-          context.read<ShopsBloc>().add(ViewShopsEvent());
+        if (state is ShopsFetchFailureState) {
+          debugPrint("⚠️ Shops Fetch Error: ${state.errorMessage}");
         }
       },
       builder: (context, state) {
-        if (state is ShopsFetchFailureState) {
-          Center(child: Text(state.errorMessage));
-        } else if (state is ShopsFetchedState) {
-          shops = state.shop;
-          isLoaded = true;
-          debugPrint("Shops Fetched:${state.shop!.length}");
+        // 🔹 Show loading when fetching location
+        if (locationState is InitLocation || locationState is LocationLoading) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 10),
+                Text("Fetching location..."),
+              ],
+            ),
+          );
         }
-        return Scaffold(
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight(128),
-            child: Container(
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    AppBar(
-                      systemOverlayStyle: const SystemUiOverlayStyle(
-                        statusBarColor: primaryColor,
-                        statusBarIconBrightness: Brightness.light,
-                      ),
-                      backgroundColor: Colors.transparent,
-                      leading: const Icon(
-                        MingCute.arrow_left_fill,
-                      ),
-                      centerTitle: true,
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Nearby Shops",
-                            style:
-                                Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+
+        // 🔹 Handle location fetch failure
+        if (locationState is LocationFailure) {
+          return Center(
+              child: Text("Failed to fetch location: ${locationState.error}"));
+        }
+
+        // 🔹 Trigger fetching shops once when location is available
+        if (locationState is LocationFetchedState) {
+          if (state is! ShopsFetchedState && state is! ShopsLoadingState) {
+            debugPrint("🚀 Dispatching ViewShopsEvent...");
+            context.read<ShopsBloc>().add(ViewShopsEvent());
+          }
+        }
+
+        // 🔹 Show loading when fetching shops
+        if (state is ShopsLoadingState) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        // 🔹 Show error message if fetching shops fails
+        if (state is ShopsFetchFailureState) {
+          print("Error fetching shops: ${state.errorMessage}");
+          return Center(
+            child: Text("Error fetching shops: ${state.errorMessage}"),
+          );
+        }
+
+        // 🔹 Show fetched shops
+        if (state is ShopsFetchedState) {
+          final shops = state.shop;
+          debugPrint("✅ Shops Fetched: ${shops!.length}");
+          if (shops!.isEmpty) {
+            return Center(child: Text("No nearby shops found."));
+          }
+          return Scaffold(
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(128),
+              child: Container(
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      AppBar(
+                        systemOverlayStyle: const SystemUiOverlayStyle(
+                          statusBarColor: primaryColor,
+                          statusBarIconBrightness: Brightness.light,
+                        ),
+                        backgroundColor: Colors.transparent,
+                        leading: const Icon(
+                          MingCute.arrow_left_fill,
+                        ),
+                        centerTitle: true,
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Nearby Shops",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                            shops == null || shops!.isEmpty
+                                ? SizedBox.shrink()
+                                : Text(
+                                    " (${shops?.length})",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
+                          ],
+                        ),
+                        actions: [
+                          GestureDetector(
+                            onTap: () {},
+                            child: Icon(
+                              MingCute.more_2_fill,
+                            ),
                           ),
-                          shops == null || shops!.isEmpty
-                              ? SizedBox.shrink()
-                              : Text(
-                                  " (${shops?.length})",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge!
-                                      .copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                ),
+                          SizedBox(width: 8),
                         ],
                       ),
-                      actions: [
-                        GestureDetector(
-                          onTap: () {},
-                          child: Icon(
-                            MingCute.more_2_fill,
+                      ShowUpAnimation(
+                        delay: 150,
+                        child: TextFormField(
+                          controller: searchController,
+                          onChanged: (value) => context.read<ShopsBloc>().add(
+                              SearchShopEvent(query: searchController.text)),
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    fontSize: 14,
+                                  ),
+                          decoration: InputDecoration(
+                            hintText: "Search....",
+                            hintStyle: TextStyle(fontSize: 13, color: iconGrey),
+                            prefixIcon:
+                                Icon(MingCute.search_3_line, color: iconGrey),
+                            suffixIcon: const SizedBox(
+                              width: 60,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Icon(MingCute.close_line, color: iconGrey),
+                                  SizedBox(width: 10),
+                                  Icon(MingCute.list_search_line,
+                                      color: iconGrey),
+                                ],
+                              ),
+                            ),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.black12,
+                              ),
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            isDense: true,
+                            fillColor: tertiaryColor,
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.black12,
+                              ),
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.black12,
+                              ),
+                              borderRadius: BorderRadius.circular(100),
+                            ),
                           ),
                         ),
-                        SizedBox(width: 8),
-                      ],
-                    ),
-                    ShowUpAnimation(
-                      delay: 150,
-                      child: TextFormField(
-                        controller: searchController,
-                        onChanged: (value) => context
-                            .read<ShopsBloc>()
-                            .add(SearchShopEvent(query: searchController.text)),
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              fontSize: 14,
-                            ),
-                        decoration: InputDecoration(
-                          hintText: "Search....",
-                          hintStyle: TextStyle(fontSize: 13, color: iconGrey),
-                          prefixIcon:
-                              Icon(MingCute.search_3_line, color: iconGrey),
-                          suffixIcon: const SizedBox(
-                            width: 60,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Icon(MingCute.close_line, color: iconGrey),
-                                SizedBox(width: 10),
-                                Icon(MingCute.list_search_line,
-                                    color: iconGrey),
-                              ],
-                            ),
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.black12,
-                            ),
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                          isDense: true,
-                          fillColor: tertiaryColor,
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.black12,
-                            ),
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.black12,
-                            ),
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          body: shops == null
-              ? const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SpinKitDoubleBounce(
-                        // lineWidth: 3,
-                        size: 60,
-                        color: primaryColor,
-                      ),
-                      SizedBox(height: 20),
-                      PrimaryText(
-                        text: 'Loading nearby shops....',
-                        color: secondaryColor3,
-                        size: 13,
                       ),
                     ],
                   ),
-                )
-              : shops == null || shops!.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            'assets/svgs/undraw_file-search_cbur.svg',
-                            height: 150,
-                            width: 150,
-                          ),
-                          SizedBox(height: 20),
-                          PrimaryText(
-                            text: text,
-                            color: iconGrey,
-                            size: 15,
-                          ),
-                        ],
-                      ),
-                    )
-                  : SafeArea(
-                      child: SingleChildScrollView(
-                        physics: BouncingScrollPhysics(),
-                        child: RefreshIndicator(
-                          onRefresh: () => refresh(context),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height - 200,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: ListView.builder(
-                                    itemCount: shops?.length,
-                                    scrollDirection: Axis.vertical,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      final shopInfo = shops?[index];
-                                      return ShowUpAnimation(
-                                        delay: 150,
-                                        child: appointmentContainer(
-                                          context,
-                                          shopInfo?.shopId,
-                                          shopInfo?.profileImg,
-                                          shopInfo?.shopName,
-                                          shopInfo?.location,
-                                          shopInfo?.openingDays,
-                                          shopInfo?.operningTimes,
-                                          shopInfo?.services,
-                                          isLoaded,
-                                        ),
-                                      );
-                                    },
+                ),
+              ),
+            ),
+            body: shops == null
+                ? const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SpinKitDoubleBounce(
+                          // lineWidth: 3,
+                          size: 60,
+                          color: primaryColor,
+                        ),
+                        SizedBox(height: 20),
+                        PrimaryText(
+                          text: 'Loading nearby shops....',
+                          color: secondaryColor3,
+                          size: 13,
+                        ),
+                      ],
+                    ),
+                  )
+                : shops == null || shops!.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              'assets/svgs/undraw_file-search_cbur.svg',
+                              height: 150,
+                              width: 150,
+                            ),
+                            SizedBox(height: 20),
+                            PrimaryText(
+                              text: text,
+                              color: iconGrey,
+                              size: 15,
+                            ),
+                          ],
+                        ),
+                      )
+                    : SafeArea(
+                        child: SingleChildScrollView(
+                          physics: BouncingScrollPhysics(),
+                          child: RefreshIndicator(
+                            onRefresh: () => refresh(context),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: SizedBox(
+                                    height: MediaQuery.of(context).size.height -
+                                        200,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: ListView.builder(
+                                      itemCount: shops?.length,
+                                      scrollDirection: Axis.vertical,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        final shopInfo = shops?[index];
+                                        return ShowUpAnimation(
+                                          delay: 150,
+                                          child: appointmentContainer(
+                                            context,
+                                            shopInfo?.shopId,
+                                            shopInfo?.profileImg,
+                                            shopInfo?.shopName,
+                                            shopInfo?.location,
+                                            shopInfo?.openingDays,
+                                            shopInfo?.operningTimes,
+                                            shopInfo?.services,
+                                            isLoaded,
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-        );
+          );
+        }
+
+        ;
+        return Center(child: Text("Unexpected state."));
       },
     );
   }

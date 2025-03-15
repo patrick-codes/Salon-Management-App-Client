@@ -72,6 +72,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       _currentUserLocation = await _getLocation(emit);
       await _addressFromCoordinates(emit);
       emit(CordinatesLoaded(message: '$currentAddress'));
+
       debugPrint('Address: $currentAddress');
     } catch (e) {
       debugPrint(e.toString());
@@ -92,6 +93,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       placeLoc = place.street ?? '';
       placeAdm = place.country;
 
+      debugPrint("✅ Location Fetched: $userLatitude, $userLongitude");
       emit(LocationFetchedState(
         latitude: userLatitude,
         longitude: userLongitude,

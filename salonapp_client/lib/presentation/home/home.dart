@@ -151,11 +151,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                         }
                                       },
                                       builder: (context, state) {
-                                        if (state is CordinatesLoaded) {
+                                        if (state is LocationFetchedState) {
                                           return Text(
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
-                                            state.message,
+                                            state.address!,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium!

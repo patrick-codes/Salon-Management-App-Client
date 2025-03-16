@@ -71,8 +71,12 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       emit(LocationLoading());
       _currentUserLocation = await _getLocation(emit);
       await _addressFromCoordinates(emit);
-      emit(CordinatesLoaded(message: '$currentAddress'));
-
+      //emit(CordinatesLoaded(message: '$currentAddress'));
+      emit(LocationFetchedState(
+        latitude: userLatitude,
+        longitude: userLongitude,
+        address: currentAddress,
+      ));
       debugPrint('Address: $currentAddress');
     } catch (e) {
       debugPrint(e.toString());

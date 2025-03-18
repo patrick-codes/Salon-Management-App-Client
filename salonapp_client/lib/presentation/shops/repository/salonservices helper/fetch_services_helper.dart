@@ -166,7 +166,7 @@ class SalonServiceHelper {
       double distanceInKm = (distanceNum as double) / 1000.0;
       shop.distanceToUser = distanceInKm;
 
-      const double maxDistance = 6.0; // Maximum distance in km
+      const double maxDistance = 6.0;
       debugPrint('Distance to ${shop.shopName}: $distanceInKm km');
 
       return distanceInKm <= maxDistance;

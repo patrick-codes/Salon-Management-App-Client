@@ -12,7 +12,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
   List<ShopModel>? serviceman;
   ShopModel? singleServiceMan;
   ShopModel? singleService;
-  final LocationBloc locationBloc = LocationBloc(); // Inject LocationBloc
+  final LocationBloc locationBloc;
 
   List<ShopModel>? serviceman2 = [];
   List<ShopModel>? serviceman3 = [];
@@ -22,7 +22,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
   int num = 0;
   int total = 0;
 
-  ShopsBloc() : super(ShopInitial()) {
+  ShopsBloc(this.locationBloc) : super(ShopInitial()) {
     on<ViewShopsEvent>(fetchShops);
     on<SearchShopEvent>(searchShops);
     on<CreateShopEvent>(createShop);
@@ -93,7 +93,6 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
         double? userLongitude = locationState.longitude;
         debugPrint("✅ Location Fetched: $userLatitude, $userLongitude");
 
-        // Fetch shops again, even if serviceman is not null
         serviceman =
             await salonHelper.fetchAllSalonShops(userLatitude, userLongitude);
         num = serviceman?.length ?? 0;
@@ -103,17 +102,11 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
 
         debugPrint("✅ Total Nearby Shops: $num");
         emit(ShopsFetchedState(shop: serviceman));
-        if (locationState is LocationFetchedState) {
-          double? userLatitude = locationState.latitude;
-          double? userLongitude = locationState.longitude;
 
-          debugPrint("Fetched User Location: $userLatitude, $userLongitude");
-
-          if (userLatitude == null || userLongitude == null) {
-            debugPrint("Error: Latitude or Longitude is null!");
-            emit(ShopsFetchFailureState(
-                errorMessage: "User location not available."));
-          }
+        if (userLatitude == null || userLongitude == null) {
+          debugPrint("Error: Latitude or Longitude is null!");
+          emit(ShopsFetchFailureState(
+              errorMessage: "User location not available."));
         }
       } else {
         debugPrint("❌ Error: User location not available.");

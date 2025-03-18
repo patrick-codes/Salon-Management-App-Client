@@ -325,13 +325,13 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                                                 Row(
                                                   children: [
                                                     Icon(
-                                                      MingCute.scissors_3_fill,
+                                                      MingCute.route_fill,
                                                       size: 20,
                                                       color: primaryColor,
                                                     ),
                                                     const SizedBox(width: 3),
                                                     Text(
-                                                      "${shop!.category}",
+                                                      "${shop!.distanceToUser.round()}km away",
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodySmall!

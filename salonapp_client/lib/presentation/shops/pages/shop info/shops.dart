@@ -57,62 +57,72 @@ class _ShopsPageState extends State<ShopsPage>
   Widget build(BuildContext context) {
     super.build(context);
     final locationState = context.watch<LocationBloc>().state;
-    debugPrint("🔍 Current Location State: $locationState");
-
     return BlocConsumer<ShopsBloc, ShopsState>(
       listener: (context, state) {
         if (state is ShopsFetchFailureState) {
-          debugPrint("⚠️ Shops Fetch Error: ${state.errorMessage}");
+          debugPrint("Shops Fetch Error: ${state.errorMessage}");
         }
       },
       builder: (context, state) {
-        // 🔹 Show loading when fetching location
-        if (locationState is InitLocation || locationState is LocationLoading) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 10),
-                Text("Fetching location..."),
-              ],
-            ),
-          );
-        }
+        // if (locationState is InitLocation || locationState is LocationLoading) {
+        //   return Center(
+        //     child: Column(
+        //       mainAxisAlignment: MainAxisAlignment.center,
+        //       children: [
+        //         // SpinKitDoubleBounce(
+        //         //           size: 60,
+        //         //           color: primaryColor,
+        //         //         ),
+        //         //         SizedBox(height: 20),
+        //         //         PrimaryText(
+        //         //           text: 'Loading nearby shops....',
+        //         //           color: secondaryColor3,
+        //         //           size: 13,
+        //         //         ),
+        //       ],
+        //     ),
+        //   );
+        // }
 
-        // 🔹 Handle location fetch failure
         if (locationState is LocationFailure) {
           return Center(
               child: Text("Failed to fetch location: ${locationState.error}"));
         }
 
-        // 🔹 Trigger fetching shops once when location is available
         if (locationState is LocationFetchedState) {
           if (state is! ShopsFetchedState && state is! ShopsLoadingState) {
-            debugPrint("🚀 Dispatching ViewShopsEvent...");
             context.read<ShopsBloc>().add(ViewShopsEvent());
           }
         }
 
-        // 🔹 Show loading when fetching shops
-        if (state is ShopsLoadingState) {
-          return Center(child: CircularProgressIndicator());
-        }
-
-        // 🔹 Show error message if fetching shops fails
         if (state is ShopsFetchFailureState) {
-          print("Error fetching shops: ${state.errorMessage}");
           return Center(
             child: Text("Error fetching shops: ${state.errorMessage}"),
           );
         }
 
-        // 🔹 Show fetched shops
         if (state is ShopsFetchedState) {
           final shops = state.shop;
-          debugPrint("✅ Shops Fetched: ${shops!.length}");
           if (shops!.isEmpty) {
-            return Center(child: Text("No nearby shops found."));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    'assets/svgs/undraw_file-search_cbur.svg',
+                    height: 150,
+                    width: 150,
+                  ),
+                  SizedBox(height: 20),
+                  PrimaryText(
+                    text: text,
+                    color: iconGrey,
+                    size: 15,
+                  ),
+                ],
+              ),
+            );
           }
           return Scaffold(
             appBar: PreferredSize(
@@ -145,10 +155,10 @@ class _ShopsPageState extends State<ShopsPage>
                                     fontWeight: FontWeight.bold,
                                   ),
                             ),
-                            shops == null || shops!.isEmpty
+                            shops.isEmpty
                                 ? SizedBox.shrink()
                                 : Text(
-                                    " (${shops?.length})",
+                                    " (${shops.length})",
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyLarge!
@@ -223,7 +233,9 @@ class _ShopsPageState extends State<ShopsPage>
                 ),
               ),
             ),
-            body: shops == null
+            body: state is ShopsLoadingState ||
+                    locationState is InitLocation ||
+                    locationState is LocationLoading
                 ? const Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -242,7 +254,7 @@ class _ShopsPageState extends State<ShopsPage>
                       ],
                     ),
                   )
-                : shops == null || shops!.isEmpty
+                : shops.isEmpty
                     ? Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -266,6 +278,7 @@ class _ShopsPageState extends State<ShopsPage>
                         child: SingleChildScrollView(
                           physics: BouncingScrollPhysics(),
                           child: RefreshIndicator(
+                            color: blackColor,
                             onRefresh: () => refresh(context),
                             child: Column(
                               children: [
@@ -276,22 +289,22 @@ class _ShopsPageState extends State<ShopsPage>
                                         200,
                                     width: MediaQuery.of(context).size.width,
                                     child: ListView.builder(
-                                      itemCount: shops?.length,
+                                      itemCount: shops.length,
                                       scrollDirection: Axis.vertical,
                                       itemBuilder:
                                           (BuildContext context, int index) {
-                                        final shopInfo = shops?[index];
+                                        final shopInfo = shops[index];
                                         return ShowUpAnimation(
                                           delay: 150,
                                           child: appointmentContainer(
                                             context,
-                                            shopInfo?.shopId,
-                                            shopInfo?.profileImg,
-                                            shopInfo?.shopName,
-                                            shopInfo?.location,
-                                            shopInfo?.openingDays,
-                                            shopInfo?.operningTimes,
-                                            shopInfo?.services,
+                                            shopInfo.shopId,
+                                            shopInfo.profileImg,
+                                            shopInfo.shopName,
+                                            shopInfo.location,
+                                            shopInfo.openingDays,
+                                            shopInfo.operningTimes,
+                                            shopInfo.services,
                                             isLoaded,
                                           ),
                                         );
@@ -306,9 +319,22 @@ class _ShopsPageState extends State<ShopsPage>
                       ),
           );
         }
-
-        ;
-        return Center(child: Text("Unexpected state."));
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SpinKitDoubleBounce(
+              // lineWidth: 3,
+              size: 60,
+              color: primaryColor,
+            ),
+            SizedBox(height: 20),
+            PrimaryText(
+              text: 'Loading nearby shops....',
+              color: secondaryColor3,
+              size: 13,
+            ),
+          ],
+        );
       },
     );
   }

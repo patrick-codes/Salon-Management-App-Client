@@ -75,7 +75,7 @@ class ShopModel {
     profileImg = "profileImg";
     dateJoined = "dateJoined";
     workImgs = [];
-    distanceToUser = 0;
+    // distanceToUser = 0.0;
   }
 
   factory ShopModel.fromSnapshot(
@@ -100,7 +100,7 @@ class ShopModel {
         dateJoined: data["dateJoined"] ?? '',
         workImgs:
             data["workImgs"] != null ? List<String>.from(data["workImgs"]) : [],
-        distanceToUser: 0,
+        distanceToUser: data["distanceToUser"] ?? 0,
         isOpen: data['isOpened'] ?? false,
       );
     } else {

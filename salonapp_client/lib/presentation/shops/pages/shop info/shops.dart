@@ -77,13 +77,32 @@ class _ShopsPageState extends State<ShopsPage>
       }
 
       if (state is ShopsFetchFailureState) {
-        return Center(
-          child: Text("Error fetching shops: ${state.errorMessage}"),
+        return Scaffold(
+          backgroundColor: secondaryBg,
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  'assets/svgs/undraw_file-search_cbur.svg',
+                  height: 150,
+                  width: 150,
+                ),
+                SizedBox(height: 20),
+                PrimaryText(
+                  text: state.errorMessage,
+                  color: iconGrey,
+                  size: 15,
+                ),
+              ],
+            ),
+          ),
         );
       }
 
       if (state is ShopsFetchedState) {
-        final shops = state.shop;
+        shops = state.shop;
         return Scaffold(
           extendBodyBehindAppBar: true,
           appBar: PreferredSize(
@@ -250,24 +269,26 @@ class _ShopsPageState extends State<ShopsPage>
                                       MediaQuery.of(context).size.height - 200,
                                   width: MediaQuery.of(context).size.width,
                                   child: ListView.builder(
-                                    itemCount: shops.length,
+                                    itemCount: shops!.length,
                                     scrollDirection: Axis.vertical,
                                     itemBuilder:
                                         (BuildContext context, int index) {
-                                      ShopModel? shopInfo = shops[index];
-                                      print("${shops[index].profileImg}");
+                                      var shopInfo = shops![index];
+                                      print("${shops![index].profileImg}");
                                       return ShowUpAnimation(
                                         delay: 150,
                                         child: appointmentContainer(
                                           context,
                                           shopInfo.shopId,
-                                          shops[index].profileImg,
+                                          shopInfo.profileImg,
                                           shopInfo.shopName,
                                           shopInfo.location,
                                           shopInfo.openingDays,
                                           shopInfo.operningTimes,
                                           shopInfo.services,
                                           isLoaded,
+                                          shopInfo.distanceToUser,
+                                          shopInfo.isOpen,
                                         ),
                                       );
                                     },
@@ -313,6 +334,8 @@ class _ShopsPageState extends State<ShopsPage>
     String? openingTime,
     String? services,
     bool? isLoaded,
+    double? distance,
+    bool? isOpen,
   ) {
     return Container(
       height: 330,
@@ -336,108 +359,145 @@ class _ShopsPageState extends State<ShopsPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Visibility(
-                  visible: isLoaded!,
-                  replacement: Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[200]!,
-                    child: Container(
-                      height: 150,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        color: secondaryColor3,
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(8),
-                          topLeft: Radius.circular(8),
-                        ),
+                CachedNetworkImage(
+                  imageUrl: img ?? '',
+                  imageBuilder: (context, imageProvider) => Container(
+                    height: 150,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.fitWidth,
+                        image: imageProvider,
+                      ),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(8),
+                        topLeft: Radius.circular(8),
                       ),
                     ),
-                  ),
-                  child: CachedNetworkImage(
-                    imageUrl: img ?? '',
-                    imageBuilder: (context, imageProvider) => Container(
-                      height: 150,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.fitWidth,
-                          image: imageProvider,
-                        ),
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(8),
-                          topLeft: Radius.circular(8),
-                        ),
-                      ),
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            bottom: 0,
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          top: 5,
+                          right: 5,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
                             child: Container(
-                              height: 50,
-                              width: MediaQuery.of(context).size.width,
+                              height: 25,
+                              width: 70,
                               decoration: BoxDecoration(
-                                border: Border(top: BorderSide.none),
-                                gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      backgroundColor.withOpacity(0.2),
-                                      backgroundColor
-                                    ]),
-                                color: backgroundColor,
+                                color:
+                                    isOpen == false ? Colors.red : Colors.green,
+                                borderRadius: BorderRadius.circular(30),
                               ),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 5.0),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      MingCute.location_fill,
-                                      size: 20,
-                                      color: primaryColor,
-                                    ),
-                                    SizedBox(width: 3),
-                                    Text(
-                                      overflow: TextOverflow.ellipsis,
-                                      location ?? '',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium!
-                                          .copyWith(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13,
-                                          ),
-                                    ),
-                                  ],
+                              child: Center(
+                                child: Text(
+                                  isOpen == false ? "CLOSED" : "OPENED",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
                                 ),
                               ),
                             ),
-                          )
-                        ],
-                      ),
-                    ),
-                    placeholder: (context, url) => Center(
-                      child: Shimmer.fromColors(
-                        baseColor: Colors.grey[300]!,
-                        highlightColor: Colors.grey[200]!,
-                        child: Container(
-                          height: 150,
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            color: secondaryColor3,
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(8),
-                              topLeft: Radius.circular(8),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          child: Container(
+                            height: 50,
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              border: Border(top: BorderSide.none),
+                              gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    backgroundColor.withOpacity(0.2),
+                                    backgroundColor
+                                  ]),
+                              color: backgroundColor,
                             ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        MingCute.location_fill,
+                                        size: 20,
+                                        color: primaryColor,
+                                      ),
+                                      SizedBox(width: 3),
+                                      Text(
+                                        overflow: TextOverflow.ellipsis,
+                                        location ?? '',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 13,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        MingCute.route_fill,
+                                        size: 20,
+                                        color: primaryColor,
+                                      ),
+                                      const SizedBox(width: 3),
+                                      Text(
+                                        "${distance!.round()}km away",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall!
+                                            .copyWith(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                            ),
+                                      ),
+                                      SizedBox(width: 25),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  placeholder: (context, url) => Center(
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey[300]!,
+                      highlightColor: Colors.grey[200]!,
+                      child: Container(
+                        height: 150,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: secondaryColor3,
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(8),
+                            topLeft: Radius.circular(8),
                           ),
                         ),
                       ),
                     ),
-                    errorWidget: (context, url, error) =>
-                        Center(child: const Icon(Icons.error)),
                   ),
+                  errorWidget: (context, url, error) =>
+                      Center(child: const Icon(Icons.error)),
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width,

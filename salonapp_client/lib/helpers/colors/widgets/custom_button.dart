@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../color_constants.dart';
 
+// ignore: must_be_immutable
 class CustomButton extends StatelessWidget {
   String text;
   final void Function() onpressed;

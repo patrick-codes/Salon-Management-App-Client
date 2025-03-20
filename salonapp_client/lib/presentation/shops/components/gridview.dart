@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../helpers/colors/color_constants.dart';
 import '../repository/data rmodel/h_shop_service_model.dart';
 
@@ -109,21 +110,35 @@ class GridViewComponent extends StatelessWidget {
                             ],
                           ),
                         ),
-                        placeholder: (context, url) => SizedBox(
-                          height: 90,
-                          child: const Center(
-                            child: SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: blackColor,
+                        placeholder: (context, url) => Center(
+                          child: Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.grey[200]!,
+                            child: Container(
+                              height: 150,
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                color: secondaryColor3,
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(8),
+                                  topLeft: Radius.circular(8),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                        errorWidget: (context, url, error) => Center(
-                          child: const Icon(Icons.error),
+                        errorWidget: (context, url, error) => SizedBox(
+                          height: 90,
+                          child: Center(
+                            child: SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: const Icon(
+                                Icons.error,
+                                color: iconGrey,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                       Padding(

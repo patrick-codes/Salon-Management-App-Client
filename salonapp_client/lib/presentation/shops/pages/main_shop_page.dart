@@ -12,6 +12,7 @@ import '../../../helpers/colors/widgets/custom_button.dart';
 import '../../../helpers/colors/widgets/minimal_heading.dart';
 import '../../checkout page/components/Transaction/other/show_up_animation.dart';
 import '../../checkout page/pages/checkout_new.dart';
+import '../components/services_grid.dart';
 import '../repository/data rmodel/service_model.dart';
 
 class MainShopinfoPage extends StatefulWidget {
@@ -332,7 +333,7 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                                                     ),
                                                     const SizedBox(width: 3),
                                                     Text(
-                                                      "${shop!.distanceToUser}km away",
+                                                      "${shop!.distanceToUser.round()}km away",
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodySmall!
@@ -391,9 +392,12 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                       const SizedBox(height: 15),
                       Padding(
                         padding: const EdgeInsets.only(left: 15.0, right: 15),
-                        child: MinimalHeadingText(
-                          leftText: 'What service we provide',
-                          rightText: 'View all',
+                        child: GestureDetector(
+                          onTap: () => scrollBottomSheet(context),
+                          child: MinimalHeadingText(
+                            leftText: 'What service we provide',
+                            rightText: 'View all',
+                          ),
                         ),
                       ),
                       const SizedBox(height: 13),
@@ -453,6 +457,50 @@ class _DetailsPageState extends State<MainShopinfoPage> {
     );
   }
 
+  Future<void> scrollBottomSheet(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      clipBehavior: Clip.hardEdge,
+      //enableDrag: true,
+      //useSafeArea: true,
+      showDragHandle: true,
+      isDismissible: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(25),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.8,
+          minChildSize: 0.2,
+          maxChildSize: 0.9,
+          builder: (BuildContext context, ScrollController scrollController) {
+            return SizedBox(
+              height: 125,
+              width: MediaQuery.of(context).size.width,
+              child: ListView.builder(
+                itemCount: imgs.length,
+                scrollDirection: Axis.vertical,
+                itemBuilder: (BuildContext context, int index) {
+                  return buildServicesSquareFull(
+                    imgs[index],
+                    services[index],
+                    prices[index],
+                    index == 1 ? primaryColor : Colors.grey.shade200,
+                  );
+                },
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   Widget buildServicesSquare(
       String imgurl, String services, String prices, Color brColor) {
     return Column(
@@ -503,6 +551,91 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                           ),
                     ),
                   ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildServicesSquareFull(
+      String imgurl, String services, String prices, Color brColor) {
+    return Column(
+      // crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          height: 125,
+          width: MediaQuery.of(context).size.width,
+          margin: const EdgeInsets.symmetric(
+            horizontal: 10,
+            vertical: 10,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              width: 1.5,
+              color: brColor,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 120,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: Image.asset(imgurl).image,
+                    ),
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+                SizedBox(width: 8),
+                SizedBox(
+                  width: 150,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        services,
+                        overflow: TextOverflow.visible,
+                        softWrap: true,
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              //fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: Colors.black,
+                            ),
+                      ),
+                      Text(
+                        "Female",
+                        overflow: TextOverflow.visible,
+                        softWrap: true,
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              fontSize: 15,
+                              color: iconGrey,
+                            ),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        prices,
+                        overflow: TextOverflow.visible,
+                        softWrap: true,
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Colors.black,
+                            ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

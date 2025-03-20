@@ -70,6 +70,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
         workImgs: event.workImgs,
         cordinates: event.cordinates,
         distanceToUser: event.distanceToUser,
+        isOpen: event.isOpen,
       );
       salonHelper.createService(shop);
       emit(
@@ -123,31 +124,6 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
     return serviceman;
   }
 
-/*
-  Future<List<ShopModel>?> fetchShops(
-      ViewShopsEvent event, Emitter<ShopsState> emit) async {
-    emit(ShopsLoadingState());
-    try {
-      if (serviceman == null) {
-        serviceman = await salonHelper.fetchAllSalonShops();
-        num = serviceman?.length ?? 0;
-
-        serviceman2 = serviceman;
-        serviceman3 = serviceman2;
-        total = num;
-        emit(ShopsFetchedState(shop: serviceman));
-        debugPrint("Total Services is $num");
-      }
-    } on FirebaseAuthException catch (error) {
-      emit(ShopsFetchFailureState(errorMessage: error.toString()));
-      debugPrint(error.toString());
-    } catch (error) {
-      emit(ShopsFetchFailureState(errorMessage: error.toString()));
-      debugPrint('Error:${error.toString()}');
-    }
-    return serviceman;
-  }
-*/
   Future<ShopModel?> fetchSingleShop(
       ViewSingleShopEvent event, Emitter<ShopsState> emit) async {
     try {

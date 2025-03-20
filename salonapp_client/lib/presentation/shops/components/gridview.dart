@@ -8,7 +8,6 @@ class GridViewComponent extends StatelessWidget {
   GridViewComponent({
     required this.shops,
   });
-  bool isOpen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -205,11 +204,13 @@ class GridViewComponent extends StatelessWidget {
                       height: 17,
                       width: 50,
                       decoration: BoxDecoration(
-                          color: isOpen == false ? Colors.red : Colors.green,
+                          color: shops![index].isOpened == true
+                              ? Colors.green
+                              : Colors.red,
                           borderRadius: BorderRadius.circular(3)),
                       child: Center(
                         child: Text(
-                          isOpen == false ? "Closed" : "Open",
+                          shops![index].isOpened == true ? "Open" : "Closed",
                           style:
                               Theme.of(context).textTheme.bodySmall!.copyWith(
                                     fontWeight: FontWeight.w600,

@@ -202,6 +202,7 @@ class _CreateShopPageState extends State<CreateShopPage> {
                                           CreateShopController.profileImg.text,
                                       dateJoined:
                                           CreateShopController.dateJoined.text,
+                                      isOpen: true,
                                     ),
                                   );
                             },

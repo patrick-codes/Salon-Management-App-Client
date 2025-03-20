@@ -116,12 +116,13 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                       height: 25,
                       width: 70,
                       decoration: BoxDecoration(
-                        color: isOpen == false ? Colors.red : Colors.green,
+                        color:
+                            shop!.isOpen == false ? Colors.red : Colors.green,
                         borderRadius: BorderRadius.circular(30),
                       ),
                       child: Center(
                         child: Text(
-                          isOpen == false ? "CLOSED" : "OPENED",
+                          shop!.isOpen == false ? "CLOSED" : "OPENED",
                           style:
                               Theme.of(context).textTheme.bodySmall!.copyWith(
                                     fontWeight: FontWeight.bold,
@@ -331,7 +332,7 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                                                     ),
                                                     const SizedBox(width: 3),
                                                     Text(
-                                                      "${shop!.distanceToUser.round()}km away",
+                                                      "${shop!.distanceToUser}km away",
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodySmall!

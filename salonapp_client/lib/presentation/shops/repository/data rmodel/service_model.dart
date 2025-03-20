@@ -18,6 +18,7 @@ class ShopModel {
   late String? dateJoined;
   late List<String>? workImgs;
   late double distanceToUser;
+  late bool isOpen;
 
   ShopModel({
     this.shopId,
@@ -35,6 +36,7 @@ class ShopModel {
     required this.dateJoined,
     required this.workImgs,
     required this.distanceToUser,
+    required this.isOpen,
   });
 
   Map<String, dynamic> toJson() {
@@ -54,6 +56,7 @@ class ShopModel {
       "dateJoined": dateJoined,
       "workImgs": workImgs,
       "distanceToUser": distanceToUser,
+      "isOpened": isOpen,
     };
   }
 
@@ -98,6 +101,7 @@ class ShopModel {
         workImgs:
             data["workImgs"] != null ? List<String>.from(data["workImgs"]) : [],
         distanceToUser: 0,
+        isOpen: data['isOpened'] ?? false,
       );
     } else {
       print('Document not found for id: ${document.id}');

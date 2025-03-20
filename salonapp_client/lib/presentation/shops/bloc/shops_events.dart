@@ -19,20 +19,23 @@ class CreateShopEvent extends ShopsEvent {
   final List<String> workImgs = [];
   late double distanceToUser;
   late List<double?> cordinates;
+  late bool isOpen;
 
-  CreateShopEvent(
-      {this.shopId,
-      required this.shopOwnerId,
-      required this.shopName,
-      required this.category,
-      required this.openingDays,
-      required this.operningTimes,
-      required this.location,
-      required this.phone,
-      required this.whatsapp,
-      required this.services,
-      required this.profileImg,
-      required this.dateJoined});
+  CreateShopEvent({
+    this.shopId,
+    required this.shopOwnerId,
+    required this.shopName,
+    required this.category,
+    required this.openingDays,
+    required this.operningTimes,
+    required this.location,
+    required this.phone,
+    required this.whatsapp,
+    required this.services,
+    required this.profileImg,
+    required this.dateJoined,
+    required this.isOpen,
+  });
 }
 
 class DeleteShopEvent extends ShopsEvent {

@@ -39,7 +39,7 @@ class _ShopsPageState extends State<ShopsPage>
   ];
   bool isFavClicked = false;
   final searchController = TextEditingController();
-  String text = 'No shops available !!';
+  String text = 'No nearby shops available !!';
   ShopsBloc? shopsBloc;
   void dispose() {
     searchController.dispose();
@@ -63,8 +63,11 @@ class _ShopsPageState extends State<ShopsPage>
       }
     }, builder: (context, state) {
       if (locationState is LocationFailure) {
-        return Center(
-            child: Text("Failed to fetch location: ${locationState.error}"));
+        return Container(
+          color: secondaryBg,
+          child: Center(
+              child: Text("Failed to fetch location: ${locationState.error}")),
+        );
       }
 
       if (locationState is LocationFetchedState) {
@@ -80,7 +83,7 @@ class _ShopsPageState extends State<ShopsPage>
       }
 
       if (state is ShopsFetchedState) {
-        final shops = state.shop;
+         final shops = state.shop;
         return Scaffold(
           extendBodyBehindAppBar: true,
           appBar: PreferredSize(
@@ -114,7 +117,7 @@ class _ShopsPageState extends State<ShopsPage>
                           shops!.isEmpty
                               ? SizedBox.shrink()
                               : Text(
-                                  " (${shops.length})",
+                                  " (${state.shop!.length})",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyLarge!
@@ -190,7 +193,7 @@ class _ShopsPageState extends State<ShopsPage>
             ),
           ),
           body: state is ShopsLoadingState ||
-                  locationState is InitLocation ||
+                  // locationState is InitLocation ||
                   locationState is LocationLoading
               ? Container(
                   child: const Center(
@@ -212,7 +215,7 @@ class _ShopsPageState extends State<ShopsPage>
                     ),
                   ),
                 )
-              : shops.isEmpty
+              : shops!.isEmpty
                   ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -247,17 +250,19 @@ class _ShopsPageState extends State<ShopsPage>
                                       MediaQuery.of(context).size.height - 200,
                                   width: MediaQuery.of(context).size.width,
                                   child: ListView.builder(
-                                    itemCount: shops.length,
+                                    itemCount: shops!.length,
                                     scrollDirection: Axis.vertical,
                                     itemBuilder:
                                         (BuildContext context, int index) {
-                                      final shopInfo = shops[index];
+                                      ShopModel? shopInfo = shops![index];
+                                      print(
+                                          "Imgurl profile: ${shopInfo.profileImg}");
                                       return ShowUpAnimation(
                                         delay: 150,
                                         child: appointmentContainer(
                                           context,
                                           shopInfo.shopId,
-                                          shopInfo.profileImg ?? '',
+                                          shopInfo.profileImg,
                                           shopInfo.shopName,
                                           shopInfo.location,
                                           shopInfo.openingDays,
@@ -277,21 +282,24 @@ class _ShopsPageState extends State<ShopsPage>
                     ),
         );
       }
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SpinKitDoubleBounce(
-            // lineWidth: 3,
-            size: 60,
-            color: primaryColor,
-          ),
-          SizedBox(height: 20),
-          PrimaryText(
-            text: 'Loading nearby shops....',
-            color: secondaryColor3,
-            size: 13,
-          ),
-        ],
+      return Scaffold(
+        backgroundColor: secondaryBg,
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SpinKitDoubleBounce(
+              // lineWidth: 3,
+              size: 60,
+              color: primaryColor,
+            ),
+            SizedBox(height: 20),
+            PrimaryText(
+              text: 'Loading nearby shops....',
+              color: secondaryColor3,
+              size: 13,
+            ),
+          ],
+        ),
       );
     });
   }
@@ -299,7 +307,7 @@ class _ShopsPageState extends State<ShopsPage>
   Container appointmentContainer(
     BuildContext context,
     String? id,
-    String imgurl,
+    String? img,
     String? name,
     String? location,
     String? openingDays,
@@ -347,7 +355,7 @@ class _ShopsPageState extends State<ShopsPage>
                     ),
                   ),
                   child: CachedNetworkImage(
-                    imageUrl: imgurl ?? '',
+                    imageUrl: img ?? '',
                     imageBuilder: (context, imageProvider) => Container(
                       height: 150,
                       width: MediaQuery.of(context).size.width,

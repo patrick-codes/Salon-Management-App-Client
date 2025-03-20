@@ -16,6 +16,7 @@ class CreateShopEvent extends HomeShopsEvent {
   final String profileImg;
   final String dateJoined;
   final List<String> workImgs = [];
+  final bool isOpened;
 
   CreateShopEvent(
       {this.shopId,
@@ -29,7 +30,8 @@ class CreateShopEvent extends HomeShopsEvent {
       required this.whatsapp,
       required this.services,
       required this.profileImg,
-      required this.dateJoined});
+      required this.dateJoined,
+      required this.isOpened});
 }
 
 class DeleteShopEvent extends HomeShopsEvent {

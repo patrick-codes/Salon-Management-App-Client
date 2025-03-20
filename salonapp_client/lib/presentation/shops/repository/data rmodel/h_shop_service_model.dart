@@ -54,7 +54,7 @@ class HomeShopModel {
   }
 
   HomeShopModel.defaultModel() {
-    shopId = null;
+    /// shopId = null;
     shopOwnerId = "ownerID";
     shopName = "shopName";
     category = "category";
@@ -89,7 +89,7 @@ class HomeShopModel {
         dateJoined: data["dateJoined"] ?? '',
         workImgs:
             data["workImgs"] != null ? List<String>.from(data["workImgs"]) : [],
-        isOpened: data["isOpened"] ?? true,
+        isOpened: data["isOpened"] ?? false,
         // ratings: data["Ratings"] is int
         //     ? data["Ratings"]
         //     : int.tryParse(data["Ratings"].toString()) ?? 0,

@@ -83,7 +83,7 @@ class _ShopsPageState extends State<ShopsPage>
       }
 
       if (state is ShopsFetchedState) {
-         final shops = state.shop;
+        final shops = state.shop;
         return Scaffold(
           extendBodyBehindAppBar: true,
           appBar: PreferredSize(
@@ -250,19 +250,18 @@ class _ShopsPageState extends State<ShopsPage>
                                       MediaQuery.of(context).size.height - 200,
                                   width: MediaQuery.of(context).size.width,
                                   child: ListView.builder(
-                                    itemCount: shops!.length,
+                                    itemCount: shops.length,
                                     scrollDirection: Axis.vertical,
                                     itemBuilder:
                                         (BuildContext context, int index) {
-                                      ShopModel? shopInfo = shops![index];
-                                      print(
-                                          "Imgurl profile: ${shopInfo.profileImg}");
+                                      ShopModel? shopInfo = shops[index];
+                                      print("${shops[index].profileImg}");
                                       return ShowUpAnimation(
                                         delay: 150,
                                         child: appointmentContainer(
                                           context,
                                           shopInfo.shopId,
-                                          shopInfo.profileImg,
+                                          shops[index].profileImg,
                                           shopInfo.shopName,
                                           shopInfo.location,
                                           shopInfo.openingDays,

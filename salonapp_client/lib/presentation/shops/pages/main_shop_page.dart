@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
 import 'package:salonapp_client/presentation/shops/bloc/shops_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -333,7 +334,7 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                                                     ),
                                                     const SizedBox(width: 3),
                                                     Text(
-                                                      "${shop!.distanceToUser.round()}km away",
+                                                      "${shop!.distanceToUser.ceilToDouble()}km away",
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodySmall!
@@ -383,8 +384,8 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                             itemCount: icons.length,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (BuildContext context, int index) {
-                              return buildCategorySquare(
-                                  icons[index], title[index], index);
+                              return buildCategorySquare(icons[index],
+                                  title[index], index, shop!.cordinates);
                             },
                           ),
                         ),
@@ -693,13 +694,20 @@ class _DetailsPageState extends State<MainShopinfoPage> {
     );
   }
 
-  Widget buildCategorySquare(Icon icons, String title, index) {
+  Widget buildCategorySquare(
+      Icon icons, String title, index, List<double?> cordinates) {
     return Column(
       children: [
         GestureDetector(
           onTap: () {
             if (index == 2) {
-              Navigator.pushNamed(context, '/map');
+              Navigator.pushNamed(
+                context,
+                '/map',
+                arguments: {
+                  'latlng': [cordinates[0], cordinates[1]]
+                },
+              );
             }
           },
           child: Container(

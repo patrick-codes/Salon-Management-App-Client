@@ -65,8 +65,27 @@ class _ShopsPageState extends State<ShopsPage>
       if (locationState is LocationFailure) {
         return Container(
           color: secondaryBg,
-          child: Center(
-              child: Text("Failed to fetch location: ${locationState.error}")),
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.location_off_rounded,
+                  color: Colors.black26,
+                  size: 80,
+                ),
+                SizedBox(height: 18),
+                PrimaryText(
+                  fontWeight: FontWeight.w200,
+                  size: 15,
+                  color: iconGrey,
+                  text:
+                      "Turn on your device's location service to access nearby shops.",
+                ),
+              ],
+            ),
+          ),
         );
       }
 
@@ -413,12 +432,13 @@ class _ShopsPageState extends State<ShopsPage>
                             decoration: BoxDecoration(
                               border: Border(top: BorderSide.none),
                               gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    backgroundColor.withOpacity(0.2),
-                                    backgroundColor
-                                  ]),
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  backgroundColor.withOpacity(0.2),
+                                  backgroundColor
+                                ],
+                              ),
                               color: backgroundColor,
                             ),
                             child: Padding(
@@ -459,7 +479,7 @@ class _ShopsPageState extends State<ShopsPage>
                                       ),
                                       const SizedBox(width: 3),
                                       Text(
-                                        "${distance!.round()}km away",
+                                        "${distance!.ceilToDouble()}km away",
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall!

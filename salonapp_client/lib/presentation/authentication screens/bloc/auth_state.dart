@@ -58,3 +58,17 @@ class AuthLogoutFailureState extends AuthState {
 class PasswordResetSuccesState extends AuthState {}
 
 class PasswordResetFailureState extends AuthState {}
+
+class UserLoadingState extends AuthState {}
+
+class CurrentUserState extends AuthState {
+  final UserModel? user;
+
+  CurrentUserState(this.user);
+}
+
+class UserLoadingFailState extends AuthState {
+  final String error;
+
+  UserLoadingFailState(this.error);
+}

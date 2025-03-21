@@ -4,8 +4,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import 'package:salonapp_client/helpers/colors/widgets/minimal_heading.dart';
+import 'package:salonapp_client/presentation/authentication%20screens/repository/data%20model/user_model.dart';
 import 'package:salonapp_client/presentation/location/bloc/location_bloc.dart';
 import '../../helpers/colors/widgets/style.dart';
+import '../authentication screens/bloc/auth_bloc.dart';
 import '../checkout page/components/Transaction/other/show_up_animation.dart';
 import '../filter screen/pages/filter_screen.dart';
 import '../shops/bloc/home shop bloc/h_shops_bloc.dart';
@@ -64,6 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String photoUrl =
       "https://media.istockphoto.com/id/2166854040/photo/chairs-by-sink-bowl-at-hair-salon.webp?a=1&b=1&s=612x612&w=0&k=20&c=UltW4fSClI85zl07M0pmi4-uqjcUC4ADd4xfwBS6nWc=";
   List<HomeShopModel>? shops;
+  UserModel? user;
   bool isLoaded = false;
   final searchController = TextEditingController();
   String text = 'No shops available !!';
@@ -76,6 +79,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // final userBloc =
+    //     context.read<AuthBloc>().add(CurrentUserEvent(user!.id ?? ''));
     return BlocConsumer<HomeShopsBloc, HomeShopsState>(
       listener: (context, state) {
         if (state is ShopsLoadingState) {
@@ -93,9 +98,9 @@ class _MyHomePageState extends State<MyHomePage> {
           isLoaded = true;
           debugPrint("Shops Fetched:${state.shop!.length}");
         }
+
         return Scaffold(
           backgroundColor: secondaryColor,
-          //Colors.grey[300]!.withOpacity(0.28),
           body: SingleChildScrollView(
             child: Column(
               children: [
@@ -161,7 +166,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                                 .bodyMedium!
                                                 .copyWith(
                                                   fontWeight: FontWeight.bold,
-                                                  fontSize: 12,
+                                                  fontSize: 11,
                                                   color: Colors.white,
                                                 ),
                                           );
@@ -186,26 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {
-                                // showDialog(
-                                //   context: context,
-                                //   builder: (context) => DialogBoxUtil(
-                                //     context,
-                                //     onTap: () {
-                                //       context
-                                //           .read<AuthBloc>()
-                                //           .add(LogoutEvent());
-                                //     },
-                                //     content: 'Confirm Logout',
-                                //     leftText: 'Cancel',
-                                //     rightText: 'Logout',
-                                //     oncancel: () {
-                                //       Navigator.pop(context);
-                                //     },
-                                //     icon: MingCute.exit_fill,
-                                //   ),
-                                // );
-                              },
+                              onTap: () {},
                               child: Container(
                                 height: 40,
                                 width: 40,
@@ -213,7 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   image: DecorationImage(
                                     fit: BoxFit.cover,
                                     image: Image.network(
-                                      photoUrl ?? '',
+                                      user?.profilePhoto ?? photoUrl,
                                       loadingBuilder:
                                           (context, child, loadingProgress) {
                                         if (loadingProgress == null)
@@ -233,13 +219,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(40),
                                 ),
-                                // child:
-                                //  const Center(
-                                //   child: Icon(
-                                //     MingCute.exit_fill,
-                                //     size: 20,
-                                //   ),
-                                // ),
                               ),
                             ),
                           ],

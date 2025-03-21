@@ -115,7 +115,7 @@ class GridViewComponent extends StatelessWidget {
                             baseColor: Colors.grey[300]!,
                             highlightColor: Colors.grey[200]!,
                             child: Container(
-                              height: 150,
+                              height: 90,
                               width: MediaQuery.of(context).size.width,
                               decoration: BoxDecoration(
                                 color: secondaryColor3,
@@ -128,7 +128,7 @@ class GridViewComponent extends StatelessWidget {
                           ),
                         ),
                         errorWidget: (context, url, error) => SizedBox(
-                          height: 90,
+                          height: 40,
                           child: Center(
                             child: SizedBox(
                               height: 20,

@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../authentication screens/bloc/auth_bloc.dart';
+import '../../../authentication screens/repository/data model/user_model.dart';
 import '../../repository/data rmodel/h_shop_service_model.dart';
 import '../../repository/salonservices helper/fetch_services_helper.dart';
 part 'h_shops_events.dart';
@@ -10,16 +12,18 @@ class HomeShopsBloc extends Bloc<HomeShopsEvent, HomeShopsState> {
   List<HomeShopModel>? serviceman;
   HomeShopModel? singleServiceMan;
   HomeShopModel? singleService;
+  final AuthBloc authBloc;
 
   List<HomeShopModel>? serviceman2 = [];
   List<HomeShopModel>? serviceman3 = [];
   static SalonServiceHelper salonHelper = SalonServiceHelper();
-  final firebaseUser = FirebaseAuth.instance.currentUser!.uid;
+  UserModel? user;
+
   int serviceNum = 0;
   int num = 0;
   int total = 0;
 
-  HomeShopsBloc() : super(HomeShopInitial()) {
+  HomeShopsBloc(this.authBloc) : super(HomeShopInitial()) {
     on<ViewHomeShopsEvent>(fetchShops);
     on<SearchShopEvent>(searchShops);
     on<ViewSingleShopEvent>(fetchSingleShop);
@@ -46,11 +50,11 @@ class HomeShopsBloc extends Bloc<HomeShopsEvent, HomeShopsState> {
     }
   }
 
-  
   Future<List<HomeShopModel>?> fetchShops(
       ViewHomeShopsEvent event, Emitter<HomeShopsState> emit) async {
     emit(ShopsLoadingState());
     try {
+      final authState = authBloc.state;
       if (serviceman == null) {
         serviceman = await salonHelper.fetchHomeSalonShops();
         num = serviceman?.length ?? 0;
@@ -60,6 +64,10 @@ class HomeShopsBloc extends Bloc<HomeShopsEvent, HomeShopsState> {
         total = num;
         emit(ShopsFetchedState(shop: serviceman2));
         debugPrint("Total Services is $num");
+      }
+      if (authState is CurrentUserState) {
+        user = authState.user;
+        debugPrint("Current User Account: ${user!.fullname}");
       }
     } on FirebaseAuthException catch (error) {
       emit(ShopsFetchFailureState(errorMessage: error.toString()));

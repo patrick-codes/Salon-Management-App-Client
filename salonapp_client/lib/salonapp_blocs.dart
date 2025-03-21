@@ -24,7 +24,8 @@ class SalonAppBlocs extends StatelessWidget {
               ShopsBloc(context.read<LocationBloc>())..add(ViewShopsEvent()),
         ),
         BlocProvider(
-          create: (context) => HomeShopsBloc()..add(ViewHomeShopsEvent()),
+          create: (context) => HomeShopsBloc(context.read<AuthBloc>())
+            ..add(ViewHomeShopsEvent()),
         )
       ],
       child: MultiBlocProvider(
@@ -33,7 +34,8 @@ class SalonAppBlocs extends StatelessWidget {
           //   create: (context) => ShopsBloc(locationBloc)..add(ViewShopsEvent()),
           // ),
           BlocProvider(
-            create: (context) => HomeShopsBloc()..add(ViewHomeShopsEvent()),
+            create: (context) => HomeShopsBloc(context.read<AuthBloc>())
+              ..add(ViewHomeShopsEvent()),
           )
         ],
         child: SalonApp(),

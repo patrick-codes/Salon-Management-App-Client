@@ -31,13 +31,21 @@ class SalonApp extends StatelessWidget {
           '/mainhome': (context) => const MainHomePage(),
           '/shopinfo': (context) => const ShopInfo(),
           '/shops': (context) => ShopsPage(),
-          '/map': (context) => const MapDirectionScreen(),
+          // '/map': (context) => const MapDirectionScreen(),
         },
         onGenerateRoute: (settings) {
           if (settings.name == '/mainshopinfo') {
             final args = settings.arguments as Map<String, dynamic>;
             return MaterialPageRoute(
               builder: (context) => MainShopinfoPage(id: args['id']),
+            );
+          }
+          if (settings.name == '/map') {
+            final args = settings.arguments as Map<String, dynamic>;
+            return MaterialPageRoute(
+              builder: (context) => MapDirectionScreen(
+                cordinates: args['latlng'],
+              ),
             );
           }
           return null;

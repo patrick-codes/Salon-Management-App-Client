@@ -120,6 +120,7 @@ flutter:
     - assets/images/
     - assets/pngs/
     - assets/svgs/
+    - assets/pngs/administrator_male_40px.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -30,7 +30,7 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
     on<LoginEvent>(loginUser);
     on<ForgotPasswordEvent>(resetPassword);
     on<LogoutEvent>(logoutUser);
-    //on<LoginWithGoogleEvent>(loginWithGoogle);
+    on<CurrentUserEvent>(currentUser);
   }
 
   Future<void> onAppStarted(
@@ -232,35 +232,23 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
     }
   }
 
-  // Future<UserCredential> loginWithGoogle(
-  //     LoginWithGoogleEvent event, Emitter<AuthState> emit) async {
-  //   try {
-  //     emit(AuthLoadingState());
+  Future<void> currentUser(
+      CurrentUserEvent event, Emitter<AuthState> emit) async {
+    try {
+      UserModel? userData;
+      emit(UserLoadingState());
+      debugPrint("Loading current user..");
 
-  //     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-  //     final GoogleSignInAuthentication? googleAuth =
-  //         await googleUser?.authentication;
-
-  //     final credential = GoogleAuthProvider.credential(
-  //       accessToken: googleAuth?.accessToken,
-  //       idToken: googleAuth?.idToken,
-  //     );
-
-  //     emit(AuthLoadingState());
-  //     final auth = await FirebaseAuth.instance.signInWithCredential(credential);
-  //     emit(AuthenticatedState(message: 'Login Succesful'));
-  //     debugPrint('Login Succesful');
-  //     return auth;
-  //   } on FirebaseAuthException catch (error) {
-  //     final ex = Exception(error.code);
-  //     emit(AuthFailureState(errorMessage: ex.toString()));
-  //     debugPrint('Error: $ex');
-  //     throw ex;
-  //   } catch (_) {
-  //     const excep = FirebaseAuthException;
-  //     emit(AuthFailureState(errorMessage: excep.toString()));
-  //     debugPrint('Exception $excep');
-  //     throw excep;
-  //   }
-  // }
+      if (event.userId.isNotEmpty) {
+        userData = await UserHelper.getCurrentUser(event.userId);
+        emit(CurrentUserState(userData));
+        debugPrint("Current user:$userData");
+      } else {
+        emit(UserLoadingFailState("Current user fetch fail.."));
+      }
+    } catch (e) {
+      emit(UserLoadingFailState(e.toString()));
+      debugPrint(e.toString());
+    }
+  }
 }

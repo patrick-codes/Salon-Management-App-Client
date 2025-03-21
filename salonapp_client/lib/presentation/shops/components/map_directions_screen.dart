@@ -1,15 +1,24 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:salonapp_client/helpers/colors/color_constants.dart';
+
 import '../../checkout page/components/Transaction/other/show_up_animation.dart';
 import '../../location/bloc/location_bloc.dart';
-import 'dart:convert';
 
 class MapDirectionScreen extends StatefulWidget {
-  const MapDirectionScreen({super.key});
+  final List<double?> cordinates;
+  const MapDirectionScreen({
+    Key? key,
+    required this.cordinates,
+  }) : super(key: key);
 
   @override
   State<MapDirectionScreen> createState() => _MapDirectionScreenState();
@@ -55,26 +64,25 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
     );
   }
 
-  void moveCameraToUserLocation(BuildContext context) async {
+  void moveCameraToUserLocation(BuildContext context) async {}
+  Future<void> _addCustomMarker() async {
     if (mapController == null) return;
 
-    final locationBloc = context.read<LocationBloc>();
+    LatLng markerLocation = LatLng(-1.286389, 36.817223);
 
-    if (locationBloc.userLatitude != null &&
-        locationBloc.userLongitude != null) {
-      LatLng userLatLng = LatLng(
-        locationBloc.userLatitude!,
-        locationBloc.userLongitude!,
-      );
+    final ByteData bytes =
+        await rootBundle.load("assets/pngs/administrator_male_40px.png");
+    final Uint8List imageBytes = bytes.buffer.asUint8List();
 
-      await Future.delayed(Duration(milliseconds: 300));
+    await mapController!.addImage("administrator_male_40px", imageBytes);
 
-      mapController!.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(target: userLatLng, zoom: 12),
-        ),
-      );
-    }
+    await mapController!.addSymbol(
+      SymbolOptions(
+        geometry: markerLocation,
+        iconSize: 2.5,
+        iconImage: "administrator_male_40px",
+      ),
+    );
   }
 
   LatLng userLocation = LatLng(0.0, 0.0);
@@ -84,10 +92,10 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
       listener: (context, state) {
         if (state is CordinatesLoaded) {
           final locationBloc = context.read<LocationBloc>();
-          userLocation = LatLng(
-            locationBloc.userLatitude ?? 0.0,
-            locationBloc.userLongitude ?? 0.0,
-          );
+          // userLocation = LatLng(
+          //   locationBloc.userLatitude ?? 0.0,
+          //   locationBloc.userLongitude ?? 0.0,
+          // );
           moveCameraToUserLocation(context);
         } else if (state is LocationLoading) {
           Center(child: CircularProgressIndicator());
@@ -124,6 +132,8 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
                   await Future.delayed(Duration(seconds: 1));
                   moveCameraToUserLocation(context);
                   await _addPolyline();
+                  await _addCustomMarker();
+
                   mapController!.animateCamera(
                     CameraUpdate.newCameraPosition(
                       CameraPosition(target: userLocation, zoom: 12),
@@ -133,7 +143,7 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
                 initialCameraPosition: CameraPosition(
                   target: userLocation,
                 ),
-                onStyleLoadedCallback: () {
+                onStyleLoadedCallback: () async {
                   _addPolyline();
                 },
               ),

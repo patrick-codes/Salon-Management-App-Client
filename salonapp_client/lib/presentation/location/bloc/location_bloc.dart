@@ -97,7 +97,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       placeLoc = place.street ?? '';
       placeAdm = place.country;
 
-      debugPrint("✅ Location Fetched: $userLatitude, $userLongitude");
+      debugPrint("Location Fetched: $userLatitude, $userLongitude");
       emit(LocationFetchedState(
         latitude: userLatitude,
         longitude: userLongitude,

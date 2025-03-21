@@ -33,7 +33,7 @@ class UserHelper {
     }
   }
 
-  Future<UserModel?> getUserDetails2(String id) async {
+  static Future<UserModel?> getCurrentUser(String id) async {
     try {
       final snapshot =
           await _db.collection("users").where("id", isEqualTo: id).get();

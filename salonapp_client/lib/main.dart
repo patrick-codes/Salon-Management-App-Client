@@ -12,6 +12,6 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  debugPrint("Firebase Connected Succesfuly");
+  //debugPrint("Firebase Connected Succesfuly");
   runApp(const SalonAppBlocs());
 }

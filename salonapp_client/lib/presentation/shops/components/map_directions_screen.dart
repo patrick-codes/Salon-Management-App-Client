@@ -32,7 +32,7 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
   Future<void> _addPolyline() async {
     if (mapController == null) return;
 
-    Map<String, dynamic> geoJson = jsonDecode('''
+    String geoJsonString = '''
   {
     "type": "FeatureCollection",
     "features": [
@@ -41,15 +41,17 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
         "geometry": {
           "type": "LineString",
           "coordinates": [
-            [-122.4194, 37.7749], // Start (Longitude, Latitude)
-            [-122.4294, 37.7849]  // End (Longitude, Latitude)
+            [-122.4194, 37.7749],
+            [-122.4294, 37.7849]
           ]
         },
         "properties": {}
       }
     ]
   }
-  ''');
+  ''';
+
+    Map<String, dynamic> geoJson = jsonDecode(geoJsonString);
 
     await mapController!.addGeoJsonSource("polyline-source", geoJson);
 

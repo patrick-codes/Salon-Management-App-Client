@@ -334,7 +334,7 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                                                     ),
                                                     const SizedBox(width: 3),
                                                     Text(
-                                                      "${shop!.distanceToUser.ceilToDouble()}km away",
+                                                      "${shop!.distanceToUser}km away",
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodySmall!
@@ -384,6 +384,8 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                             itemCount: icons.length,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (BuildContext context, int index) {
+                              debugPrint(
+                                  "Passed shop cordinates: ${shop!.cordinates}");
                               return buildCategorySquare(icons[index],
                                   title[index], index, shop!.cordinates);
                             },
@@ -708,6 +710,7 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                   'latlng': [cordinates[0], cordinates[1]]
                 },
               );
+              debugPrint("latlng: ${[cordinates[0], cordinates[1]]}");
             }
           },
           child: Container(

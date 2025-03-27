@@ -31,7 +31,6 @@ class SalonApp extends StatelessWidget {
           '/mainhome': (context) => const MainHomePage(),
           '/shopinfo': (context) => const ShopInfo(),
           '/shops': (context) => ShopsPage(),
-          // '/map': (context) => const MapDirectionScreen(),
         },
         onGenerateRoute: (settings) {
           if (settings.name == '/mainshopinfo') {

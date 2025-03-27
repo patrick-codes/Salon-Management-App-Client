@@ -74,41 +74,41 @@ class GridViewComponent extends StatelessWidget {
                               topRight: Radius.circular(8),
                             ),
                           ),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Container(
-                                    height: 18,
-                                    width: 18,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          blurRadius: 2,
-                                          spreadRadius: 1,
-                                          color: Colors.grey.withOpacity(0.5),
-                                        ),
-                                      ],
-                                    ),
-                                    child: const Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.favorite_border_outlined,
-                                          color: Colors.red,
-                                          size: 12,
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                          // child: Column(
+                          //   children: [
+                          //     Row(
+                          //       mainAxisAlignment: MainAxisAlignment.end,
+                          //       children: [
+                          //         Container(
+                          //           height: 18,
+                          //           width: 18,
+                          //           decoration: BoxDecoration(
+                          //             color: Colors.white,
+                          //             borderRadius: BorderRadius.circular(20),
+                          //             boxShadow: [
+                          //               BoxShadow(
+                          //                 blurRadius: 2,
+                          //                 spreadRadius: 1,
+                          //                 color: Colors.grey.withOpacity(0.5),
+                          //               ),
+                          //             ],
+                          //           ),
+                          //           child: const Column(
+                          //             mainAxisAlignment:
+                          //                 MainAxisAlignment.center,
+                          //             children: [
+                          //               Icon(
+                          //                 Icons.favorite_border_outlined,
+                          //                 color: Colors.red,
+                          //                 size: 12,
+                          //               )
+                          //             ],
+                          //           ),
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ],
+                          // ),
                         ),
                         placeholder: (context, url) => Center(
                           child: Shimmer.fromColors(
@@ -191,16 +191,17 @@ class GridViewComponent extends StatelessWidget {
                                 Text(
                                   shops![index].openingDays.toString(),
                                   style: TextStyle(
-                                      fontSize: 8,
-                                      color: primaryColor,
-                                      fontWeight: FontWeight.bold),
+                                    fontSize: 10,
+                                    color: blackColor,
+                                    fontWeight: FontWeight.w400,
+                                  ),
                                 ),
                                 Row(
                                   children: [
                                     const Icon(
-                                      Icons.star,
-                                      color: Color.fromARGB(255, 250, 207, 51),
-                                      size: 13,
+                                      Icons.verified,
+                                      color: Colors.blue,
+                                      size: 15,
                                     ),
                                     const SizedBox(width: 5),
                                   ],

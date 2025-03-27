@@ -64,23 +64,41 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
     );
   }
 
-  void moveCameraToUserLocation(BuildContext context) async {}
+  void moveCameraToUserLocation(BuildContext context) async {
+    if (mapController == null) return;
+
+    // final locationBloc = context.read<LocationBloc>();
+
+    if (widget.cordinates[0] != null && widget.cordinates[1] != null) {
+      LatLng userLatLng = LatLng(
+        widget.cordinates[0]!,
+        widget.cordinates[1]!,
+      );
+
+      await Future.delayed(Duration(milliseconds: 300));
+
+      mapController!.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(target: userLatLng, zoom: 12),
+        ),
+      );
+    }
+  }
+
   Future<void> _addCustomMarker() async {
     if (mapController == null) return;
 
-    LatLng markerLocation = LatLng(-1.286389, 36.817223);
-
-    final ByteData bytes =
-        await rootBundle.load("assets/pngs/administrator_male_40px.png");
-    final Uint8List imageBytes = bytes.buffer.asUint8List();
-
-    await mapController!.addImage("administrator_male_40px", imageBytes);
+    final locationBloc = context.read<LocationBloc>();
+    LatLng markerLocation = LatLng(
+      locationBloc.userLatitude ?? 0.0,
+      locationBloc.userLongitude ?? 0.0,
+    );
 
     await mapController!.addSymbol(
       SymbolOptions(
         geometry: markerLocation,
         iconSize: 2.5,
-        iconImage: "administrator_male_40px",
+        iconImage: "marker",
       ),
     );
   }
@@ -91,11 +109,6 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
     return BlocConsumer<LocationBloc, LocationState>(
       listener: (context, state) {
         if (state is CordinatesLoaded) {
-          final locationBloc = context.read<LocationBloc>();
-          // userLocation = LatLng(
-          //   locationBloc.userLatitude ?? 0.0,
-          //   locationBloc.userLongitude ?? 0.0,
-          // );
           moveCameraToUserLocation(context);
         } else if (state is LocationLoading) {
           Center(child: CircularProgressIndicator());

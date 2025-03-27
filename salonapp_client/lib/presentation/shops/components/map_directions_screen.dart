@@ -74,6 +74,8 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
         widget.cordinates[0]!,
         widget.cordinates[1]!,
       );
+      debugPrint(
+          "Shop Map cordinates: ${widget.cordinates[0]!},${widget.cordinates[1]!}");
 
       await Future.delayed(Duration(milliseconds: 300));
 
@@ -94,6 +96,9 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
       locationBloc.userLongitude ?? 0.0,
     );
 
+    debugPrint(
+        "User Map cordinates: ${locationBloc.userLatitude ?? 0.0}, ${locationBloc.userLongitude ?? 0.0}");
+
     await mapController!.addSymbol(
       SymbolOptions(
         geometry: markerLocation,
@@ -110,6 +115,7 @@ class _MapDirectionScreenState extends State<MapDirectionScreen> {
       listener: (context, state) {
         if (state is CordinatesLoaded) {
           moveCameraToUserLocation(context);
+          _addCustomMarker();
         } else if (state is LocationLoading) {
           Center(child: CircularProgressIndicator());
         } else {

@@ -240,7 +240,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                             size: 12,
                                           ),
                                           TextUtil(
-                                            text: '${selectedValue!.toLocal()}',
+                                            text:
+                                                '${selectedValue!.day} - ${selectedValue!.month} - ${selectedValue!.year}',
                                             size: 15,
                                             weight: true,
                                             // color: Theme.of(context).primaryColor,

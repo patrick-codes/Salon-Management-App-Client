@@ -44,8 +44,10 @@ final class PermissionDeniedForever extends LocationState {
 
 final class LocationFetchedState extends LocationState {
   LocationFetchedState(
-      {required this.latitude, required this.longitude, required this.address});
+      {this.latitude, this.longitude, this.address, this.address2});
+
   final double? latitude;
   final double? longitude;
   final String? address;
+  final String? address2;
 }

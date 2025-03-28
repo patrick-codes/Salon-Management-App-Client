@@ -13,7 +13,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   late LocationPermission permission;
   Position? _currentUserLocation;
   String currentAddress = 'Loading current location....';
-  String placeLoc = '';
+  String? placeLoc;
   String? placeAdm;
   String currentStreet = '';
   double? distanceInMeters = 0.0;
@@ -76,6 +76,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
         latitude: userLatitude,
         longitude: userLongitude,
         address: currentAddress,
+        address2: placeLoc,
       ));
       debugPrint('Address: $currentAddress');
     } catch (e) {
@@ -91,10 +92,10 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
           _currentUserLocation!.latitude, _currentUserLocation!.longitude);
       Placemark place = placemarks.first;
 
-      currentAddress = '${place.locality} - ${place.administrativeArea}';
+      currentAddress = '${place.locality} , ${place.administrativeArea}';
       userLatitude = _currentUserLocation!.latitude;
       userLongitude = _currentUserLocation!.longitude;
-      placeLoc = place.street ?? '';
+      placeLoc = place.locality;
       placeAdm = place.country;
 
       debugPrint("Location Fetched: $userLatitude, $userLongitude");
@@ -111,28 +112,4 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       debugPrint('Error fetching address: $e');
     }
   }
-
-/*
-  Future<void> _addressFromCoordinates(Emitter<LocationState> emit) async {
-    try {
-      if (_currentUserLocation == null) return;
-
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-          _currentUserLocation!.latitude, _currentUserLocation!.longitude);
-      Placemark place = placemarks.first;
-
-      currentAddress = '${place.locality} - ${place.administrativeArea}';
-      userLatitude = _currentUserLocation!.latitude;
-      userLongitude = _currentUserLocation!.longitude;
-      placeLoc = place.street ?? '';
-      placeAdm = place.country;
-
-      debugPrint('Location: $currentAddress');
-      debugPrint('Latitude: $userLatitude');
-      debugPrint('Longitude: $userLongitude');
-    } catch (e) {
-      debugPrint('Error fetching address: $e');
-    }
-  }
-*/
 }

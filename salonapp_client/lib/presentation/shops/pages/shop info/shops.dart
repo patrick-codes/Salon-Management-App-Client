@@ -41,6 +41,7 @@ class _ShopsPageState extends State<ShopsPage>
   final searchController = TextEditingController();
   String text = 'No nearby shops available !!';
   ShopsBloc? shopsBloc;
+  String? address;
   void dispose() {
     searchController.dispose();
     super.dispose();
@@ -81,7 +82,7 @@ class _ShopsPageState extends State<ShopsPage>
                   size: 15,
                   color: iconGrey,
                   text:
-                      "Turn on your device's location service to access nearby shops.",
+                      "Turn on your device's location service or wait for app to fetch device location to access nearby shops.",
                 ),
               ],
             ),
@@ -90,6 +91,7 @@ class _ShopsPageState extends State<ShopsPage>
       }
 
       if (locationState is LocationFetchedState) {
+        address = locationState.address2;
         if (state is! ShopsFetchedState && state is! ShopsLoadingState) {
           context.read<ShopsBloc>().add(ViewShopsEvent());
         }
@@ -125,12 +127,13 @@ class _ShopsPageState extends State<ShopsPage>
         return Scaffold(
           extendBodyBehindAppBar: true,
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(128),
+            preferredSize: Size.fromHeight(120),
             child: Container(
               color: Colors.white,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppBar(
                       systemOverlayStyle: const SystemUiOverlayStyle(
@@ -142,27 +145,28 @@ class _ShopsPageState extends State<ShopsPage>
                         MingCute.arrow_left_fill,
                       ),
                       centerTitle: true,
-                      title: Row(
+                      title: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Nearby Shops",
+                            "Shops around ${address}",
+                            overflow: TextOverflow.ellipsis,
                             style:
                                 Theme.of(context).textTheme.bodyLarge!.copyWith(
                                       fontWeight: FontWeight.bold,
                                     ),
                           ),
-                          shops!.isEmpty
-                              ? SizedBox.shrink()
-                              : Text(
-                                  " (${state.shop!.length})",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge!
-                                      .copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                ),
+                          // shops!.isEmpty
+                          //     ? SizedBox.shrink()
+                          //     : Text(
+                          //         " (${state.shop!.length})",
+                          //         style: Theme.of(context)
+                          //             .textTheme
+                          //             .bodyLarge!
+                          //             .copyWith(
+                          //               fontWeight: FontWeight.bold,
+                          //             ),
+                          //       ),
                         ],
                       ),
                       actions: [
@@ -285,7 +289,7 @@ class _ShopsPageState extends State<ShopsPage>
                                 padding: const EdgeInsets.all(10.0),
                                 child: SizedBox(
                                   height:
-                                      MediaQuery.of(context).size.height - 200,
+                                      MediaQuery.of(context).size.height - 250,
                                   width: MediaQuery.of(context).size.width,
                                   child: ListView.builder(
                                     itemCount: shops!.length,
@@ -293,7 +297,7 @@ class _ShopsPageState extends State<ShopsPage>
                                     itemBuilder:
                                         (BuildContext context, int index) {
                                       var shopInfo = shops![index];
-                                      print("${shops![index].profileImg}");
+
                                       return ShowUpAnimation(
                                         delay: 150,
                                         child: appointmentContainer(
@@ -402,8 +406,8 @@ class _ShopsPageState extends State<ShopsPage>
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
-                              height: 25,
-                              width: 70,
+                              height: 23,
+                              width: 90,
                               decoration: BoxDecoration(
                                 color:
                                     isOpen == false ? Colors.red : Colors.green,
@@ -411,13 +415,16 @@ class _ShopsPageState extends State<ShopsPage>
                               ),
                               child: Center(
                                 child: Text(
-                                  isOpen == false ? "CLOSED" : "OPENED",
+                                  isOpen == false
+                                      ? "SHOP CLOSED"
+                                      : " SHOP OPENED",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall!
                                       .copyWith(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white,
+                                        fontSize: 10,
                                       ),
                                 ),
                               ),
@@ -479,7 +486,7 @@ class _ShopsPageState extends State<ShopsPage>
                                       ),
                                       const SizedBox(width: 3),
                                       Text(
-                                        "${distance!.ceilToDouble()}km away",
+                                        "${distance!.ceil()}km away",
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall!

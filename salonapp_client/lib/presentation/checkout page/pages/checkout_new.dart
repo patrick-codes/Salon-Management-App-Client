@@ -1,6 +1,9 @@
 import 'package:currency_code_to_currency_symbol/currency_code_to_currency_symbol.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
+import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
+import 'package:salonapp_client/helpers/colors/widgets/style.dart';
 import '../../../helpers/colors/color_constants.dart';
 import '../components/Transaction/other/data/flight_data.dart';
 import '../components/Transaction/other/show_up_animation.dart';
@@ -19,6 +22,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   CurrencyCode selectedCurrency = CurrencyCode.GHS;
   String symbol = "₵";
   DateTime? selectedValue;
+  Time time = Time(hour: DateTime.now().hour, minute: DateTime.now().minute);
 
   void update() {
     Future.delayed(const Duration(seconds: 3), () {
@@ -46,27 +50,99 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       ),
       body: Column(
         children: [
-          DatePicker(
-            height: 90,
-            DateTime.now(),
-            initialSelectedDate: DateTime.now(),
-            selectionColor: Colors.black,
-            selectedTextColor: Colors.white,
-            onDateChange: (date) {
-              // New date selected
-              setState(() {
-                selectedValue = date;
-              });
-            },
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: DatePicker(
+              height: 90,
+              DateTime.now(),
+              initialSelectedDate: DateTime.now(),
+              selectionColor: Colors.black,
+              selectedTextColor: primaryColor,
+              onDateChange: (date) {
+                // New date selected
+                setState(() {
+                  selectedValue = date;
+                });
+                debugPrint("Selected date: ${selectedValue!.toLocal()}");
+              },
+            ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
             height: 60,
             alignment: Alignment.centerLeft,
-            child: TextUtil(
-              text: "Checkout",
-              weight: true,
-              size: 20,
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      showPicker(
+                        context: context,
+                        value: time,
+                        sunrise: TimeOfDay(hour: 6, minute: 0),
+                        sunset: TimeOfDay(hour: 18, minute: 0),
+                        duskSpanInMinutes: 120,
+                        onChange: (value) {
+                          setState(() {
+                            time = value;
+                          });
+                          debugPrint("Selected Time: ${time.format(context)}");
+                        },
+                      ),
+                    );
+                  },
+                  child: Container(
+                    height: 35,
+                    width: 110,
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(66, 111, 111, 111),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(8),
+                        bottomLeft: Radius.circular(8),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                      child: Row(
+                        children: [
+                          Icon(
+                            MingCute.clock_line,
+                            size: 18,
+                          ),
+                          SizedBox(width: 3),
+                          PrimaryText(
+                            text: "Select Time",
+                            size: 12,
+                            color: Colors.black,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                // SizedBox(width: 5),
+                Container(
+                  height: 35,
+                  width: 110,
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(66, 111, 111, 111),
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(8),
+                      bottomRight: Radius.circular(8),
+                    ),
+                    border: Border.all(width: 1, color: iconGrey),
+                  ),
+                  child: Center(
+                    child: PrimaryText(
+                      text: "${time.format(context)}" ?? 'Selected Time',
+                      size: 12.5,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Expanded(
@@ -91,6 +167,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   child: Padding(
                     padding: const EdgeInsets.only(top: 20),
                     child: SingleChildScrollView(
+                      physics: ClampingScrollPhysics(),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -336,10 +413,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                             )
                                           : TextUtil(
                                               text: process == "Pay"
-                                                  ? "Pay Now"
+                                                  ? "Book Now"
                                                   : "Appointment Booked",
                                               weight: true,
-                                              color: whiteColor,
+                                              color: primaryColor,
                                               size: 16,
                                             ),
                                     ),

@@ -236,11 +236,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       Column(
                                         children: [
                                           TextUtil(
-                                            text: "FLIGHT DATE",
+                                            text: "APPOINTMENT DATE",
                                             size: 12,
                                           ),
                                           TextUtil(
-                                            text: flightList[0].date,
+                                            text: '${selectedValue!.toLocal()}',
                                             size: 15,
                                             weight: true,
                                             // color: Theme.of(context).primaryColor,
@@ -274,7 +274,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                             //  color: Theme.of(context).primaryColor,
                                           ),
                                         ],
-                                      )
+                                      ),
                                     ],
                                   ),
                                   const SizedBox(height: 20),
@@ -285,11 +285,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       Column(
                                         children: [
                                           TextUtil(
-                                            text: "BOARDING TIME",
+                                            text: "APPOINTMENT TIME",
                                             size: 12,
                                           ),
                                           TextUtil(
-                                            text: flightList[0].boardingTime,
+                                            text: "${time.format(context)}" ??
+                                                'Selected Time',
                                             size: 15,
                                             weight: true,
                                             //  color: Theme.of(context).primaryColor,

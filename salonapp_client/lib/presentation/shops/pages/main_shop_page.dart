@@ -163,12 +163,6 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    // CheckoutPage(
-                                    //   title: 'Captain Salon Captain',
-                                    //   quantity: 20,
-                                    //   amount: 30,
-                                    //   img: 'assets/images/img-sixteen.jpg',
-                                    // ),
                                     CheckoutScreen(),
                               ),
                             );

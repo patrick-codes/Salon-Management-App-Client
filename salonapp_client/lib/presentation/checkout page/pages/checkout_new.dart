@@ -2,6 +2,7 @@ import 'package:currency_code_to_currency_symbol/currency_code_to_currency_symbo
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
 import '../../../helpers/colors/color_constants.dart';
@@ -9,6 +10,8 @@ import '../components/Transaction/other/data/flight_data.dart';
 import '../components/Transaction/other/show_up_animation.dart';
 import '../components/Transaction/other/text.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../components/cedi_sign_component.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -20,8 +23,8 @@ class CheckoutScreen extends StatefulWidget {
 class _CheckoutScreenState extends State<CheckoutScreen> {
   String process = "Pay";
   CurrencyCode selectedCurrency = CurrencyCode.GHS;
-  String symbol = "₵";
-  DateTime? selectedValue;
+
+  late DateTime selectedValue = DateTime.now();
   Time time = Time(hour: DateTime.now().hour, minute: DateTime.now().minute);
 
   void update() {
@@ -34,8 +37,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("GHS ${symbol}");
-
     return Scaffold(
       backgroundColor: secondaryColor,
       appBar: AppBar(
@@ -135,7 +136,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ),
                   child: Center(
                     child: PrimaryText(
-                      text: "${time.format(context)}" ?? 'Selected Time',
+                      text: "${time.format(context)}",
                       size: 12.5,
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -205,12 +206,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                               text: "Total Fee",
                                               size: 12,
                                             ),
-                                            TextUtil(
-                                              text:
-                                                  "$symbol ${flightList[0].price}",
-                                              size: 22,
-                                              weight: true,
-                                              //color: Theme.of(context).primaryColor,
+                                            Row(
+                                              children: [
+                                                CediSign(
+                                                  size: 22,
+                                                  weight: FontWeight.bold,
+                                                ),
+                                                SizedBox(width: 2),
+                                                TextUtil(
+                                                  text:
+                                                      "${flightList[0].price}",
+                                                  size: 22,
+                                                  weight: true,
+                                                  //color: Theme.of(context).primaryColor,
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),
@@ -241,7 +251,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           ),
                                           TextUtil(
                                             text:
-                                                '${selectedValue!.day} - ${selectedValue!.month} - ${selectedValue!.year}',
+                                                '${selectedValue.day} - ${selectedValue.month} - ${selectedValue!.year}',
                                             size: 15,
                                             weight: true,
                                             // color: Theme.of(context).primaryColor,
@@ -251,25 +261,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       Column(
                                         children: [
                                           TextUtil(
-                                            text: "GATE",
+                                            text: "SERVICE TYPE",
                                             size: 12,
                                           ),
                                           TextUtil(
-                                            text: flightList[0].gate,
-                                            size: 15,
-                                            weight: true,
-                                            // color: Theme.of(context).primaryColor,
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        children: [
-                                          TextUtil(
-                                            text: "FLIGHT NO",
-                                            size: 12,
-                                          ),
-                                          TextUtil(
-                                            text: flightList[0].flightNo,
+                                            text: "SHAVING",
                                             size: 15,
                                             weight: true,
                                             //  color: Theme.of(context).primaryColor,
@@ -383,12 +379,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             delay: 300,
                             child: Column(
                               children: [
-                                Center(
-                                    child: TextUtil(
-                                  text: "Check Out Now",
-                                  // color: Theme.of(context).primaryColor,
-                                  weight: true,
-                                )),
                                 Padding(
                                   padding: const EdgeInsets.all(20),
                                   child: GestureDetector(

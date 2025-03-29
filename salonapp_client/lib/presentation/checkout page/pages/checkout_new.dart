@@ -298,28 +298,29 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           ),
                                         ],
                                       ),
+                                      // Column(
+                                      //   children: [
+                                      //     TextUtil(
+                                      //       text: "SEAT",
+                                      //       size: 12,
+                                      //     ),
+                                      //     TextUtil(
+                                      //       text: flightList[0].seat,
+                                      //       size: 15,
+                                      //       weight: true,
+                                      //       //  color: Theme.of(context).primaryColor,
+                                      //     ),
+                                      //   ],
+                                      // ),
+
                                       Column(
                                         children: [
                                           TextUtil(
-                                            text: "SEAT",
+                                            text: "SHOP",
                                             size: 12,
                                           ),
                                           TextUtil(
-                                            text: flightList[0].seat,
-                                            size: 15,
-                                            weight: true,
-                                            //  color: Theme.of(context).primaryColor,
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        children: [
-                                          TextUtil(
-                                            text: "CLASS",
-                                            size: 12,
-                                          ),
-                                          TextUtil(
-                                            text: flightList[0].flightClass,
+                                            text: "Toronto HairCuts",
                                             size: 15,
                                             weight: true,
                                             //  color: Theme.of(context).primaryColor,

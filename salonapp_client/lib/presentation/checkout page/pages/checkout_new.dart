@@ -122,7 +122,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     ),
                   ),
                 ),
-                // SizedBox(width: 5),
                 Container(
                   height: 35,
                   width: 110,
@@ -150,9 +149,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               decoration: BoxDecoration(
-                  color: blackColor,
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(30))),
+                color: blackColor,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(30),
+                ),
+              ),
               alignment: Alignment.topCenter,
               child: Padding(
                 padding: const EdgeInsets.only(top: 30),
@@ -160,10 +161,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   margin:
                       const EdgeInsets.symmetric(horizontal: 2, vertical: 20),
                   decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(30),
-                          bottom: Radius.circular(20))),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(30),
+                      bottom: Radius.circular(20),
+                    ),
+                  ),
                   alignment: Alignment.topCenter,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 20),
@@ -218,7 +221,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                       "${flightList[0].price}",
                                                   size: 22,
                                                   weight: true,
-                                                  //color: Theme.of(context).primaryColor,
                                                 ),
                                               ],
                                             ),
@@ -254,7 +256,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 '${selectedValue.day} - ${selectedValue.month} - ${selectedValue!.year}',
                                             size: 15,
                                             weight: true,
-                                            // color: Theme.of(context).primaryColor,
                                           ),
                                         ],
                                       ),
@@ -268,7 +269,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                             text: "SHAVING",
                                             size: 15,
                                             weight: true,
-                                            //  color: Theme.of(context).primaryColor,
                                           ),
                                         ],
                                       ),

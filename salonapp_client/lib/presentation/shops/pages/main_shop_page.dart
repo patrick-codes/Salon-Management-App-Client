@@ -99,9 +99,6 @@ class _DetailsPageState extends State<MainShopinfoPage> {
     } else {
       throw 'Could not launch Google Maps';
     }
-
-
-    
   }
 
   @override

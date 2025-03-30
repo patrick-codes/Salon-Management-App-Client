@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 class CediSign extends StatelessWidget {
   double? size;
   FontWeight? weight;
+  Color? color;
   CediSign({
     Key? key,
     this.size,
     this.weight,
+    this.color,
   }) : super(key: key);
 
   @override
@@ -18,6 +20,7 @@ class CediSign extends StatelessWidget {
         fontFamily: 'Roboto',
         fontSize: size,
         fontWeight: weight,
+        color: color ==null?Colors.black:color,
       ),
     );
   }

@@ -1,20 +1,34 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:currency_code_to_currency_symbol/currency_code_to_currency_symbol.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
+import 'package:salonapp_client/presentation/authentication%20screens/repository/data%20model/user_model.dart';
+
 import '../../../helpers/colors/color_constants.dart';
 import '../components/Transaction/other/data/flight_data.dart';
 import '../components/Transaction/other/show_up_animation.dart';
 import '../components/Transaction/other/text.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
 import '../components/cedi_sign_component.dart';
 
 class CheckoutScreen extends StatefulWidget {
-  const CheckoutScreen({super.key});
+  String? serviceType;
+  double? amount;
+  UserModel? user;
+  String? shop;
+  String? location;
+  CheckoutScreen({
+    Key? key,
+    required this.serviceType,
+    required this.amount,
+    this.user,
+    required this.shop,
+    required this.location,
+  }) : super(key: key);
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
@@ -23,9 +37,13 @@ class CheckoutScreen extends StatefulWidget {
 class _CheckoutScreenState extends State<CheckoutScreen> {
   String process = "Pay";
   CurrencyCode selectedCurrency = CurrencyCode.GHS;
-
   late DateTime selectedValue = DateTime.now();
   Time time = Time(hour: DateTime.now().hour, minute: DateTime.now().minute);
+
+  double totalCharged() {
+    double total = widget.amount! + 2;
+    return total;
+  }
 
   void update() {
     Future.delayed(const Duration(seconds: 3), () {
@@ -42,30 +60,47 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       appBar: AppBar(
         elevation: 0,
         leading: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Icon(
-              Icons.arrow_back_outlined,
-              //color: Theme.of(context).canvasColor,
-            )),
+          onTap: () => Navigator.pop(context),
+          child: Icon(
+            MingCute.arrow_left_fill,
+          ),
+        ),
+        centerTitle: true,
+        title: Text(
+          "Schedule Appointment",
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
         backgroundColor: secondaryColor,
       ),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: DatePicker(
-              height: 90,
-              DateTime.now(),
-              initialSelectedDate: DateTime.now(),
-              selectionColor: Colors.black,
-              selectedTextColor: primaryColor,
-              onDateChange: (date) {
-                // New date selected
-                setState(() {
-                  selectedValue = date;
-                });
-                debugPrint("Selected date: ${selectedValue!.toLocal()}");
-              },
+            child: Container(
+              height: 100,
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: DatePicker(
+                height: 90,
+                DateTime.now(),
+                initialSelectedDate: DateTime.now(),
+                selectionColor: Colors.black,
+                selectedTextColor: Colors.white,
+                onDateChange: (date) {
+                  // New date selected
+                  setState(() {
+                    selectedValue = date;
+                  });
+                  debugPrint("Selected date: ${selectedValue.toLocal()}");
+                },
+              ),
             ),
           ),
           Container(
@@ -81,6 +116,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       showPicker(
                         context: context,
                         value: time,
+                        accentColor: blackColor,
                         sunrise: TimeOfDay(hour: 6, minute: 0),
                         sunset: TimeOfDay(hour: 18, minute: 0),
                         duskSpanInMinutes: 120,
@@ -97,7 +133,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     height: 35,
                     width: 110,
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(66, 111, 111, 111),
+                      color: blackColor,
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(8),
                         bottomLeft: Radius.circular(8),
@@ -110,12 +146,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           Icon(
                             MingCute.clock_line,
                             size: 18,
+                            color: Colors.white,
                           ),
                           SizedBox(width: 3),
                           PrimaryText(
                             text: "Select Time",
                             size: 12,
-                            color: Colors.black,
+                            color: Colors.white,
                           ),
                         ],
                       ),
@@ -126,7 +163,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   height: 35,
                   width: 110,
                   decoration: BoxDecoration(
-                    color: const Color.fromARGB(66, 111, 111, 111),
+                    color: Colors.white,
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(8),
                       bottomRight: Radius.circular(8),
@@ -149,14 +186,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               decoration: BoxDecoration(
-                color: blackColor,
+                color: primaryColor,
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(30),
                 ),
               ),
               alignment: Alignment.topCenter,
               child: Padding(
-                padding: const EdgeInsets.only(top: 30),
+                padding: const EdgeInsets.only(top: 10),
                 child: Container(
                   margin:
                       const EdgeInsets.symmetric(horizontal: 2, vertical: 20),
@@ -192,18 +229,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                       children: [
                                         Column(
                                           children: [
-                                            SizedBox(
-                                              height: 80,
-                                              width: 80,
-                                              child: Image.asset(
-                                                "assets/pngs/play_store_512.png",
-                                              ),
-                                            ),
                                             Icon(
-                                              Icons.flight_takeoff,
+                                              MingCute.receive_money_fill,
                                               size: 35,
-                                              color: Theme.of(context)
-                                                  .indicatorColor,
+                                              color: blackColor,
                                             ),
                                             TextUtil(
                                               text: "Total Fee",
@@ -217,10 +246,38 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                 ),
                                                 SizedBox(width: 2),
                                                 TextUtil(
-                                                  text:
-                                                      "${flightList[0].price}",
+                                                  text: "${totalCharged()}",
                                                   size: 22,
                                                   weight: true,
+                                                ),
+                                              ],
+                                            ),
+                                            TextUtil(
+                                              text: "Charges included",
+                                              size: 10,
+                                              color: iconGrey,
+                                            ),
+                                            const Divider(),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Column(
+                                                  children: [
+                                                    TextUtil(
+                                                      text: "LOCATION",
+                                                      size: 12,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 100,
+                                                      child: TextUtil(
+                                                        text: widget.location ??
+                                                            'NULL',
+                                                        size: 13,
+                                                        weight: true,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
@@ -230,7 +287,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           angle: 0,
                                           child: SizedBox(
                                             height: 150,
-                                            width: 190,
+                                            width: 170,
                                             child: SvgPicture.asset(
                                               "assets/svgs/undraw_barber_utly.svg",
                                               // color: blackColor,
@@ -265,10 +322,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                             text: "SERVICE TYPE",
                                             size: 12,
                                           ),
-                                          TextUtil(
-                                            text: "SHAVING",
-                                            size: 15,
-                                            weight: true,
+                                          SizedBox(
+                                            width: 100,
+                                            child: TextUtil(
+                                              text:
+                                                  widget.serviceType ?? 'NULL',
+                                              size: 15,
+                                              weight: true,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -294,32 +355,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           ),
                                         ],
                                       ),
-                                      // Column(
-                                      //   children: [
-                                      //     TextUtil(
-                                      //       text: "SEAT",
-                                      //       size: 12,
-                                      //     ),
-                                      //     TextUtil(
-                                      //       text: flightList[0].seat,
-                                      //       size: 15,
-                                      //       weight: true,
-                                      //       //  color: Theme.of(context).primaryColor,
-                                      //     ),
-                                      //   ],
-                                      // ),
-
                                       Column(
                                         children: [
                                           TextUtil(
                                             text: "SHOP",
                                             size: 12,
                                           ),
-                                          TextUtil(
-                                            text: "Toronto HairCuts",
-                                            size: 15,
-                                            weight: true,
-                                            //  color: Theme.of(context).primaryColor,
+                                          SizedBox(
+                                            width: 100,
+                                            child: TextUtil(
+                                              text: widget.shop ?? 'SHOP',
+                                              size: 15,
+                                              weight: true,
+                                              //  color: Theme.of(context).primaryColor,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -362,7 +411,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 bottom: 0,
                                 child: CircleAvatar(
                                   radius: 12,
-                                  backgroundColor: blackColor,
+                                  backgroundColor: primaryColor,
                                 ),
                               ),
                               Positioned(
@@ -370,7 +419,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 bottom: 0,
                                 child: CircleAvatar(
                                   radius: 12,
-                                  backgroundColor: blackColor,
+                                  backgroundColor: primaryColor,
                                 ),
                               ),
                             ],

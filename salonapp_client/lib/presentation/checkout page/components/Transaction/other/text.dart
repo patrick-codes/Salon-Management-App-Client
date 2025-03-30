@@ -6,12 +6,24 @@ class TextUtil extends StatelessWidget {
   Color? color;
   double? size;
   bool? weight;
-  TextUtil({super.key, required this.text, this.size, this.color, this.weight});
+  TextOverflow? textoverflow;
+  TextUtil({
+    super.key,
+    required this.text,
+    this.size,
+    this.color,
+    this.weight,
+    this.textoverflow,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
+      maxLines: 2,
+      textAlign: TextAlign.center,
+      overflow:
+          textoverflow == null ? TextOverflow.visible : TextOverflow.visible,
       style: TextStyle(
           color: color ?? blackColor,
           fontSize: size ?? 18,

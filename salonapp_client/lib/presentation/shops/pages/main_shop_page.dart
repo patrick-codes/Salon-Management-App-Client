@@ -6,6 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
+import 'package:salonapp_client/presentation/checkout%20page/components/cedi_sign_component.dart';
 import 'package:salonapp_client/presentation/shops/bloc/shops_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../helpers/colors/color_constants.dart';
@@ -44,13 +45,13 @@ class _DetailsPageState extends State<MainShopinfoPage> {
     "Sporting Haircut Guys",
     "Sporting Haircut Ladies",
   ];
-  List<String> prices = <String>[
-    "GHC 20",
-    "GHC 30",
-    "GHC 25",
-    "GHC 40",
-    "GHC 45",
-    "GHC 50",
+  List<double> prices = <double>[
+    20,
+    30,
+    25,
+    40,
+    45,
+    50,
   ];
   List<Icon> icons = <Icon>[
     const Icon(
@@ -83,6 +84,10 @@ class _DetailsPageState extends State<MainShopinfoPage> {
   bool isOpen = true;
   ShopModel? shop;
   String text = 'No shops available !!';
+  String? servicetype;
+  double? fee;
+  String? shopname;
+  int selectedIndex = 0;
   @override
   void initState() {
     super.initState();
@@ -163,7 +168,12 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    CheckoutScreen(),
+                                    CheckoutScreen(
+                                  serviceType: servicetype,
+                                  amount: fee,
+                                  shop: shop!.shopName,
+                                  location: shop!.location,
+                                ),
                               ),
                             );
                           },
@@ -390,39 +400,6 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                       const SizedBox(height: 15),
                       Padding(
                         padding: const EdgeInsets.only(left: 15.0, right: 15),
-                        child: GestureDetector(
-                          onTap: () => scrollBottomSheet(context),
-                          child: MinimalHeadingText(
-                            leftText: 'What service we provide',
-                            rightText: 'View all',
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 13),
-                      ShowUpAnimation(
-                        delay: 300,
-                        child: SizedBox(
-                          height: 125,
-                          width: MediaQuery.of(context).size.width,
-                          child: ListView.builder(
-                            itemCount: imgs.length,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (BuildContext context, int index) {
-                              return buildServicesSquare(
-                                imgs[index],
-                                services[index],
-                                prices[index],
-                                index == 1
-                                    ? primaryColor
-                                    : Colors.grey.shade200,
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 15),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 15.0, right: 15),
                         child: MinimalHeadingText(
                           leftText: 'Our latest works',
                           rightText: 'View all',
@@ -442,6 +419,51 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                                 shop!.workImgs![index],
                                 // services[index],
                                 // prices[index],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15),
+                        child: GestureDetector(
+                          onTap: () => scrollBottomSheet(context),
+                          child: MinimalHeadingText(
+                            leftText: 'Choose service',
+                            rightText: 'View all',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 13),
+                      ShowUpAnimation(
+                        delay: 300,
+                        child: SizedBox(
+                          height: 135,
+                          width: MediaQuery.of(context).size.width,
+                          child: ListView.builder(
+                            itemCount: imgs.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (BuildContext context, int index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedIndex = index;
+                                    servicetype = services[index];
+                                    fee = prices[index];
+                                    shopname = shop!.shopName;
+                                  });
+                                  print(
+                                      "service selected: $servicetype with fee $fee for $shopname");
+                                },
+                                child: buildServicesSquare(
+                                  imgs[index],
+                                  services[index],
+                                  prices[index],
+                                  selectedIndex == index
+                                      ? primaryColor
+                                      : Colors.grey.shade200,
+                                ),
                               );
                             },
                           ),
@@ -500,7 +522,7 @@ class _DetailsPageState extends State<MainShopinfoPage> {
   }
 
   Widget buildServicesSquare(
-      String imgurl, String services, String prices, Color brColor) {
+      String imgurl, String services, double prices, Color brColor) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -512,7 +534,7 @@ class _DetailsPageState extends State<MainShopinfoPage> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              width: 1,
+              width: 1.5,
               color: brColor,
             ),
           ),
@@ -525,13 +547,38 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    PrimaryText(
-                      text: prices,
-                      size: 15,
-                      color: Colors.red[500]!,
-                      fontWeight: FontWeight.bold,
-                      height: 2,
-                    )
+                    Row(
+                      children: [
+                        Text(
+                          "GH",
+                          overflow: TextOverflow.visible,
+                          softWrap: true,
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                  ),
+                        ),
+                        CediSign(
+                          color: blackColor,
+                          size: 17.5,
+                          weight: FontWeight.bold,
+                        ),
+                        SizedBox(width: 3),
+                        Text(
+                          prices.toString(),
+                          overflow: TextOverflow.visible,
+                          softWrap: true,
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                  ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
                 SizedBox(height: 25),
@@ -559,7 +606,7 @@ class _DetailsPageState extends State<MainShopinfoPage> {
   }
 
   Widget buildServicesSquareFull(
-      String imgurl, String services, String prices, Color brColor) {
+      String imgurl, String services, double prices, Color brColor) {
     return Column(
       // crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -622,15 +669,37 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                             ),
                       ),
                       SizedBox(height: 5),
-                      Text(
-                        prices,
-                        overflow: TextOverflow.visible,
-                        softWrap: true,
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.black,
-                            ),
+                      Row(
+                        children: [
+                          Text(
+                            "GH",
+                            overflow: TextOverflow.visible,
+                            softWrap: true,
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      color: Colors.black,
+                                    ),
+                          ),
+                          CediSign(
+                            color: blackColor,
+                            size: 19,
+                            weight: FontWeight.bold,
+                          ),
+                          SizedBox(width: 3),
+                          Text(
+                            prices.toString(),
+                            overflow: TextOverflow.visible,
+                            softWrap: true,
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      color: Colors.black,
+                                    ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

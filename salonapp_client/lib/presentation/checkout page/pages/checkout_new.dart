@@ -4,13 +4,10 @@ import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
 import 'package:salonapp_client/presentation/authentication%20screens/repository/data%20model/user_model.dart';
-
 import '../../../helpers/colors/color_constants.dart';
-import '../components/Transaction/other/data/flight_data.dart';
 import '../components/Transaction/other/show_up_animation.dart';
 import '../components/Transaction/other/text.dart';
 import '../components/cedi_sign_component.dart';
@@ -21,6 +18,7 @@ class CheckoutScreen extends StatefulWidget {
   UserModel? user;
   String? shop;
   String? location;
+  String? id;
   CheckoutScreen({
     Key? key,
     required this.serviceType,
@@ -28,13 +26,15 @@ class CheckoutScreen extends StatefulWidget {
     this.user,
     required this.shop,
     required this.location,
+    required this.id,
   }) : super(key: key);
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
 }
 
-class _CheckoutScreenState extends State<CheckoutScreen> {
+class _CheckoutScreenState extends State<CheckoutScreen>
+    with SingleTickerProviderStateMixin {
   String process = "Pay";
   CurrencyCode selectedCurrency = CurrencyCode.GHS;
   late DateTime selectedValue = DateTime.now();
@@ -196,7 +196,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 padding: const EdgeInsets.only(top: 10),
                 child: Container(
                   margin:
-                      const EdgeInsets.symmetric(horizontal: 2, vertical: 20),
+                      const EdgeInsets.symmetric(horizontal: 2, vertical: 12),
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.vertical(

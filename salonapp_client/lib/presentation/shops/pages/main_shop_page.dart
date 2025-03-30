@@ -16,6 +16,7 @@ import '../../checkout page/components/Transaction/other/show_up_animation.dart'
 import '../../checkout page/pages/checkout_new.dart';
 import '../components/services_grid.dart';
 import '../repository/data rmodel/service_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MainShopinfoPage extends StatefulWidget {
   String? id;
@@ -88,6 +89,21 @@ class _DetailsPageState extends State<MainShopinfoPage> {
   double? fee;
   String? shopname;
   int selectedIndex = 0;
+
+  Future<void> openGoogleMaps(List<double?> cordinates) async {
+    final Uri googleMapsUri = Uri.parse(
+        "https://www.google.com/maps/search/?api=1&query=$cordinates");
+
+    if (await canLaunchUrl(googleMapsUri)) {
+      await launchUrl(googleMapsUri, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch Google Maps';
+    }
+
+
+    
+  }
+
   @override
   void initState() {
     super.initState();
@@ -173,6 +189,7 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                                   amount: fee,
                                   shop: shop!.shopName,
                                   location: shop!.location,
+                                  id: shop!.shopOwnerId,
                                 ),
                               ),
                             );
@@ -767,13 +784,15 @@ class _DetailsPageState extends State<MainShopinfoPage> {
         GestureDetector(
           onTap: () {
             if (index == 2) {
-              Navigator.pushNamed(
-                context,
-                '/map',
-                arguments: {
-                  'latlng': [cordinates[0], cordinates[1]]
-                },
-              );
+              openGoogleMaps([cordinates[0], cordinates[1]]);
+              // Navigator.pushNamed(
+              //   context,
+              //   '/map',
+              //   arguments: {
+              //     'latlng': [cordinates[0], cordinates[1]]
+              //   },
+              // );
+
               debugPrint("latlng: ${[cordinates[0], cordinates[1]]}");
             }
           },

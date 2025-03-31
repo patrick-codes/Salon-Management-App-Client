@@ -1,12 +1,29 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'appointment_bloc.dart';
 
 sealed class AppointmentEvent {}
 
 class CreateAppointmentEvent extends AppointmentEvent {
   String? appointmentId;
+  final double? amount;
+  final String? userId;
+  final String? shopName;
+  final String? category;
+  final Time? appointmentTime;
+  final DateTime? appointmentDate;
+  final String? phone;
+  final String? servicesType;
 
   CreateAppointmentEvent({
     this.appointmentId,
+    required this.amount,
+    required this.userId,
+    required this.shopName,
+    required this.category,
+    required this.appointmentTime,
+    required this.appointmentDate,
+    required this.phone,
+    required this.servicesType,
   });
 }
 

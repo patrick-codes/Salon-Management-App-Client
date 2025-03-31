@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../data model/appointment_model.dart';
 
-class SalonServiceHelper {
+class AppointmentServiceHelper {
   int? totalService;
   int? totalService2;
-  List<AppointmentModel> shopList = [];
+  List<AppointmentModel> appointmentList = [];
 
   final _db = FirebaseFirestore.instance;
 

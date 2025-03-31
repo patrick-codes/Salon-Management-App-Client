@@ -177,19 +177,27 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                         child: CustomButton(
                           text: "Book Now",
                           onpressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    CheckoutScreen(
-                                  serviceType: servicetype,
-                                  amount: fee,
-                                  shop: shop!.shopName,
-                                  location: shop!.location,
-                                  id: shop!.shopOwnerId,
+                            if (servicetype == null || servicetype!.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Select a service and proceed"),
                                 ),
-                              ),
-                            );
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      CheckoutScreen(
+                                    serviceType: servicetype,
+                                    amount: fee,
+                                    shop: shop!.shopName,
+                                    location: shop!.location,
+                                    id: shop!.shopOwnerId,
+                                  ),
+                                ),
+                              );
+                            }
                           },
                           color: primaryColor,
                         ),

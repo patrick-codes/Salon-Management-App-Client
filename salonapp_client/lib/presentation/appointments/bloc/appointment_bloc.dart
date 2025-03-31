@@ -12,9 +12,9 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
       AppointmentServiceHelper();
 
   AppointmentBloc() : super(AppointmentInitial()) {
+    on<CreateAppointmentEvent>(createAppointment);
     on<ViewAppointmentEvent>(fetchAppointments);
     // on<SearchShopEvent>(searchAppointment);
-    on<CreateAppointmentEvent>(createAppointment);
     // on<ViewSingleShopEvent>(fetchSingleAppointment);
   }
   // void onSearchChanged(String query) {
@@ -42,10 +42,11 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   Future<void> createAppointment(
       CreateAppointmentEvent event, Emitter<AppointmentState> emit) async {
     try {
-      emit(AppointmentsLoadingState());
+      //emit(AppointmentsLoadingState());
       debugPrint("Creating Apppointment service......");
 
-      final appointment = AppointmentModel(
+      final appointments = AppointmentModel(
+        amount: event.amount,
         shopName: event.shopName,
         category: event.category,
         appointmentTime: event.appointmentTime,
@@ -53,7 +54,9 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
         phone: event.phone,
         servicesType: event.servicesType,
       );
-      appointmentHelper.createAppointment(appointment);
+      emit(AppointmentsLoadingState());
+
+      appointmentHelper.createAppointment(appointments);
       emit(AppointmentCreatedSuccesState(
           message: 'Appointment service created succesfuly!!'));
       debugPrint("Appointment service created succesfuly!!");

@@ -8,9 +8,9 @@ class AppointmentServiceHelper {
 
   final _db = FirebaseFirestore.instance;
 
-  Future<void> createAppointment(AppointmentModel shop) async {
+  Future<void> createAppointment(AppointmentModel? appointment) async {
     try {
-      await _db.collection("appointment").add(shop.toJson());
+      await _db.collection("appointments").add(appointment!.toJson());
       print("appointment created sucessfully");
     } catch (error) {
       print(error);
@@ -20,7 +20,7 @@ class AppointmentServiceHelper {
   Future<List<AppointmentModel>?> fetchAllappointments() async {
     try {
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await _db.collection("appointment").get();
+          await _db.collection("appointments").get();
       final appointment = querySnapshot.docs
           .map((doc) => AppointmentModel.fromSnapshot(doc))
           .toList();
@@ -37,7 +37,7 @@ class AppointmentServiceHelper {
     try {
       if (id == null) return null;
       DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-          await _db.collection("appointment").doc(id).get();
+          await _db.collection("appointments").doc(id).get();
       if (documentSnapshot.exists) {
         final appointment = AppointmentModel.fromSnapshot(documentSnapshot);
         print("Fetched salonshop with id: $id successfully");

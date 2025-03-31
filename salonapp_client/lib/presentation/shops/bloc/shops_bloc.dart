@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:salonapp_client/presentation/authentication%20screens/bloc/auth_bloc.dart';
-import '../../authentication screens/repository/data model/user_model.dart';
 import '../../location/bloc/location_bloc.dart';
 import '../repository/data rmodel/service_model.dart';
 import '../repository/salonservices helper/fetch_services_helper.dart';

@@ -28,9 +28,7 @@ class SalonAppBlocs extends StatelessWidget {
           create: (context) => HomeShopsBloc(context.read<AuthBloc>())
             ..add(ViewHomeShopsEvent()),
         ),
-        BlocProvider(
-          create: (context) => AppointmentBloc()..add(ViewAppointmentEvent()),
-        ),
+        BlocProvider(create: (context) => AppointmentBloc()),
       ],
       child: MultiBlocProvider(
         providers: [

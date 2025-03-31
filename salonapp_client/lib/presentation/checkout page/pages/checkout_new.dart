@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
 import 'package:salonapp_client/presentation/appointments/bloc/appointment_bloc.dart';
 import 'package:salonapp_client/presentation/authentication%20screens/repository/data%20model/user_model.dart';
@@ -14,6 +15,7 @@ import '../../../helpers/colors/color_constants.dart';
 import '../components/Transaction/other/show_up_animation.dart';
 import '../components/Transaction/other/text.dart';
 import '../components/cedi_sign_component.dart';
+import 'package:m_toast/m_toast.dart';
 
 class CheckoutScreen extends StatefulWidget {
   String? serviceType;
@@ -43,38 +45,33 @@ class _CheckoutScreenState extends State<CheckoutScreen>
   late DateTime selectedValue = DateTime.now();
   Time time = Time(hour: DateTime.now().hour, minute: DateTime.now().minute);
   bool isLoading = false;
+
   double totalCharged() {
     double total = widget.amount! + 2;
     return total;
   }
 
-  void update() {
-    Future.delayed(const Duration(seconds: 3), () {
-      setState(() {
-        process = "Book";
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    ShowMToast toast = ShowMToast(context);
+
     return BlocConsumer<AppointmentBloc, AppointmentState>(
-      listener: (context, state) {
-        if (state is AppointmentsLoadingState) {
-          process = 'load';
-          update();
-          isLoading = true;
-        } else if (state is AppointmentCreatedSuccesState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-            ),
+      listener: (BuildContext context, AppointmentState state) {
+        if (state is AppointmentCreatedSuccesState) {
+          toast.successToast(
+            message: state.message,
+            alignment: Alignment.topCenter,
+          );
+          QuickAlert.show(
+            context: context,
+            animType: QuickAlertAnimType.slideInUp,
+            type: QuickAlertType.success,
+            text: 'Appointment Booked Successfully!',
           );
         } else if (state is AppointmentCreateFailureState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.error),
-            ),
+          toast.errorToast(
+            message: state.error,
+            alignment: Alignment.topCenter,
           );
         }
       },
@@ -466,19 +463,15 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                                                       .currentUser!.uid,
                                                   shopName: widget.shop,
                                                   category: 'Male',
-                                                  appointmentTime: time,
+                                                  appointmentTime: null,
                                                   appointmentDate:
                                                       selectedValue,
                                                   phone: '0245513607',
                                                   servicesType:
                                                       widget.serviceType,
-                                                  amount: totalCharged(),
+                                                  amount: 0.0,
                                                 ),
                                               );
-                                          // setState(() {
-                                          //   process = "Load";
-                                          //   update();
-                                          // });
                                         },
                                         child: Container(
                                           height: 50,
@@ -488,23 +481,22 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                                               borderRadius:
                                                   BorderRadius.circular(15)),
                                           alignment: Alignment.center,
-                                          child: process == "Load"
-                                              ? SizedBox(
-                                                  width: 22,
-                                                  height: 22,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    color: whiteColor,
-                                                  ),
-                                                )
-                                              : TextUtil(
-                                                  text: process == "Pay"
-                                                      ? "Book Now"
-                                                      : "Appointment Booked",
-                                                  weight: true,
-                                                  color: primaryColor,
-                                                  size: 16,
-                                                ),
+                                          child:
+                                              state is! AppointmentsLoadingState
+                                                  ? TextUtil(
+                                                      text: "Book Now",
+                                                      weight: true,
+                                                      color: primaryColor,
+                                                      size: 16,
+                                                    )
+                                                  : SizedBox(
+                                                      width: 22,
+                                                      height: 22,
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        color: whiteColor,
+                                                      ),
+                                                    ),
                                         ),
                                       ),
                                     ),

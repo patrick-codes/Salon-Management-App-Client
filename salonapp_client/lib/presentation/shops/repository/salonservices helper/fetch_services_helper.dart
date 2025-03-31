@@ -59,7 +59,7 @@ class SalonServiceHelper {
         }
       }
 
-      print("Nearby shops: ${nearbyShops.length}");
+      print("   Nearby shops: ${nearbyShops.length}");
 
       return nearbyShops;
     } catch (error) {

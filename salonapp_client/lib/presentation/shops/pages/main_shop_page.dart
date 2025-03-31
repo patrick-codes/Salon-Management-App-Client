@@ -789,7 +789,6 @@ class _DetailsPageState extends State<MainShopinfoPage> {
               //     'latlng': [cordinates[0], cordinates[1]]
               //   },
               // );
-
               debugPrint("latlng: ${[cordinates[0], cordinates[1]]}");
             }
           },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:salonapp_client/presentation/shops/pages/shop%20info/shop_info.dart';
 import 'helpers/colors/color_constants.dart';
+import 'presentation/appointments/pages/appointments_page.dart';
 import 'presentation/authentication screens/pages/login_screen.dart';
 import 'presentation/authentication screens/pages/signup_screen.dart';
 import 'presentation/home/home.dart';
@@ -31,6 +32,7 @@ class SalonApp extends StatelessWidget {
           '/mainhome': (context) => const MainHomePage(),
           '/shopinfo': (context) => const ShopInfo(),
           '/shops': (context) => ShopsPage(),
+          '/appointments': (context) => AppointmentsPage(),
         },
         onGenerateRoute: (settings) {
           if (settings.name == '/mainshopinfo') {

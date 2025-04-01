@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
+import 'package:flutter/material.dart';
 
 class AppointmentModel {
   late String? appointmentId;
@@ -8,7 +9,7 @@ class AppointmentModel {
   late String? userId;
   late String? shopName;
   late String? category;
-  late Time? appointmentTime;
+  late TimeOfDay? appointmentTime;
   late DateTime? appointmentDate;
   late String? phone;
   late String? servicesType;
@@ -39,7 +40,7 @@ class AppointmentModel {
   }
 
   AppointmentModel.defaultModel() {
-    appointmentId = null;
+    appointmentId = '';
     amount = 0.0;
     userId = "ownerID";
     shopName = "shopName";

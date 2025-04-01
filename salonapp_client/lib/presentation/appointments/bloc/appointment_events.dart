@@ -9,7 +9,7 @@ class CreateAppointmentEvent extends AppointmentEvent {
   final String? userId;
   final String? shopName;
   final String? category;
-  final Time? appointmentTime;
+  final TimeOfDay? appointmentTime;
   final DateTime? appointmentDate;
   final String? phone;
   final String? servicesType;
@@ -17,7 +17,7 @@ class CreateAppointmentEvent extends AppointmentEvent {
   CreateAppointmentEvent({
     this.appointmentId,
     required this.amount,
-    required this.userId,
+    this.userId,
     required this.shopName,
     required this.category,
     required this.appointmentTime,

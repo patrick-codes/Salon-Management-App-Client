@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:salonapp_client/helpers/colors/widgets/style.dart';
 import 'package:salonapp_client/presentation/checkout%20page/components/cedi_sign_component.dart';
 import 'package:salonapp_client/presentation/shops/bloc/shops_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -14,9 +12,10 @@ import '../../../helpers/colors/widgets/custom_button.dart';
 import '../../../helpers/colors/widgets/minimal_heading.dart';
 import '../../checkout page/components/Transaction/other/show_up_animation.dart';
 import '../../checkout page/pages/checkout_new.dart';
-import '../components/services_grid.dart';
 import '../repository/data rmodel/service_model.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../repository/external launcher/external_launcher.dart';
 
 class MainShopinfoPage extends StatefulWidget {
   String? id;
@@ -89,17 +88,6 @@ class _DetailsPageState extends State<MainShopinfoPage> {
   double? fee;
   String? shopname;
   int selectedIndex = 0;
-
-  Future<void> openGoogleMaps(List<double?> cordinates) async {
-    final Uri googleMapsUri = Uri.parse(
-        "https://www.google.com/maps/search/?api=1&query=$cordinates");
-
-    if (await canLaunchUrl(googleMapsUri)) {
-      await launchUrl(googleMapsUri, mode: LaunchMode.externalApplication);
-    } else {
-      throw 'Could not launch Google Maps';
-    }
-  }
 
   @override
   void initState() {
@@ -788,8 +776,16 @@ class _DetailsPageState extends State<MainShopinfoPage> {
       children: [
         GestureDetector(
           onTap: () {
-            if (index == 2) {
-              openGoogleMaps([cordinates[0], cordinates[1]]);
+            if (index == 0) {
+              ExternalAppLauncher.openWhatsApp("+233${shop!.whatsapp}",
+                  "Hello! I'm interested in your services.");
+              debugPrint("Whatsapp: ${shop!.whatsapp}");
+            } else if (index == 1) {
+              ExternalAppLauncher.launchPhoneCall(shop!.phone);
+              debugPrint("Phone: ${shop!.phone}");
+            } else if (index == 2) {
+              ExternalAppLauncher.openGoogleMaps(
+                  [cordinates[0], cordinates[1]]);
               // Navigator.pushNamed(
               //   context,
               //   '/map',
@@ -798,6 +794,9 @@ class _DetailsPageState extends State<MainShopinfoPage> {
               //   },
               // );
               debugPrint("latlng: ${[cordinates[0], cordinates[1]]}");
+            } else if (index == 3) {
+              ExternalAppLauncher.shareContent(
+                  "Salon and Barber shop appointment make easy..Check out this awesome app! Hairvana");
             }
           },
           child: Container(

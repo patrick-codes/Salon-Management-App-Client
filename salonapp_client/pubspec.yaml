@@ -82,6 +82,7 @@ dependencies:
   url_launcher: ^6.3.1
   m_toast: ^0.2.4
   quickalert: ^1.1.0
+  share_plus: ^10.1.4
 
 
 

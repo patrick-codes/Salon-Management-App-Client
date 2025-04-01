@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salonapp_client/presentation/appointments/repository/appointment%20service/appointment_service.dart';
@@ -10,7 +12,7 @@ part 'appointment_states.dart';
 class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   static AppointmentServiceHelper appointmentHelper =
       AppointmentServiceHelper();
-
+  final firebaseUser = FirebaseAuth.instance;
   AppointmentBloc() : super(AppointmentInitial()) {
     on<CreateAppointmentEvent>(createAppointment);
     on<ViewAppointmentEvent>(fetchAppointments);
@@ -46,6 +48,8 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
       debugPrint("Creating Apppointment service......");
 
       final appointments = AppointmentModel(
+        appointmentId: event.appointmentId,
+        userId: firebaseUser.currentUser!.uid,
         amount: event.amount,
         shopName: event.shopName,
         category: event.category,

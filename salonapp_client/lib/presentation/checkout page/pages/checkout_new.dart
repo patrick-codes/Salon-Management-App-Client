@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:currency_code_to_currency_symbol/currency_code_to_currency_symbol.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
@@ -45,10 +46,15 @@ class _CheckoutScreenState extends State<CheckoutScreen>
   late DateTime selectedValue = DateTime.now();
   Time time = Time(hour: DateTime.now().hour, minute: DateTime.now().minute);
   bool isLoading = false;
+  TimeOfDay? selectedTime;
 
   double totalCharged() {
     double total = widget.amount! + 2;
     return total;
+  }
+
+  Time convertTimeOfDayToTime(Time? timeOfDay) {
+    return Time(hour: timeOfDay!.hour, minute: timeOfDay.minute);
   }
 
   @override
@@ -63,59 +69,65 @@ class _CheckoutScreenState extends State<CheckoutScreen>
             animType: QuickAlertAnimType.slideInUp,
             type: QuickAlertType.success,
             confirmBtnColor: blackColor,
-            title: 'Appointment Booked',
+            title: 'Appointment Booked!!',
             text: 'Salon appointment booked successfully!',
-            confirmBtnText: 'View Appointments',
-            widget: Container(
-              height: 40,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200.withOpacity(0.4),
-                border: Border.all(
-                  width: 1,
-                  color: Colors.grey.shade400.withOpacity(0.5),
+            confirmBtnText: 'View E-Ticket',
+            widget: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 7.0),
+              child: Container(
+                height: 40,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade200.withOpacity(0.4),
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.grey.shade400.withOpacity(0.5),
+                  ),
+                  borderRadius: BorderRadius.circular(13),
                 ),
-                borderRadius: BorderRadius.circular(13),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Vehicle Breakdown",
-                            style:
-                                Theme.of(context).textTheme.bodySmall!.copyWith(
-                                      fontSize: 13,
-                                      color: Colors.black54,
-                                    ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 20,
-                      width: 20,
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.done,
-                          size: 15,
-                          weight: 8,
-                          grade: 8,
-                          opticalSize: 8,
-                          color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(3),
+                        child: Row(
+                          children: [
+                            Text(
+                              "GS4472-34634GBH",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(
+                                    fontSize: 13,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                  ],
+                      Container(
+                        height: 30,
+                        width: 30,
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.copy,
+                            size: 13,
+                            weight: 8,
+                            grade: 8,
+                            opticalSize: 8,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -123,7 +135,9 @@ class _CheckoutScreenState extends State<CheckoutScreen>
               fontSize: 12,
               color: Colors.white,
             ),
-            onConfirmBtnTap: () {},
+            onConfirmBtnTap: () {
+              Navigator.pushNamed(context, '/appointments');
+            },
           );
         } else if (state is AppointmentCreateFailureState) {
           toast.errorToast(
@@ -162,7 +176,11 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                   width: MediaQuery.of(context).size.width,
                   padding: EdgeInsets.all(5),
                   decoration: BoxDecoration(
-                    color: primaryColor,
+                    border: Border.all(
+                      width: 1,
+                      color: Colors.black26,
+                    ),
+                    // color: primaryColor,
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: DatePicker(
@@ -170,7 +188,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                     DateTime.now(),
                     initialSelectedDate: DateTime.now(),
                     selectionColor: Colors.black,
-                    selectedTextColor: Colors.white,
+                    selectedTextColor: primaryColor,
                     onDateChange: (date) {
                       // New date selected
                       setState(() {
@@ -198,12 +216,16 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                             sunrise: TimeOfDay(hour: 6, minute: 0),
                             sunset: TimeOfDay(hour: 18, minute: 0),
                             duskSpanInMinutes: 120,
-                            onChange: (value) {
+                            onChange: (Time value) {
                               setState(() {
                                 time = value;
+                                convertTimeOfDayToTime(value);
                               });
+
+                              selectedTime = TimeOfDay(
+                                  hour: value.hour, minute: value.minute);
                               debugPrint(
-                                  "Selected Time: ${time.format(context)}");
+                                  "Selected Time: ${selectedTime!.format(context)}");
                             },
                           ),
                         );
@@ -247,7 +269,10 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                           topRight: Radius.circular(8),
                           bottomRight: Radius.circular(8),
                         ),
-                        border: Border.all(width: 1, color: iconGrey),
+                        border: Border.all(
+                          width: 1,
+                          color: Colors.black26,
+                        ),
                       ),
                       child: Center(
                         child: PrimaryText(
@@ -514,120 +539,19 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                                       padding: const EdgeInsets.all(20),
                                       child: GestureDetector(
                                         onTap: () {
-                                          QuickAlert.show(
-                                            context: context,
-                                            animType:
-                                                QuickAlertAnimType.slideInUp,
-                                            type: QuickAlertType.success,
-                                            confirmBtnColor: blackColor,
-                                            title: 'Appointment Booked!!',
-                                            text:
-                                                'Salon appointment booked successfully!',
-                                            confirmBtnText: 'View Appointments',
-                                            widget: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 7.0),
-                                              child: Container(
-                                                height: 40,
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.grey.shade200
-                                                      .withOpacity(0.4),
-                                                  border: Border.all(
-                                                    width: 1,
-                                                    color: Colors.grey.shade400
-                                                        .withOpacity(0.5),
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(13),
+                                          context.read<AppointmentBloc>().add(
+                                                CreateAppointmentEvent(
+                                                  shopName: widget.shop,
+                                                  category: 'Male',
+                                                  appointmentTime: selectedTime,
+                                                  appointmentDate:
+                                                      selectedValue,
+                                                  phone: '0245513607',
+                                                  servicesType:
+                                                      widget.serviceType,
+                                                  amount: totalCharged(),
                                                 ),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(3),
-                                                        child: Row(
-                                                          children: [
-                                                            Text(
-                                                              "GS4472-34634GBH",
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodySmall!
-                                                                  .copyWith(
-                                                                    fontSize:
-                                                                        13,
-                                                                    color: Colors
-                                                                        .black54,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                  ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        height: 30,
-                                                        width: 30,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: Colors.black,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(5),
-                                                        ),
-                                                        child: const Center(
-                                                          child: Icon(
-                                                            Icons.copy,
-                                                            size: 13,
-                                                            weight: 8,
-                                                            grade: 8,
-                                                            opticalSize: 8,
-                                                            color: Colors.white,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            confirmBtnTextStyle: TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.white,
-                                            ),
-                                            onConfirmBtnTap: () {
-                                              Navigator.pushNamed(
-                                                  context, '/appointments');
-                                            },
-                                          );
-
-                                          // context.read<AppointmentBloc>().add(
-                                          //       CreateAppointmentEvent(
-                                          //         userId: FirebaseAuth.instance
-                                          //             .currentUser!.uid,
-                                          //         shopName: widget.shop,
-                                          //         category: 'Male',
-                                          //         appointmentTime: null,
-                                          //         appointmentDate:
-                                          //             selectedValue,
-                                          //         phone: '0245513607',
-                                          //         servicesType:
-                                          //             widget.serviceType,
-                                          //         amount: 0.0,
-                                          //       ),
-                                          //     );
+                                              );
                                         },
                                         child: Container(
                                           height: 50,

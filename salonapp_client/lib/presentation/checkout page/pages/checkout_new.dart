@@ -25,6 +25,7 @@ class CheckoutScreen extends StatefulWidget {
   String? shop;
   String? location;
   String? id;
+  String? phone;
   CheckoutScreen({
     Key? key,
     required this.serviceType,
@@ -33,6 +34,7 @@ class CheckoutScreen extends StatefulWidget {
     required this.shop,
     required this.location,
     required this.id,
+    this.phone,
   }) : super(key: key);
 
   @override
@@ -539,19 +541,24 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                                       padding: const EdgeInsets.all(20),
                                       child: GestureDetector(
                                         onTap: () {
-                                          context.read<AppointmentBloc>().add(
-                                                CreateAppointmentEvent(
-                                                  shopName: widget.shop,
-                                                  category: 'Male',
-                                                  appointmentTime: selectedTime,
-                                                  appointmentDate:
-                                                      selectedValue,
-                                                  phone: '0245513607',
-                                                  servicesType:
-                                                      widget.serviceType,
-                                                  amount: totalCharged(),
-                                                ),
-                                              );
+                                          try {
+                                            context.read<AppointmentBloc>().add(
+                                                  CreateAppointmentEvent(
+                                                    shopName: widget.shop,
+                                                    category: 'Male',
+                                                    appointmentTime:
+                                                        selectedTime,
+                                                    appointmentDate:
+                                                        selectedValue,
+                                                    phone: widget.user?.phone,
+                                                    servicesType:
+                                                        widget.serviceType,
+                                                    amount: totalCharged(),
+                                                  ),
+                                                );
+                                          } catch (e) {
+                                            print(e);
+                                          }
                                         },
                                         child: Container(
                                           height: 50,

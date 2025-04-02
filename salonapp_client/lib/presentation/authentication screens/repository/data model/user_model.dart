@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class UserModel {
   String? id;
@@ -54,7 +55,7 @@ class UserModel {
     if (document.exists) {
       final data = document.data()!;
       return UserModel(
-        id: data['id'],
+        id: FirebaseAuth.instance.currentUser!.uid,
         fullname: data['fullname'],
         email: data['email'],
         phone: data['phone'],

@@ -48,7 +48,6 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
       debugPrint("Creating Apppointment service......");
 
       final appointments = AppointmentModel(
-        appointmentId: event.appointmentId,
         userId: firebaseUser.currentUser!.uid,
         amount: event.amount,
         shopName: event.shopName,

@@ -4,7 +4,7 @@ import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:flutter/material.dart';
 
 class AppointmentModel {
-  late String? appointmentId;
+  late String? id;
   late double? amount;
   late String? userId;
   late String? shopName;
@@ -15,7 +15,7 @@ class AppointmentModel {
   late String? servicesType;
 
   AppointmentModel(
-      {this.appointmentId,
+      {this.id,
       this.amount,
       this.userId,
       this.shopName,
@@ -27,7 +27,6 @@ class AppointmentModel {
 
   Map<String, dynamic> toJson() {
     return {
-      "appointmentId": appointmentId,
       "amount": amount,
       "ownerID": userId,
       "shopName": shopName,
@@ -40,7 +39,7 @@ class AppointmentModel {
   }
 
   AppointmentModel.defaultModel() {
-    appointmentId = '';
+    id = null;
     amount = 0.0;
     userId = "ownerID";
     shopName = "shopName";
@@ -57,7 +56,7 @@ class AppointmentModel {
     if (document.exists) {
       final data = document.data()!;
       return AppointmentModel(
-        appointmentId: document.id,
+        id: document.id,
         amount: data["amount"] ?? 0.0,
         userId: data["userId"] ?? '',
         shopName: data["shopName"] ?? '',

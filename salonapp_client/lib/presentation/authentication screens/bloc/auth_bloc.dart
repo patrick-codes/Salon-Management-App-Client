@@ -147,6 +147,7 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
         }
       }
       final user = UserModel(
+        //NjUFvCHQyqd4o0Jr9PdkZuo8aE93
         id: UserHelper.firebaseUser!.uid,
         fullname: event.fullName,
         email: event.email,

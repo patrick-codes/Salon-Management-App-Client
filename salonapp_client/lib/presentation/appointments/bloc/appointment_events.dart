@@ -4,7 +4,6 @@ part of 'appointment_bloc.dart';
 sealed class AppointmentEvent {}
 
 class CreateAppointmentEvent extends AppointmentEvent {
-  String? appointmentId;
   final double? amount;
   final String? userId;
   final String? shopName;
@@ -15,7 +14,6 @@ class CreateAppointmentEvent extends AppointmentEvent {
   final String? servicesType;
 
   CreateAppointmentEvent({
-    this.appointmentId,
     required this.amount,
     this.userId,
     required this.shopName,

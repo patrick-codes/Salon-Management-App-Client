@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,34 +14,42 @@ part 'appointment_states.dart';
 class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   static AppointmentServiceHelper appointmentHelper =
       AppointmentServiceHelper();
+  List<AppointmentModel>? appointment;
+  List<AppointmentModel>? appointments = [];
   final firebaseUser = FirebaseAuth.instance;
   AppointmentBloc() : super(AppointmentInitial()) {
     on<CreateAppointmentEvent>(createAppointment);
     on<ViewAppointmentEvent>(fetchAppointments);
-    // on<SearchShopEvent>(searchAppointment);
+    on<SearchAppointmentEvent>(searchAppointment);
     // on<ViewSingleShopEvent>(fetchSingleAppointment);
   }
-  // void onSearchChanged(String query) {
-  //   serviceman = serviceman2!
-  //       .where((servicemen) => servicemen.shopName!
-  //           .trim()
-  //           .toLowerCase()
-  //           .contains(query.trim().toLowerCase()))
-  //       .toList();
-  // }
+  void onSearchChanged(String query) {
+    appointment = appointments!
+        .where((service) => service.shopName!
+            .trim()
+            .toLowerCase()
+            .contains(query.trim().toLowerCase()))
+        .toList();
+  }
 
-  // Future<void> searchAppointment(
-  //     SearchShopEvent event, Emitter<ShopsState> emit) async {
-  //   try {
-  //     emit(ShopsLoadingState());
-  //     if (event.query.isNotEmpty) {
-  //       onSearchChanged(event.query);
-  //       emit(ShopsFetchedState(shop: serviceman!));
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
+  Future<void> searchAppointment(
+      SearchAppointmentEvent event, Emitter<AppointmentState> emit) async {
+    try {
+      emit(AppointmentsLoadingState());
+      if (event.query.isNotEmpty) {
+        onSearchChanged(event.query);
+        emit(AppointmentsFetchedState(appointment));
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  String generateBookingCode(DateTime? date, String? text) {
+    Random rand = Random();
+    String code = "GC${date!.year}-${rand.nextInt(100)}$text";
+    return code;
+  }
 
   Future<void> createAppointment(
       CreateAppointmentEvent event, Emitter<AppointmentState> emit) async {
@@ -63,6 +73,13 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
       emit(AppointmentCreatedSuccesState(
           message: 'Appointment service created succesfuly!!'));
       debugPrint("Appointment service created succesfuly!!");
+
+      String codegen = generateBookingCode(appointments.appointmentDate,
+              appointments.userId!.substring(2, 6))
+          .toString();
+
+      emit(AppointmentCodeCreatedSuccesState(code: codegen));
+      debugPrint("Booking code:${codegen.toString()}");
     } catch (e) {
       emit(AppointmentCreateFailureState(error: e.toString()));
       debugPrint(e.toString());

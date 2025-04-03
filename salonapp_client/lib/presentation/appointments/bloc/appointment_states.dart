@@ -6,7 +6,11 @@ class AppointmentInitial extends AppointmentState {}
 
 class AppointmentsLoadingState extends AppointmentState {}
 
-class AppointmentsFetchedState extends AppointmentState {}
+class AppointmentsFetchedState extends AppointmentState {
+  final List<AppointmentModel>? appointment;
+
+  AppointmentsFetchedState(this.appointment);
+}
 
 class SingleAppointmentsFetchedState extends AppointmentState {}
 
@@ -21,6 +25,14 @@ class AppointmentCreatedSuccesState extends AppointmentState {
 
   AppointmentCreatedSuccesState({
     required this.message,
+  });
+}
+
+class AppointmentCodeCreatedSuccesState extends AppointmentState {
+  final String code;
+
+  AppointmentCodeCreatedSuccesState({
+    required this.code,
   });
 }
 

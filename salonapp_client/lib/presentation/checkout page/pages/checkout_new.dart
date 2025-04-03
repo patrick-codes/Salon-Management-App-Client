@@ -49,6 +49,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
   Time time = Time(hour: DateTime.now().hour, minute: DateTime.now().minute);
   bool isLoading = false;
   TimeOfDay? selectedTime;
+  String? code;
 
   double totalCharged() {
     double total = widget.amount! + 2;
@@ -73,7 +74,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
             confirmBtnColor: blackColor,
             title: 'Appointment Booked!!',
             text: 'Salon appointment booked successfully!',
-            confirmBtnText: 'View E-Ticket',
+            confirmBtnText: 'View E-Receipt',
             widget: Padding(
               padding: const EdgeInsets.symmetric(vertical: 7.0),
               child: Container(
@@ -97,7 +98,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                         child: Row(
                           children: [
                             Text(
-                              "GS4472-34634GBH",
+                              code ?? 'Booking code...',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall!
@@ -141,6 +142,9 @@ class _CheckoutScreenState extends State<CheckoutScreen>
               Navigator.pushNamed(context, '/appointments');
             },
           );
+        }
+        if (state is AppointmentCodeCreatedSuccesState) {
+          code = state.code;
         } else if (state is AppointmentCreateFailureState) {
           toast.errorToast(
             message: state.error,
@@ -550,7 +554,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                                                         selectedTime,
                                                     appointmentDate:
                                                         selectedValue,
-                                                    phone: widget.user?.phone,
+                                                    phone: widget.phone,
                                                     servicesType:
                                                         widget.serviceType,
                                                     amount: totalCharged(),

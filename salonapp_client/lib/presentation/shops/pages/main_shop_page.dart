@@ -182,7 +182,7 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                                     shop: shop!.shopName,
                                     location: shop!.location,
                                     id: shop!.shopOwnerId,
-                                    phone: shop!.phone,
+                                    phone: shop!.whatsapp,
                                   ),
                                 ),
                               );

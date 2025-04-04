@@ -45,10 +45,19 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     }
   }
 
-  String generateBookingCode(DateTime? date, String? text) {
-    Random rand = Random();
-    String code = "GC${date!.year}-${rand.nextInt(100)}$text";
-    return code;
+  String _generateRandomString(int length) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    final random = Random();
+    return List.generate(length, (index) => chars[random.nextInt(chars.length)])
+        .join();
+  }
+
+  String generateBookingCode() {
+    final now = DateTime.now();
+    String datePart =
+        "${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}";
+    String randomPart = _generateRandomString(4);
+    return "$datePart$randomPart";
   }
 
   Future<void> createAppointment(
@@ -74,9 +83,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
           message: 'Appointment service created succesfuly!!'));
       debugPrint("Appointment service created succesfuly!!");
 
-      String codegen = generateBookingCode(appointments.appointmentDate,
-              appointments.userId!.substring(2, 6))
-          .toString();
+      String codegen = generateBookingCode();
 
       emit(AppointmentCodeCreatedSuccesState(code: codegen));
       debugPrint("Booking code:${codegen.toString()}");

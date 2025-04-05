@@ -50,19 +50,29 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
         .join();
   }
 
-  String generateBookingCode() {
+  String shopConcat(String fullName) {
+    List<String> words = fullName.trim().split(RegExp(r'\s+'));
+    if (words.length < 2) return words[0][0].toUpperCase();
+
+    return words[0][0].toUpperCase() + words[1][0].toUpperCase();
+  }
+
+  String generateBookingCode(String shopname) {
     final now = DateTime.now();
     String datePart =
         "${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}";
     String randomPart = _generateRandomString(4);
-    return "$datePart$randomPart";
+    String shopconcat = shopConcat(shopname);
+    return "$shopconcat$datePart$randomPart";
   }
 
   Future<void> createAppointment(
       CreateAppointmentEvent event, Emitter<AppointmentState> emit) async {
     try {
+      emit(AppointmentsLoadingState());
       debugPrint("Creating Apppointment service......");
-      String codegen = generateBookingCode();
+
+      String codegen = generateBookingCode(event.shopName.toString());
 
       final appointments = AppointmentModel(
         userId: firebaseUser.currentUser!.uid,
@@ -75,7 +85,6 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
         servicesType: event.servicesType,
         bookingCode: codegen,
       );
-      emit(AppointmentsLoadingState());
 
       appointmentHelper.createAppointment(appointments);
       emit(AppointmentCreatedSuccesState(

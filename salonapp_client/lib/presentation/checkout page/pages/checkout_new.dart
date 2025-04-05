@@ -142,6 +142,9 @@ class _CheckoutScreenState extends State<CheckoutScreen>
             },
           );
         }
+        if (state is AppointmentsLoadingState) {
+          isLoading = true;
+        }
         if (state is AppointmentCreateFailureState) {
           toast.errorToast(
             message: state.error,
@@ -583,20 +586,20 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                                                   BorderRadius.circular(15)),
                                           alignment: Alignment.center,
                                           child:
-                                              state is! AppointmentsLoadingState
-                                                  ? TextUtil(
-                                                      text: "Book Now",
-                                                      weight: true,
-                                                      color: primaryColor,
-                                                      size: 16,
-                                                    )
-                                                  : SizedBox(
+                                              state is AppointmentsLoadingState
+                                                  ? SizedBox(
                                                       width: 22,
                                                       height: 22,
                                                       child:
                                                           CircularProgressIndicator(
                                                         color: whiteColor,
                                                       ),
+                                                    )
+                                                  : TextUtil(
+                                                      text: "Book Now",
+                                                      weight: true,
+                                                      color: primaryColor,
+                                                      size: 16,
                                                     ),
                                         ),
                                       ),

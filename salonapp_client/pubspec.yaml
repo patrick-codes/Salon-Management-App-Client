@@ -83,6 +83,7 @@ dependencies:
   m_toast: ^0.2.4
   quickalert: ^1.1.0
   share_plus: ^10.1.4
+  clipboard: ^0.1.3
 
 
 

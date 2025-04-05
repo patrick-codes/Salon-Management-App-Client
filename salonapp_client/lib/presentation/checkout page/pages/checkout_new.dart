@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:clipboard/clipboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:currency_code_to_currency_symbol/currency_code_to_currency_symbol.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
@@ -110,22 +111,15 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                           ],
                         ),
                       ),
-                      Container(
-                        height: 30,
-                        width: 30,
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.copy,
-                            size: 13,
-                            weight: 8,
-                            grade: 8,
-                            opticalSize: 8,
-                            color: Colors.white,
-                          ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.copy,
+                          size: 20,
+                          weight: 8,
+                          grade: 8,
+                          opticalSize: 8,
+                          color: iconGrey,
                         ),
                       ),
                     ],
@@ -546,33 +540,135 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                                       child: GestureDetector(
                                         onTap: () {
                                           try {
-                                            if (widget.serviceType != null ||
-                                                widget.amount != null ||
-                                                widget.location != null ||
-                                                widget.id != null) {
-                                              context
-                                                  .read<AppointmentBloc>()
-                                                  .add(
-                                                    CreateAppointmentEvent(
-                                                      shopName: widget.shop,
-                                                      category: 'Male',
-                                                      appointmentTime:
-                                                          selectedTime,
-                                                      appointmentDate:
-                                                          selectedValue,
-                                                      phone: widget.phone,
-                                                      servicesType:
-                                                          widget.serviceType,
-                                                      amount: totalCharged(),
+                                            QuickAlert.show(
+                                              context: context,
+                                              animType:
+                                                  QuickAlertAnimType.slideInUp,
+                                              type: QuickAlertType.success,
+                                              confirmBtnColor: blackColor,
+                                              title: 'Appointment Booked!!',
+                                              text:
+                                                  'Salon appointment booked successfully!',
+                                              confirmBtnText: 'View E-Receipt',
+                                              widget: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 7.0),
+                                                child: Container(
+                                                  height: 40,
+                                                  width: 80,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.grey.shade200
+                                                        .withOpacity(0.4),
+                                                    border: Border.all(
+                                                      width: 1,
+                                                      color: Colors
+                                                          .grey.shade400
+                                                          .withOpacity(0.5),
                                                     ),
-                                                  );
-                                            } else {
-                                              toast.errorToast(
-                                                message:
-                                                    'an unexpected error occured',
-                                                alignment: Alignment.topCenter,
-                                              );
-                                            }
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            13),
+                                                  ),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(3),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Text(
+                                                                "state.code",
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .bodySmall!
+                                                                    .copyWith(
+                                                                      fontSize:
+                                                                          13,
+                                                                      color: Colors
+                                                                          .black54,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        IconButton(
+                                                          onPressed: () {
+                                                            FlutterClipboard.copy(
+                                                                    'hello flutter friends')
+                                                                .then((value) =>
+                                                                    print(
+                                                                        'copied'));
+                                                          },
+                                                          icon: Icon(
+                                                            Icons.copy,
+                                                            size: 20,
+                                                            weight: 8,
+                                                            grade: 8,
+                                                            opticalSize: 8,
+                                                            color: iconGrey,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              confirmBtnTextStyle: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.white,
+                                              ),
+                                              onConfirmBtnTap: () {
+                                                Navigator.pushNamed(
+                                                    context, '/appointments');
+                                              },
+                                            );
+
+                                            // if (widget.serviceType != null ||
+                                            //     widget.amount != null ||
+                                            //     widget.location != null ||
+                                            //     widget.id != null) {
+                                            //   context
+                                            //       .read<AppointmentBloc>()
+                                            //       .add(
+                                            //         CreateAppointmentEvent(
+                                            //           shopName: widget.shop,
+                                            //           category: 'Male',
+                                            //           appointmentTime:
+                                            //               selectedTime,
+                                            //           appointmentDate:
+                                            //               selectedValue,
+                                            //           phone: widget.phone,
+                                            //           servicesType:
+                                            //               widget.serviceType,
+                                            //           amount: totalCharged(),
+                                            //         ),
+                                            //       );
+                                            // } else {
+                                            //   toast.errorToast(
+                                            //     message:
+                                            //         'an unexpected error occured',
+                                            //     alignment: Alignment.topCenter,
+                                            //   );
+                                            // }
                                           } catch (e) {
                                             print(e);
                                           }

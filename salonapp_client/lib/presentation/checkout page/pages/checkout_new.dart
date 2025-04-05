@@ -49,7 +49,6 @@ class _CheckoutScreenState extends State<CheckoutScreen>
   Time time = Time(hour: DateTime.now().hour, minute: DateTime.now().minute);
   bool isLoading = false;
   TimeOfDay? selectedTime;
-  String? code;
 
   double totalCharged() {
     double total = widget.amount! + 2;
@@ -63,13 +62,10 @@ class _CheckoutScreenState extends State<CheckoutScreen>
   @override
   Widget build(BuildContext context) {
     ShowMToast toast = ShowMToast(context);
-
     return BlocConsumer<AppointmentBloc, AppointmentState>(
       listener: (BuildContext context, AppointmentState state) {
-        String? codegen;
         if (state is AppointmentCreatedSuccesState) {
-          codegen = state.code;
-          debugPrint("Booking code: $codegen");
+          debugPrint("Booking code: ${state.code}");
           QuickAlert.show(
             context: context,
             animType: QuickAlertAnimType.slideInUp,
@@ -547,21 +543,33 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                                       child: GestureDetector(
                                         onTap: () {
                                           try {
-                                            context.read<AppointmentBloc>().add(
-                                                  CreateAppointmentEvent(
-                                                    shopName: widget.shop,
-                                                    category: 'Male',
-                                                    appointmentTime:
-                                                        selectedTime,
-                                                    appointmentDate:
-                                                        selectedValue,
-                                                    phone: widget.phone,
-                                                    servicesType:
-                                                        widget.serviceType,
-                                                    amount: totalCharged(),
-                                                    bookingCode: code,
-                                                  ),
-                                                );
+                                            if (widget.serviceType != null ||
+                                                widget.amount != null ||
+                                                widget.location != null ||
+                                                widget.id != null) {
+                                              context
+                                                  .read<AppointmentBloc>()
+                                                  .add(
+                                                    CreateAppointmentEvent(
+                                                      shopName: widget.shop,
+                                                      category: 'Male',
+                                                      appointmentTime:
+                                                          selectedTime,
+                                                      appointmentDate:
+                                                          selectedValue,
+                                                      phone: widget.phone,
+                                                      servicesType:
+                                                          widget.serviceType,
+                                                      amount: totalCharged(),
+                                                    ),
+                                                  );
+                                            } else {
+                                              toast.errorToast(
+                                                message:
+                                                    'an unexpected error occured',
+                                                alignment: Alignment.topCenter,
+                                              );
+                                            }
                                           } catch (e) {
                                             print(e);
                                           }

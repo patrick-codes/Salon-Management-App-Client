@@ -62,6 +62,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
       CreateAppointmentEvent event, Emitter<AppointmentState> emit) async {
     try {
       debugPrint("Creating Apppointment service......");
+      String codegen = generateBookingCode();
 
       final appointments = AppointmentModel(
         userId: firebaseUser.currentUser!.uid,
@@ -72,15 +73,17 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
         appointmentDate: event.appointmentDate,
         phone: event.phone,
         servicesType: event.servicesType,
-        bookingCode: event.bookingCode,
+        bookingCode: codegen,
       );
       emit(AppointmentsLoadingState());
 
       appointmentHelper.createAppointment(appointments);
-      String codegen = generateBookingCode();
       emit(AppointmentCreatedSuccesState(
           message: 'Appointment service created succesfuly!!', code: codegen));
       debugPrint("Appointment service created succesfuly.");
+    } on FirebaseAuthException catch (error) {
+      debugPrint("❌ Firebase Error: $error");
+      emit(AppointmentCreateFailureState(error: e.toString()));
     } catch (e) {
       emit(AppointmentCreateFailureState(error: e.toString()));
       debugPrint(e.toString());

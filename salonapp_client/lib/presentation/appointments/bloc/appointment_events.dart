@@ -12,6 +12,7 @@ class CreateAppointmentEvent extends AppointmentEvent {
   final DateTime? appointmentDate;
   final String? phone;
   final String? servicesType;
+  final String? bookingCode;
 
   CreateAppointmentEvent({
     required this.amount,
@@ -22,6 +23,7 @@ class CreateAppointmentEvent extends AppointmentEvent {
     required this.appointmentDate,
     required this.phone,
     required this.servicesType,
+    this.bookingCode,
   });
 }
 

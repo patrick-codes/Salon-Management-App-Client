@@ -66,7 +66,10 @@ class _CheckoutScreenState extends State<CheckoutScreen>
 
     return BlocConsumer<AppointmentBloc, AppointmentState>(
       listener: (BuildContext context, AppointmentState state) {
+        String? codegen;
         if (state is AppointmentCreatedSuccesState) {
+          codegen = state.code;
+          debugPrint("Booking code: $codegen");
           QuickAlert.show(
             context: context,
             animType: QuickAlertAnimType.slideInUp,
@@ -98,7 +101,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                         child: Row(
                           children: [
                             Text(
-                              code ?? 'Booking code...',
+                              state.code,
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall!
@@ -143,9 +146,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
             },
           );
         }
-        if (state is AppointmentCodeCreatedSuccesState) {
-          code = state.code;
-        } else if (state is AppointmentCreateFailureState) {
+        if (state is AppointmentCreateFailureState) {
           toast.errorToast(
             message: state.error,
             alignment: Alignment.topCenter,
@@ -200,7 +201,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                       setState(() {
                         selectedValue = date;
                       });
-                      debugPrint("Selected date: ${selectedValue!.toLocal()}");
+                      debugPrint("Selected date: ${selectedValue.toLocal()}");
                     },
                   ),
                 ),
@@ -422,7 +423,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                                               ),
                                               TextUtil(
                                                 text:
-                                                    '${selectedValue.day} - ${selectedValue.month} - ${selectedValue!.year}',
+                                                    '${selectedValue.day} - ${selectedValue.month} - ${selectedValue.year}',
                                                 size: 15,
                                                 weight: true,
                                               ),
@@ -558,6 +559,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                                                     servicesType:
                                                         widget.serviceType,
                                                     amount: totalCharged(),
+                                                    bookingCode: code,
                                                   ),
                                                 );
                                           } catch (e) {

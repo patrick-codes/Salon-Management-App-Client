@@ -22,9 +22,11 @@ class AppointmentsFetchFailureState extends AppointmentState {
 
 class AppointmentCreatedSuccesState extends AppointmentState {
   final String message;
+  final String code;
 
   AppointmentCreatedSuccesState({
     required this.message,
+    required this.code,
   });
 }
 

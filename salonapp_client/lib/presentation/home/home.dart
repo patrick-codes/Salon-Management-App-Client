@@ -7,7 +7,6 @@ import 'package:salonapp_client/helpers/colors/widgets/minimal_heading.dart';
 import 'package:salonapp_client/presentation/authentication%20screens/repository/data%20model/user_model.dart';
 import 'package:salonapp_client/presentation/location/bloc/location_bloc.dart';
 import '../../helpers/colors/widgets/style.dart';
-import '../authentication screens/bloc/auth_bloc.dart';
 import '../checkout page/components/Transaction/other/show_up_animation.dart';
 import '../filter screen/pages/filter_screen.dart';
 import '../shops/bloc/home shop bloc/h_shops_bloc.dart';

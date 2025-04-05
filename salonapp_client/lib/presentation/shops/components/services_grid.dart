@@ -1,6 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import '../../../helpers/colors/color_constants.dart';
 import '../../../helpers/colors/widgets/style.dart';
 import '../repository/data rmodel/h_shop_service_model.dart';
 

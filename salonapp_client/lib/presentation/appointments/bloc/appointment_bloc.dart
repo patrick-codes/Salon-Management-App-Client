@@ -1,7 +1,5 @@
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,7 +61,6 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   Future<void> createAppointment(
       CreateAppointmentEvent event, Emitter<AppointmentState> emit) async {
     try {
-      //emit(AppointmentsLoadingState());
       debugPrint("Creating Apppointment service......");
 
       final appointments = AppointmentModel(
@@ -75,18 +72,15 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
         appointmentDate: event.appointmentDate,
         phone: event.phone,
         servicesType: event.servicesType,
+        bookingCode: event.bookingCode,
       );
       emit(AppointmentsLoadingState());
 
       appointmentHelper.createAppointment(appointments);
-      emit(AppointmentCreatedSuccesState(
-          message: 'Appointment service created succesfuly!!'));
-      debugPrint("Appointment service created succesfuly!!");
-
       String codegen = generateBookingCode();
-
-      emit(AppointmentCodeCreatedSuccesState(code: codegen));
-      debugPrint("Booking code:${codegen.toString()}");
+      emit(AppointmentCreatedSuccesState(
+          message: 'Appointment service created succesfuly!!', code: codegen));
+      debugPrint("Appointment service created succesfuly.");
     } catch (e) {
       emit(AppointmentCreateFailureState(error: e.toString()));
       debugPrint(e.toString());

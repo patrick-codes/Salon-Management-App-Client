@@ -13,7 +13,6 @@ import '../../../helpers/colors/widgets/minimal_heading.dart';
 import '../../checkout page/components/Transaction/other/show_up_animation.dart';
 import '../../checkout page/pages/checkout_new.dart';
 import '../repository/data rmodel/service_model.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../repository/external launcher/external_launcher.dart';
 

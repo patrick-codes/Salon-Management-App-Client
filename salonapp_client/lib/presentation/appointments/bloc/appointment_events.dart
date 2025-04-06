@@ -30,9 +30,9 @@ class CreateAppointmentEvent extends AppointmentEvent {
 }
 
 class DeleteAppointmentEvent extends AppointmentEvent {
-  final String message;
+  final String id;
   DeleteAppointmentEvent({
-    required this.message,
+    required this.id,
   });
 }
 

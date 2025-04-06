@@ -7,22 +7,29 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:m_toast/m_toast.dart';
 import 'package:salonapp_client/presentation/appointments/bloc/appointment_bloc.dart';
 import 'package:salonapp_client/presentation/checkout%20page/components/Transaction/other/show_up_animation.dart';
+import 'package:salonapp_client/presentation/checkout%20page/components/cedi_sign_component.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../helpers/colors/color_constants.dart';
 import '../../../helpers/colors/widgets/style.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class AppointmentsPage extends StatelessWidget {
+class AppointmentsPage extends StatefulWidget {
   AppointmentsPage({super.key});
 
-  List<String> imgs = <String>[
-    "assets/images/img8.jpg",
-    "assets/images/img.jpg",
-    "assets/images/img3.jpg",
-    "assets/images/img5.jpg",
-    "assets/images/img9.jpg",
-    "assets/images/img6.jpg",
-  ];
+  @override
+  State<AppointmentsPage> createState() => _AppointmentsPageState();
+}
+
+class _AppointmentsPageState extends State<AppointmentsPage> {
+  AppointmentBloc? appointmentBloc;
+  AppointmentState? state;
+  @override
+  void initState() {
+    super.initState();
+    appointmentBloc = context.read<AppointmentBloc>()
+      ..add(ViewAppointmentEvent());
+    state = appointmentBloc!.state;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +39,16 @@ class AppointmentsPage extends StatelessWidget {
         if (state is AppointmentsFetchFailureState) {
           toast.errorToast(
             message: state.errorMessage,
+            alignment: Alignment.topCenter,
+          );
+        } else if (state is AppointmentDeletedSuccesState) {
+          toast.successToast(
+            message: state.message,
+            alignment: Alignment.topCenter,
+          );
+        } else if (state is AppointmentDeletedFailureState) {
+          toast.errorToast(
+            message: state.message,
             alignment: Alignment.topCenter,
           );
         }
@@ -52,7 +69,7 @@ class AppointmentsPage extends StatelessWidget {
               ),
               centerTitle: true,
               title: Text(
-                "Appointments",
+                "Appointments (${state.appointment!.length})",
                 style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -75,7 +92,7 @@ class AppointmentsPage extends StatelessWidget {
                   child: Column(
                     children: [
                       SizedBox(
-                        height: MediaQuery.of(context).size.height,
+                        height: MediaQuery.of(context).size.height - 120,
                         width: MediaQuery.of(context).size.width,
                         child: ListView.builder(
                           itemCount: state.appointment!.length,
@@ -86,7 +103,13 @@ class AppointmentsPage extends StatelessWidget {
                               delay: 150,
                               child: appointmentContainer(
                                 context,
+                                appoint.id ?? '',
                                 appoint.imgUrl ?? '',
+                                appoint.shopName!,
+                                appoint.amount ?? 0.0,
+                                appoint.appointmentTime.toString(),
+                                appoint.servicesType ?? '',
+                                appoint.appointmentDate.toString(),
                               ),
                             );
                           },
@@ -145,9 +168,18 @@ class AppointmentsPage extends StatelessWidget {
     );
   }
 
-  Container appointmentContainer(BuildContext context, String imgurl) {
+  Container appointmentContainer(
+    BuildContext context,
+    String id,
+    String imgurl,
+    String name,
+    double amount,
+    String time,
+    String service,
+    String date,
+  ) {
     return Container(
-      height: 225,
+      height: 245,
       width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
@@ -168,17 +200,27 @@ class AppointmentsPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Dec 22, 2024",
+                  'Upcoming',
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                 ),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    CediSign(
+                      size: 16.5,
+                      weight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                    SizedBox(width: 2),
                     Text(
-                      "Remind me",
+                      amount.toString(),
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: Colors.black45,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
                           ),
                     ),
                     SizedBox(width: 5),
@@ -205,8 +247,8 @@ class AppointmentsPage extends StatelessWidget {
                         CachedNetworkImage(
                           imageUrl: imgurl,
                           imageBuilder: (context, imageProvider) => Container(
-                            height: 95,
-                            width: 80,
+                            height: 158,
+                            width: 90,
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 fit: BoxFit.cover,
@@ -257,7 +299,7 @@ class AppointmentsPage extends StatelessWidget {
                               children: [
                                 Text(
                                   overflow: TextOverflow.visible,
-                                  'Captain Barbershop',
+                                  name,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyLarge!
@@ -276,13 +318,13 @@ class AppointmentsPage extends StatelessWidget {
                                       children: [
                                         Text(
                                           overflow: TextOverflow.ellipsis,
-                                          'Lafa Street, Gbawe-Accra',
+                                          date,
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyMedium!
                                               .copyWith(
                                                 color: Colors.black45,
-                                                fontSize: 11,
+                                                fontSize: 14,
                                               ),
                                         ),
                                       ],
@@ -294,7 +336,7 @@ class AppointmentsPage extends StatelessWidget {
                                   children: [
                                     Text(
                                       overflow: TextOverflow.visible,
-                                      'Services:',
+                                      'Service Type',
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium!
@@ -309,15 +351,75 @@ class AppointmentsPage extends StatelessWidget {
                                 const SizedBox(height: 3),
                                 Text(
                                   overflow: TextOverflow.visible,
-                                  'Undercut Haircut, Regular Shaving, Natural Hair Wash.',
+                                  service,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium!
                                       .copyWith(
                                         color: iconGrey,
-                                        fontSize: 10,
+                                        fontSize: 13,
                                       ),
                                 ),
+                                SizedBox(height: 9),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    // Container(
+                                    //   height: 35,
+                                    //   width: 150,
+                                    //   decoration: BoxDecoration(
+                                    //     borderRadius: BorderRadius.circular(5),
+                                    //     border: Border.all(
+                                    //       width: 1,
+                                    //       color: primaryColor,
+                                    //     ),
+                                    //   ),
+                                    //   child: Center(
+                                    //     child: Text(
+                                    //       "Cancel appointment",
+                                    //       style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    //             fontSize: 10,
+                                    //             color: primaryColor,
+                                    //             fontWeight: FontWeight.bold,
+                                    //           ),
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                    Container(
+                                      height: 35,
+                                      width: 150,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        border: Border.all(
+                                          width: 1,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: TextButton(
+                                          onPressed: () {
+                                            context.read<AppointmentBloc>().add(
+                                                  DeleteAppointmentEvent(
+                                                      id: id),
+                                                );
+                                          },
+                                          child: Text(
+                                            "Cancel appointment",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall!
+                                                .copyWith(
+                                                  fontSize: 10,
+                                                  color: Colors.red,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                )
                               ],
                             ),
                           ),
@@ -329,50 +431,6 @@ class AppointmentsPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  height: 35,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    border: Border.all(
-                      width: 1,
-                      color: primaryColor,
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "Cancel Booking",
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            fontSize: 10,
-                            color: primaryColor,
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 35,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: primaryColor,
-                  ),
-                  child: Center(
-                    child: Text(
-                      "E-Receipt",
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            fontSize: 10,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                  ),
-                )
-              ],
-            )
           ],
         ),
       ),

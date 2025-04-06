@@ -51,4 +51,26 @@ class AppointmentServiceHelper {
       return null;
     }
   }
+
+  Future<AppointmentModel?> deleteSingleAppointment(String? id) async {
+    try {
+      if (id == null) return null;
+
+      final docRef = _db.collection("appointments").doc(id);
+      final documentSnapshot = await docRef.get();
+
+      if (documentSnapshot.exists) {
+        final appointment = AppointmentModel.fromSnapshot(documentSnapshot);
+        await docRef.delete();
+        print("Deleted appointment with id: $id successfully");
+        return appointment;
+      } else {
+        print("No appointment found with id: $id");
+        return null;
+      }
+    } catch (error) {
+      print("Error deleting appointment by id: $error");
+      return null;
+    }
+  }
 }

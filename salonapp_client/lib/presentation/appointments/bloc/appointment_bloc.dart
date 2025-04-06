@@ -13,17 +13,19 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   static AppointmentServiceHelper appointmentHelper =
       AppointmentServiceHelper();
   List<AppointmentModel>? appointment;
-  List<AppointmentModel>? appointmentList;
+  List<AppointmentModel>? appointmentList2;
+
+  AppointmentModel? appointmentList;
   List<AppointmentModel>? appointments = [];
   final firebaseUser = FirebaseAuth.instance;
   AppointmentBloc() : super(AppointmentInitial()) {
     on<CreateAppointmentEvent>(createAppointment);
     on<ViewAppointmentEvent>(fetchAppointments);
     on<SearchAppointmentEvent>(searchAppointment);
-    // on<ViewSingleShopEvent>(fetchSingleAppointment);
+    on<DeleteAppointmentEvent>(deleteAppointment);
   }
   void onSearchChanged(String query) {
-    appointmentList = appointments!
+    appointmentList2 = appointments!
         .where((service) => service.shopName!
             .trim()
             .toLowerCase()
@@ -37,7 +39,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
       emit(AppointmentsLoadingState());
       if (event.query.isNotEmpty) {
         onSearchChanged(event.query);
-        emit(AppointmentsFetchedState(appointmentList));
+        emit(AppointmentsFetchedState(appointmentList2));
       }
     } catch (e) {
       print(e);
@@ -120,5 +122,31 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
       debugPrint("Error: $error");
     }
     return appointment;
+  }
+
+  Future<AppointmentModel?> deleteAppointment(
+      DeleteAppointmentEvent event, Emitter<AppointmentState> emit) async {
+    emit(AppointmentsLoadingState());
+    try {
+      if (event.id.isNotEmpty) {
+        appointmentList =
+            await appointmentHelper.deleteSingleAppointment(event.id);
+        emit(AppointmentDeletedSuccesState(
+            message: 'Appointment deleted succesfully'));
+        debugPrint("Appointment deleted succesfully");
+        emit(AppointmentsFetchedState(appointment));
+      } else if (event.id.isEmpty) {
+        emit(AppointmentDeletedFailureState(
+            message: 'Deletion error: Appointment Id not found'));
+        debugPrint("Deletion error: Appointment Id not found");
+      }
+    } on FirebaseAuthException catch (error) {
+      emit(AppointmentDeletedFailureState(message: error.toString()));
+      debugPrint("Deletion error:  ${error.toString()}");
+    } catch (error) {
+      emit(AppointmentDeletedFailureState(message: error.toString()));
+      debugPrint("Deletion error: ${error.toString()}");
+    }
+    return appointmentList;
   }
 }

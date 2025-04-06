@@ -31,7 +31,8 @@ class _MainHomePageState extends State<MainHomePage> {
     // ),
     ShopsPage(),
     //CreateShopPage(),
-    AppointmentsPage(),
+    //AppointmentsPage(),
+    Container(),
     ProfilePage(),
   ];
 

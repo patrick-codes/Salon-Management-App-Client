@@ -496,7 +496,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     SizedBox(height: 25),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, '/shops');
+                        Navigator.pushNamed(context, '/appointments');
                       },
                       child: Container(
                         height: 30,

@@ -12,7 +12,11 @@ class AppointmentsFetchedState extends AppointmentState {
   AppointmentsFetchedState(this.appointment);
 }
 
-class SingleAppointmentsFetchedState extends AppointmentState {}
+class SingleAppointmentsFetchedState extends AppointmentState {
+  final List<AppointmentModel>? appointment;
+
+  SingleAppointmentsFetchedState(this.appointment);
+}
 
 class AppointmentsFetchFailureState extends AppointmentState {
   final String errorMessage;

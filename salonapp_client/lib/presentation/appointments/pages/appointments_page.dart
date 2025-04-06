@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:m_toast/m_toast.dart';
+import 'package:salonapp_client/presentation/appointments/bloc/appointment_bloc.dart';
 import 'package:salonapp_client/presentation/checkout%20page/components/Transaction/other/show_up_animation.dart';
-
 import '../../../helpers/colors/color_constants.dart';
+import '../../../helpers/colors/widgets/style.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class AppointmentsPage extends StatelessWidget {
   AppointmentsPage({super.key});
@@ -19,64 +24,121 @@ class AppointmentsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: secondaryColor,
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: primaryColor,
-          statusBarIconBrightness: Brightness.light,
-        ),
-        backgroundColor: Colors.transparent,
-        leading: const Icon(
-          MingCute.arrow_left_fill,
-        ),
-        centerTitle: true,
-        title: Text(
-          "Appointments",
-          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                fontWeight: FontWeight.bold,
+    ShowMToast toast = ShowMToast(context);
+    return BlocConsumer<AppointmentBloc, AppointmentState>(
+      listener: (context, state) {
+        if (state is AppointmentsFetchFailureState) {
+          toast.errorToast(
+            message: state.errorMessage,
+            alignment: Alignment.topCenter,
+          );
+        }
+      },
+      builder: (context, state) {
+        if (state is AppointmentsFetchedState) {
+          return Scaffold(
+            backgroundColor: secondaryColor,
+            extendBodyBehindAppBar: true,
+            appBar: AppBar(
+              systemOverlayStyle: const SystemUiOverlayStyle(
+                statusBarColor: primaryColor,
+                statusBarIconBrightness: Brightness.light,
               ),
-        ),
-        actions: [
-          GestureDetector(
-            onTap: () {},
-            child: Icon(
-              MingCute.more_2_fill,
-            ),
-          ),
-          SizedBox(width: 8),
-        ],
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(13.0),
-          child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height - 200,
-                  width: MediaQuery.of(context).size.width,
-                  child: ListView.builder(
-                    itemCount: imgs.length,
-                    scrollDirection: Axis.vertical,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ShowUpAnimation(
-                        delay: 150,
-                        child: appointmentContainer(
-                          context,
-                          imgs[index],
-                        ),
-                      );
-                    },
+              backgroundColor: Colors.transparent,
+              leading: const Icon(
+                MingCute.arrow_left_fill,
+              ),
+              centerTitle: true,
+              title: Text(
+                "Appointments",
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              actions: [
+                GestureDetector(
+                  onTap: () {},
+                  child: Icon(
+                    MingCute.more_2_fill,
                   ),
                 ),
+                SizedBox(width: 8),
               ],
             ),
+            body: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(13.0),
+                child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height - 200,
+                        width: MediaQuery.of(context).size.width,
+                        child: ListView.builder(
+                          itemCount: state.appointment!.length,
+                          scrollDirection: Axis.vertical,
+                          itemBuilder: (BuildContext context, int index) {
+                            return ShowUpAnimation(
+                              delay: 150,
+                              child: appointmentContainer(
+                                context,
+                                imgs[index],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        } else if (state is AppointmentsFetchFailureState) {
+          return Scaffold(
+            backgroundColor: secondaryBg,
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    'assets/svgs/undraw_file-search_cbur.svg',
+                    height: 150,
+                    width: 150,
+                  ),
+                  SizedBox(height: 20),
+                  PrimaryText(
+                    text: state.errorMessage,
+                    color: iconGrey,
+                    size: 15,
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        return Scaffold(
+          backgroundColor: secondaryBg,
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SpinKitDoubleBounce(
+                // lineWidth: 3,
+                size: 60,
+                color: primaryColor,
+              ),
+              SizedBox(height: 20),
+              PrimaryText(
+                text: 'Loading appointments....',
+                color: secondaryColor3,
+                size: 13,
+              ),
+            ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

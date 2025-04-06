@@ -13,6 +13,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   static AppointmentServiceHelper appointmentHelper =
       AppointmentServiceHelper();
   List<AppointmentModel>? appointment;
+  List<AppointmentModel>? appointmentList;
   List<AppointmentModel>? appointments = [];
   final firebaseUser = FirebaseAuth.instance;
   AppointmentBloc() : super(AppointmentInitial()) {
@@ -22,7 +23,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     // on<ViewSingleShopEvent>(fetchSingleAppointment);
   }
   void onSearchChanged(String query) {
-    appointment = appointments!
+    appointmentList = appointments!
         .where((service) => service.shopName!
             .trim()
             .toLowerCase()
@@ -36,7 +37,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
       emit(AppointmentsLoadingState());
       if (event.query.isNotEmpty) {
         onSearchChanged(event.query);
-        emit(AppointmentsFetchedState(appointment));
+        emit(AppointmentsFetchedState(appointmentList));
       }
     } catch (e) {
       print(e);
@@ -102,9 +103,21 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   Future<List<AppointmentModel>?> fetchAppointments(
       ViewAppointmentEvent event, Emitter<AppointmentState> emit) async {
     emit(AppointmentsLoadingState());
-    try {} catch (error) {
+    try {
+      appointment = await appointmentHelper.fetchAllappointments();
+      emit(AppointmentsFetchedState(appointment));
+      debugPrint("Appointments fetched succesfully");
+
+      if (appointment!.isEmpty) {
+        emit(AppointmentsFetchFailureState(errorMessage: 'Empty List'));
+      }
+    } on FirebaseAuthException catch (error) {
+      emit(AppointmentsFetchFailureState(errorMessage: error.toString()));
+      debugPrint("Error: $error");
+    } catch (error) {
+      emit(AppointmentsFetchFailureState(errorMessage: error.toString()));
       debugPrint("Error: $error");
     }
-    return null;
+    return appointment;
   }
 }

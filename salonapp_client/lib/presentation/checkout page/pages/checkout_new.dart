@@ -73,13 +73,13 @@ class _CheckoutScreenState extends State<CheckoutScreen>
             type: QuickAlertType.success,
             confirmBtnColor: blackColor,
             title: 'Appointment Booked!!',
-            text: 'Salon appointment booked successfully!',
+            text: 'Salon appointment booked successfully with booking code:',
             confirmBtnText: 'View E-Receipt',
             widget: Padding(
               padding: const EdgeInsets.symmetric(vertical: 7.0),
               child: Container(
                 height: 40,
-                width: MediaQuery.of(context).size.width,
+                width: 80,
                 decoration: BoxDecoration(
                   color: Colors.grey.shade200.withOpacity(0.4),
                   border: Border.all(
@@ -88,42 +88,42 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                   ),
                   borderRadius: BorderRadius.circular(13),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(3),
-                        child: Row(
-                          children: [
-                            Text(
-                              state.code,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(
-                                    fontSize: 13,
-                                    color: Colors.black54,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                            ),
-                          ],
-                        ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "${state.code}",
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      fontSize: 13,
+                                      color: Colors.black54,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                          ),
+                        ],
                       ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.copy,
-                          size: 20,
-                          weight: 8,
-                          grade: 8,
-                          opticalSize: 8,
-                          color: iconGrey,
-                        ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        FlutterClipboard.copy(state.code)
+                            .then((value) => print('copied'));
+                      },
+                      icon: Icon(
+                        Icons.copy,
+                        size: 20,
+                        weight: 8,
+                        grade: 8,
+                        opticalSize: 8,
+                        color: iconGrey,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -540,135 +540,33 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                                       child: GestureDetector(
                                         onTap: () {
                                           try {
-                                            QuickAlert.show(
-                                              context: context,
-                                              animType:
-                                                  QuickAlertAnimType.slideInUp,
-                                              type: QuickAlertType.success,
-                                              confirmBtnColor: blackColor,
-                                              title: 'Appointment Booked!!',
-                                              text:
-                                                  'Salon appointment booked successfully!',
-                                              confirmBtnText: 'View E-Receipt',
-                                              widget: Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 7.0),
-                                                child: Container(
-                                                  height: 40,
-                                                  width: 80,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.grey.shade200
-                                                        .withOpacity(0.4),
-                                                    border: Border.all(
-                                                      width: 1,
-                                                      color: Colors
-                                                          .grey.shade400
-                                                          .withOpacity(0.5),
+                                            if (widget.serviceType != null ||
+                                                widget.amount != null ||
+                                                widget.location != null ||
+                                                widget.id != null) {
+                                              context
+                                                  .read<AppointmentBloc>()
+                                                  .add(
+                                                    CreateAppointmentEvent(
+                                                      shopName: widget.shop,
+                                                      category: 'Male',
+                                                      appointmentTime:
+                                                          selectedTime,
+                                                      appointmentDate:
+                                                          selectedValue,
+                                                      phone: widget.phone,
+                                                      servicesType:
+                                                          widget.serviceType,
+                                                      amount: totalCharged(),
                                                     ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            13),
-                                                  ),
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(3),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Text(
-                                                                "state.code",
-                                                                style: Theme.of(
-                                                                        context)
-                                                                    .textTheme
-                                                                    .bodySmall!
-                                                                    .copyWith(
-                                                                      fontSize:
-                                                                          13,
-                                                                      color: Colors
-                                                                          .black54,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                    ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        IconButton(
-                                                          onPressed: () {
-                                                            FlutterClipboard.copy(
-                                                                    'hello flutter friends')
-                                                                .then((value) =>
-                                                                    print(
-                                                                        'copied'));
-                                                          },
-                                                          icon: Icon(
-                                                            Icons.copy,
-                                                            size: 20,
-                                                            weight: 8,
-                                                            grade: 8,
-                                                            opticalSize: 8,
-                                                            color: iconGrey,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              confirmBtnTextStyle: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.white,
-                                              ),
-                                              onConfirmBtnTap: () {
-                                                Navigator.pushNamed(
-                                                    context, '/appointments');
-                                              },
-                                            );
-
-                                            // if (widget.serviceType != null ||
-                                            //     widget.amount != null ||
-                                            //     widget.location != null ||
-                                            //     widget.id != null) {
-                                            //   context
-                                            //       .read<AppointmentBloc>()
-                                            //       .add(
-                                            //         CreateAppointmentEvent(
-                                            //           shopName: widget.shop,
-                                            //           category: 'Male',
-                                            //           appointmentTime:
-                                            //               selectedTime,
-                                            //           appointmentDate:
-                                            //               selectedValue,
-                                            //           phone: widget.phone,
-                                            //           servicesType:
-                                            //               widget.serviceType,
-                                            //           amount: totalCharged(),
-                                            //         ),
-                                            //       );
-                                            // } else {
-                                            //   toast.errorToast(
-                                            //     message:
-                                            //         'an unexpected error occured',
-                                            //     alignment: Alignment.topCenter,
-                                            //   );
-                                            // }
+                                                  );
+                                            } else {
+                                              toast.errorToast(
+                                                message:
+                                                    'an unexpected error occured',
+                                                alignment: Alignment.topCenter,
+                                              );
+                                            }
                                           } catch (e) {
                                             print(e);
                                           }

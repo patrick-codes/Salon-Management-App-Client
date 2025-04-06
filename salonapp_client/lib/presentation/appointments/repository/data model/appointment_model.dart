@@ -66,8 +66,8 @@ class AppointmentModel {
         userId: data["userId"] ?? '',
         shopName: data["shopName"] ?? '',
         category: data["category"] ?? '',
-        appointmentTime: data["appointmentTime"] ?? '',
-        appointmentDate: data["appointmentDate"] ?? '',
+        appointmentTime: parseTimeOfDay(data["appointmentTime"]),
+        appointmentDate: (data["appointmentDate"] as Timestamp?)?.toDate(),
         phone: data["phone"] ?? '',
         servicesType: data["servicesType"] ?? '',
         bookingCode: data["bookingCode"] ?? '',
@@ -77,4 +77,14 @@ class AppointmentModel {
       return AppointmentModel.defaultModel();
     }
   }
+}
+
+TimeOfDay? parseTimeOfDay(dynamic value) {
+  if (value == null || value is! String) return null;
+  final parts = value.split(":");
+  if (parts.length != 2) return null;
+  final hour = int.tryParse(parts[0]);
+  final minute = int.tryParse(parts[1]);
+  if (hour == null || minute == null) return null;
+  return TimeOfDay(hour: hour, minute: minute);
 }

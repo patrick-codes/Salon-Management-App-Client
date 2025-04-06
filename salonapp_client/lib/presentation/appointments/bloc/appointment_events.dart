@@ -13,6 +13,7 @@ class CreateAppointmentEvent extends AppointmentEvent {
   final String? phone;
   final String? servicesType;
   final String? bookingCode;
+  final String? img;
 
   CreateAppointmentEvent({
     required this.amount,
@@ -24,6 +25,7 @@ class CreateAppointmentEvent extends AppointmentEvent {
     required this.phone,
     required this.servicesType,
     this.bookingCode,
+    required this.img,
   });
 }
 

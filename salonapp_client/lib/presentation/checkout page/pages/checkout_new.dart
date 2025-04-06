@@ -27,6 +27,7 @@ class CheckoutScreen extends StatefulWidget {
   String? location;
   String? id;
   String? phone;
+  String? imgurl;
   CheckoutScreen({
     Key? key,
     required this.serviceType,
@@ -36,6 +37,7 @@ class CheckoutScreen extends StatefulWidget {
     required this.location,
     required this.id,
     this.phone,
+    this.imgurl,
   }) : super(key: key);
 
   @override
@@ -111,8 +113,13 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                     ),
                     IconButton(
                       onPressed: () {
-                        FlutterClipboard.copy(state.code)
-                            .then((value) => print('copied'));
+                        FlutterClipboard.copy(state.code).then(
+                          (value) => ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Text copied"),
+                            ),
+                          ),
+                        );
                       },
                       icon: Icon(
                         Icons.copy,
@@ -558,6 +565,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                                                       servicesType:
                                                           widget.serviceType,
                                                       amount: totalCharged(),
+                                                      img: widget.imgurl,
                                                     ),
                                                   );
                                             } else {

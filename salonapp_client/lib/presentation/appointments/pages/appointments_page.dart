@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:m_toast/m_toast.dart';
 import 'package:salonapp_client/presentation/appointments/bloc/appointment_bloc.dart';
 import 'package:salonapp_client/presentation/checkout%20page/components/Transaction/other/show_up_animation.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../helpers/colors/color_constants.dart';
 import '../../../helpers/colors/widgets/style.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -73,17 +75,18 @@ class AppointmentsPage extends StatelessWidget {
                   child: Column(
                     children: [
                       SizedBox(
-                        height: MediaQuery.of(context).size.height - 200,
+                        height: MediaQuery.of(context).size.height,
                         width: MediaQuery.of(context).size.width,
                         child: ListView.builder(
                           itemCount: state.appointment!.length,
                           scrollDirection: Axis.vertical,
                           itemBuilder: (BuildContext context, int index) {
+                            var appoint = state.appointment![index];
                             return ShowUpAnimation(
                               delay: 150,
                               child: appointmentContainer(
                                 context,
-                                imgs[index],
+                                appoint.imgUrl ?? '',
                               ),
                             );
                           },
@@ -199,14 +202,49 @@ class AppointmentsPage extends StatelessWidget {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          height: 95,
-                          width: 80,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                fit: BoxFit.cover, image: AssetImage(imgurl)),
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(5),
+                        CachedNetworkImage(
+                          imageUrl: imgurl,
+                          imageBuilder: (context, imageProvider) => Container(
+                            height: 95,
+                            width: 80,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: imageProvider,
+                              ),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          placeholder: (context, url) => Center(
+                            child: Shimmer.fromColors(
+                              baseColor: Colors.grey[300]!,
+                              highlightColor: Colors.grey[200]!,
+                              child: Container(
+                                height: 95,
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                  color: secondaryColor3,
+                                  borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(8),
+                                    topLeft: Radius.circular(8),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => SizedBox(
+                            height: 40,
+                            child: Center(
+                              child: SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: const Icon(
+                                  Icons.error,
+                                  color: iconGrey,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                         SizedBox(

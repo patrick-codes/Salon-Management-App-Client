@@ -14,6 +14,7 @@ class AppointmentModel {
   late String? phone;
   late String? servicesType;
   late String? bookingCode;
+  late String? imgUrl;
 
   AppointmentModel({
     this.id,
@@ -26,6 +27,7 @@ class AppointmentModel {
     this.phone,
     this.servicesType,
     this.bookingCode,
+    this.imgUrl,
   });
 
   Map<String, dynamic> toJson() {
@@ -39,6 +41,7 @@ class AppointmentModel {
       "phone": phone,
       "servicesType": servicesType,
       "bookingCode": bookingCode,
+      "imgUrl": imgUrl,
     };
   }
 
@@ -54,6 +57,7 @@ class AppointmentModel {
     phone = "phone";
     servicesType = "servicesType";
     bookingCode = "bookingCode";
+    imgUrl = "imgUrl";
   }
 
   factory AppointmentModel.fromSnapshot(
@@ -71,6 +75,7 @@ class AppointmentModel {
         phone: data["phone"] ?? '',
         servicesType: data["servicesType"] ?? '',
         bookingCode: data["bookingCode"] ?? '',
+        imgUrl: data["imgUrl"] ?? '',
       );
     } else {
       print('Document not found for id: ${document.id}');

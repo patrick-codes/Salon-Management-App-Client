@@ -62,7 +62,7 @@ class AppointmentServiceHelper {
       if (documentSnapshot.exists) {
         final appointment = AppointmentModel.fromSnapshot(documentSnapshot);
         await docRef.delete();
-        //
+        /////////
         print("Deleted appointment with id: $id successfully");
         return appointment;
       } else {

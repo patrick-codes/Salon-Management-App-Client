@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:salonapp_client/presentation/shops/pages/shop%20info/shop_info.dart';
 import 'helpers/colors/color_constants.dart';
 import 'presentation/appointments/pages/appointments_page.dart';
+import 'presentation/appointments/pages/receipt_page.dart';
 import 'presentation/authentication screens/pages/login_screen.dart';
 import 'presentation/authentication screens/pages/signup_screen.dart';
 import 'presentation/home/home.dart';
@@ -46,6 +47,14 @@ class SalonApp extends StatelessWidget {
             return MaterialPageRoute(
               builder: (context) => MapDirectionScreen(
                 cordinates: args['latlng'],
+              ),
+            );
+          }
+          if (settings.name == '/receipt') {
+            final args = settings.arguments as Map<String, dynamic>;
+            return MaterialPageRoute(
+              builder: (context) => ReceiptPage(
+                id: args['id'],
               ),
             );
           }

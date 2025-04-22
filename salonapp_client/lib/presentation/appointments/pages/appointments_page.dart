@@ -21,19 +21,22 @@ class AppointmentsPage extends StatefulWidget {
 }
 
 class _AppointmentsPageState extends State<AppointmentsPage> {
-  AppointmentBloc? appointmentBloc;
-  AppointmentState? state;
-  @override
-  void initState() {
-    super.initState();
-    appointmentBloc = context.read<AppointmentBloc>()
-      ..add(ViewAppointmentEvent());
-    state = appointmentBloc!.state;
-  }
+  // AppointmentBloc? appointmentBloc;
+  // AppointmentState? state;
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   appointmentBloc = context.read<AppointmentBloc>()
+  //     ..add(ViewAppointmentEvent());
+  //   state = appointmentBloc!.state;
+  // }
 
   @override
   Widget build(BuildContext context) {
     ShowMToast toast = ShowMToast(context);
+    // appointmentBloc = context.read<AppointmentBloc>()
+    //   ..add(ViewAppointmentEvent());
+    // final state = appointmentBloc!.state;
     return BlocConsumer<AppointmentBloc, AppointmentState>(
       listener: (context, state) {
         if (state is AppointmentsFetchFailureState) {
@@ -92,7 +95,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                   child: Column(
                     children: [
                       SizedBox(
-                        height: MediaQuery.of(context).size.height - 120,
+                        height: MediaQuery.of(context).size.height - 180,
                         width: MediaQuery.of(context).size.width,
                         child: ListView.builder(
                           itemCount: state.appointment!.length,
@@ -110,6 +113,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                                 appoint.appointmentTime.toString(),
                                 appoint.servicesType ?? '',
                                 appoint.appointmentDate.toString(),
+                                appoint.location ?? '',
                               ),
                             );
                           },
@@ -124,6 +128,32 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
         } else if (state is AppointmentsFetchFailureState) {
           return Scaffold(
             backgroundColor: secondaryBg,
+            appBar: AppBar(
+              systemOverlayStyle: const SystemUiOverlayStyle(
+                statusBarColor: primaryColor,
+                statusBarIconBrightness: Brightness.light,
+              ),
+              backgroundColor: Colors.transparent,
+              leading: const Icon(
+                MingCute.arrow_left_fill,
+              ),
+              centerTitle: true,
+              title: Text(
+                "Appointments",
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              actions: [
+                GestureDetector(
+                  onTap: () {},
+                  child: Icon(
+                    MingCute.more_2_fill,
+                  ),
+                ),
+                SizedBox(width: 8),
+              ],
+            ),
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -147,6 +177,32 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
         }
         return Scaffold(
           backgroundColor: secondaryBg,
+          appBar: AppBar(
+            systemOverlayStyle: const SystemUiOverlayStyle(
+              statusBarColor: primaryColor,
+              statusBarIconBrightness: Brightness.light,
+            ),
+            backgroundColor: Colors.transparent,
+            leading: const Icon(
+              MingCute.arrow_left_fill,
+            ),
+            centerTitle: true,
+            title: Text(
+              "Appointments",
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            actions: [
+              GestureDetector(
+                onTap: () {},
+                child: Icon(
+                  MingCute.more_2_fill,
+                ),
+              ),
+              SizedBox(width: 8),
+            ],
+          ),
           body: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -177,6 +233,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
     String time,
     String service,
     String date,
+    String location,
   ) {
     return Container(
       height: 245,
@@ -187,7 +244,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
         borderRadius: BorderRadius.circular(13),
         border: Border.all(
           width: 1,
-          color: Colors.grey.shade300,
+          color: Colors.green.shade300,
         ),
       ),
       child: Padding(
@@ -200,7 +257,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Upcoming',
+                  date,
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -318,7 +375,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                                       children: [
                                         Text(
                                           overflow: TextOverflow.ellipsis,
-                                          date,
+                                          location,
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyMedium!
@@ -360,7 +417,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                                         fontSize: 13,
                                       ),
                                 ),
-                                SizedBox(height: 9),
+                                SizedBox(height: 10),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,

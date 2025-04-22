@@ -88,6 +88,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
         servicesType: event.servicesType,
         bookingCode: codegen,
         imgUrl: event.img,
+        location: event.location,
       );
 
       appointmentHelper.createAppointment(appointments);

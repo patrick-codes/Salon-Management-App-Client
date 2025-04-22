@@ -26,6 +26,7 @@ class CheckoutScreen extends StatefulWidget {
   String? id;
   String? phone;
   String? imgurl;
+
   CheckoutScreen({
     Key? key,
     required this.serviceType,
@@ -137,7 +138,12 @@ class _CheckoutScreenState extends State<CheckoutScreen>
               color: Colors.white,
             ),
             onConfirmBtnTap: () {
-              Navigator.pushNamed(context, '/appointments');
+              Navigator.pop(context);
+              Navigator.pushNamed(
+                context,
+                '/receipt',
+                arguments: {'id': widget.id},
+              );
             },
           );
         }
@@ -564,6 +570,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                                                           widget.serviceType,
                                                       amount: totalCharged(),
                                                       img: widget.imgurl,
+                                                      location: widget.location,
                                                     ),
                                                   );
                                             } else {

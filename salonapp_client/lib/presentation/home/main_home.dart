@@ -5,6 +5,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import 'package:salonapp_client/presentation/shops/bloc/shops_bloc.dart';
 import 'package:salonapp_client/presentation/shops/pages/shop%20info/shops.dart';
+import '../appointments/pages/appointments_page.dart';
 import '../profile screen/pages/profile_page.dart';
 import '../shops/pages/create_shopservice_page.dart';
 import 'home.dart';
@@ -30,8 +31,8 @@ class _MainHomePageState extends State<MainHomePage> {
     // ),
     ShopsPage(),
     //CreateShopPage(),
-    //AppointmentsPage(),
-    Container(),
+    AppointmentsPage(),
+    //Container(),
     ProfilePage(),
   ];
 

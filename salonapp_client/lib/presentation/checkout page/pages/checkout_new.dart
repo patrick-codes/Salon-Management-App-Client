@@ -76,63 +76,6 @@ class _CheckoutScreenState extends State<CheckoutScreen>
             title: 'Appointment Booked!!',
             text: 'Salon appointment booked successfully with booking code:',
             confirmBtnText: 'View E-Receipt',
-            widget: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 7.0),
-              child: Container(
-                height: 40,
-                width: 80,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade200.withOpacity(0.4),
-                  border: Border.all(
-                    width: 1,
-                    color: Colors.grey.shade400.withOpacity(0.5),
-                  ),
-                  borderRadius: BorderRadius.circular(13),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "${state.code}",
-                            style:
-                                Theme.of(context).textTheme.bodySmall!.copyWith(
-                                      fontSize: 13,
-                                      color: Colors.black54,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        FlutterClipboard.copy(state.code).then(
-                          (value) => ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text("Text copied"),
-                            ),
-                          ),
-                        );
-                      },
-                      icon: Icon(
-                        Icons.copy,
-                        size: 20,
-                        weight: 8,
-                        grade: 8,
-                        opticalSize: 8,
-                        color: iconGrey,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
             confirmBtnTextStyle: TextStyle(
               fontSize: 12,
               color: Colors.white,

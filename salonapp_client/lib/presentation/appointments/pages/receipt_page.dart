@@ -1,27 +1,38 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
 import 'package:clipboard/clipboard.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:printing/printing.dart';
-import 'package:salonapp_client/helpers/colors/color_constants.dart';
-import 'package:salonapp_client/presentation/checkout%20page/components/cedi_sign_component.dart';
-import '../../../helpers/colors/widgets/custom_button.dart';
-import 'dart:typed_data';
-import 'dart:ui' as ui;
-import 'dart:io';
-
-import 'package:flutter/rendering.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:printing/printing.dart';
+import 'package:salonapp_client/helpers/colors/color_constants.dart';
+
+import '../../../helpers/colors/widgets/custom_button.dart';
+import '../../checkout page/components/cedi_sign_component.dart';
 
 class ReceiptPage extends StatefulWidget {
   final String id;
+  final String name;
+  final String datetime;
+  final double amount;
+  final String receiptId;
+  final String phone;
+  final String service;
   const ReceiptPage({
     Key? key,
     required this.id,
+    required this.name,
+    required this.datetime,
+    required this.amount,
+    required this.receiptId,
+    required this.phone,
+    required this.service,
   }) : super(key: key);
 
   @override
@@ -59,6 +70,11 @@ class _ReceiptPageState extends State<ReceiptPage> {
     }
   }
 
+  double total() {
+    double total = widget.amount - 2;
+    return total;
+  }
+
   @override
   Widget build(BuildContext context) {
     print(widget.id);
@@ -79,11 +95,23 @@ class _ReceiptPageState extends State<ReceiptPage> {
           ),
         ),
         centerTitle: true,
-        title: Text(
-          "Download Receipt",
-          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Receipt ",
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            Text(
+              "${widget.receiptId}",
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge!
+                  .copyWith(color: Colors.black54),
+            ),
+          ],
         ),
         actions: [
           GestureDetector(
@@ -109,7 +137,8 @@ class _ReceiptPageState extends State<ReceiptPage> {
           padding: const EdgeInsets.all(18.0),
           child: Center(
             child: CustomButton(
-              text: 'Download Receipt',
+              icon: MingCute.pdf_line,
+              text: ' Download Receipt',
               onpressed: () => downloadReceiptAsPDF(),
               color: blackColor,
             ),
@@ -133,7 +162,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                     borderType: BorderType.RRect,
                     radius: const Radius.circular(5),
                     child: Container(
-                      height: 530,
+                      height: 540,
                       padding: const EdgeInsets.all(15),
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
@@ -160,8 +189,8 @@ class _ReceiptPageState extends State<ReceiptPage> {
                                 children: [
                                   Image.asset(
                                     "assets/images/play_store_512.png",
-                                    height: 140,
-                                    width: 140,
+                                    height: 130,
+                                    width: 130,
                                   ),
                                   Text(
                                     "Hairvana Salon Booking",
@@ -172,43 +201,46 @@ class _ReceiptPageState extends State<ReceiptPage> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "+233 245-533-607",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .labelLarge!
-                                            .copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black54,
-                                            ),
-                                      ),
-                                    ],
+                                  Text(
+                                    "Tanoso-Kumasi Ghana",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium!
+                                        .copyWith(
+                                          color: Colors.black54,
+                                        ),
+                                  ),
+                                  Text(
+                                    "+233 245-523-607",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium!
+                                        .copyWith(
+                                          color: Colors.black,
+                                        ),
                                   ),
                                 ],
                               ),
                             ),
 
-                            SizedBox(height: 20),
+                            SizedBox(height: 8),
                             const Divider(),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 5),
 
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Shipping Weight",
+                                  widget.name,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall!
                                       .copyWith(
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.black45),
+                                          color: Colors.black),
                                 ),
                                 Text(
-                                  "GHS weightFee",
+                                  widget.phone,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall!
@@ -223,7 +255,73 @@ class _ReceiptPageState extends State<ReceiptPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Subtotal",
+                                  "Service Fee",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black45),
+                                ),
+                                Row(
+                                  children: [
+                                    CediSign(
+                                      size: 13.5,
+                                      weight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                                    Text(
+                                      " ${total()}",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall!
+                                          .copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Extra Charges",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black45),
+                                ),
+                                Row(
+                                  children: [
+                                    CediSign(
+                                      size: 13.5,
+                                      weight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                                    Text(
+                                      " 2.0",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall!
+                                          .copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Date & Time",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall!
@@ -232,7 +330,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                                           color: Colors.black45),
                                 ),
                                 Text(
-                                  "GHS",
+                                  widget.datetime,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall!
@@ -242,12 +340,13 @@ class _ReceiptPageState extends State<ReceiptPage> {
                                 ),
                               ],
                             ),
+
                             const SizedBox(height: 8),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Shipping & Handling",
+                                  "Service Type",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall!
@@ -256,35 +355,14 @@ class _ReceiptPageState extends State<ReceiptPage> {
                                           color: Colors.black45),
                                 ),
                                 Text(
-                                  "GHS shippingFee",
+                                  widget.service,
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall!
                                       .copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Customs/imports/duties/taxes",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall!
-                                      .copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black45),
-                                ),
-                                Text(
-                                  "Not included",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall!
-                                      .copyWith(color: Colors.red),
+                                          color: Colors.red,
+                                          decorationStyle:
+                                              TextDecorationStyle.wavy),
                                 ),
                               ],
                             ),
@@ -313,7 +391,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                                           MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          "Receipt ID: GHS32498",
+                                          "Receipt ID: ${widget.receiptId}",
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodySmall!
@@ -328,11 +406,18 @@ class _ReceiptPageState extends State<ReceiptPage> {
                                   ),
                                   IconButton(
                                     onPressed: () {
-                                      FlutterClipboard.copy("3456").then(
+                                      FlutterClipboard.copy(
+                                              "${widget.receiptId}")
+                                          .then(
                                         (value) => ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           SnackBar(
-                                            content: Text("Text copied"),
+                                            behavior: SnackBarBehavior.floating,
+                                            clipBehavior: Clip.none,
+                                            width: 255,
+                                            content: Text(
+                                                style: TextStyle(fontSize: 12),
+                                                "Receipt ID: ${widget.receiptId} Copied"),
                                           ),
                                         ),
                                       );
@@ -351,7 +436,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                             ),
 
                             ///
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 15),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -367,7 +452,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                                       Text(
                                         overflow: TextOverflow.visible,
                                         softWrap: true,
-                                        "I agree that customs and import Duties & Taxes will be collected by the courier company at the time of delivery.",
+                                        "No additional fee or taxes will be collected by the salon/barbershop owner when you arrive at the shop.",
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyMedium!
@@ -378,11 +463,11 @@ class _ReceiptPageState extends State<ReceiptPage> {
                                 )
                               ],
                             ),
-                            const SizedBox(height: 30),
+                            const SizedBox(height: 20),
                             const Divider(
                               height: 5,
                             ),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: 8),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -393,16 +478,26 @@ class _ReceiptPageState extends State<ReceiptPage> {
                                       .bodyMedium!
                                       .copyWith(fontWeight: FontWeight.bold),
                                 ),
-                                Text(
-                                  "GHS 55.0",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(fontWeight: FontWeight.bold),
+                                Row(
+                                  children: [
+                                    CediSign(
+                                      size: 16,
+                                      weight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                                    Text(
+                                      " ${widget.amount}",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(
+                                              fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: 8),
                             const Divider(
                               height: 5,
                             ),

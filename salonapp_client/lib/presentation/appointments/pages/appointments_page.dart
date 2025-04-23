@@ -101,6 +101,8 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                                 appoint.servicesType ?? '',
                                 appoint.appointmentDate.toString(),
                                 appoint.location ?? '',
+                                appoint.bookingCode ?? '',
+                                appoint.phone ?? '',
                               ),
                             );
                           },
@@ -221,6 +223,8 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
     String service,
     String date,
     String location,
+    String code,
+    String phone,
   ) {
     return Container(
       height: 245,
@@ -285,196 +289,187 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CachedNetworkImage(
-                          imageUrl: imgurl,
-                          imageBuilder: (context, imageProvider) => Container(
-                            height: 158,
-                            width: 90,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: imageProvider,
-                              ),
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
-                          placeholder: (context, url) => Center(
-                            child: Shimmer.fromColors(
-                              baseColor: Colors.grey[300]!,
-                              highlightColor: Colors.grey[200]!,
-                              child: Container(
-                                height: 95,
-                                width: MediaQuery.of(context).size.width,
-                                decoration: BoxDecoration(
-                                  color: secondaryColor3,
-                                  borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(8),
-                                    topLeft: Radius.circular(8),
+                    // CachedNetworkImage(
+                    //   imageUrl: imgurl,
+                    //   imageBuilder: (context, imageProvider) => Container(
+                    //     height: 158,
+                    //     width: 90,
+                    //     decoration: BoxDecoration(
+                    //       image: DecorationImage(
+                    //         fit: BoxFit.cover,
+                    //         image: imageProvider,
+                    //       ),
+                    //       color: Colors.white,
+                    //       borderRadius: BorderRadius.circular(5),
+                    //     ),
+                    //   ),
+                    //   placeholder: (context, url) => Center(
+                    //     child: Shimmer.fromColors(
+                    //       baseColor: Colors.grey[300]!,
+                    //       highlightColor: Colors.grey[200]!,
+                    //       child: Container(
+                    //         height: 95,
+                    //         width: MediaQuery.of(context).size.width,
+                    //         decoration: BoxDecoration(
+                    //           color: secondaryColor3,
+                    //           borderRadius: BorderRadius.only(
+                    //             topRight: Radius.circular(8),
+                    //             topLeft: Radius.circular(8),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    //   errorWidget: (context, url, error) => SizedBox(
+                    //     height: 40,
+                    //     child: Center(
+                    //       child: SizedBox(
+                    //         height: 20,
+                    //         width: 20,
+                    //         child: const Icon(
+                    //           Icons.error,
+                    //           color: iconGrey,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              overflow: TextOverflow.visible,
+                              name,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(
+                                    wordSpacing: 2,
+                                    //color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
                                   ),
-                                ),
-                              ),
                             ),
-                          ),
-                          errorWidget: (context, url, error) => SizedBox(
-                            height: 40,
-                            child: Center(
-                              child: SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: const Icon(
-                                  Icons.error,
-                                  color: iconGrey,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 210,
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  overflow: TextOverflow.visible,
-                                  name,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge!
-                                      .copyWith(
-                                        wordSpacing: 2,
-                                        //color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                      ),
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          overflow: TextOverflow.ellipsis,
-                                          location,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium!
-                                              .copyWith(
-                                                color: Colors.black45,
-                                                fontSize: 14,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
                                 Row(
                                   children: [
                                     Text(
-                                      overflow: TextOverflow.visible,
-                                      'Service Type',
+                                      overflow: TextOverflow.ellipsis,
+                                      location,
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium!
                                           .copyWith(
-                                            color: Colors.black87,
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black45,
+                                            fontSize: 14,
                                           ),
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 3),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
                                 Text(
                                   overflow: TextOverflow.visible,
-                                  service,
+                                  'Service Type',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium!
                                       .copyWith(
-                                        color: iconGrey,
+                                        color: Colors.black87,
                                         fontSize: 13,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                 ),
-                                SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    // Container(
-                                    //   height: 35,
-                                    //   width: 150,
-                                    //   decoration: BoxDecoration(
-                                    //     borderRadius: BorderRadius.circular(5),
-                                    //     border: Border.all(
-                                    //       width: 1,
-                                    //       color: primaryColor,
-                                    //     ),
-                                    //   ),
-                                    //   child: Center(
-                                    //     child: Text(
-                                    //       "Cancel appointment",
-                                    //       style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                    //             fontSize: 10,
-                                    //             color: primaryColor,
-                                    //             fontWeight: FontWeight.bold,
-                                    //           ),
-                                    //     ),
-                                    //   ),
-                                    // ),
-                                    Container(
-                                      height: 35,
-                                      width: 150,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(
-                                          width: 1,
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: TextButton(
-                                          onPressed: () {
-                                            context.read<AppointmentBloc>().add(
-                                                  DeleteAppointmentEvent(
-                                                      id: id),
-                                                );
+                              ],
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              overflow: TextOverflow.visible,
+                              service,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(
+                                    color: iconGrey,
+                                    fontSize: 13,
+                                  ),
+                            ),
+                            SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: 35,
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                    color: blackColor,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: Center(
+                                    child: TextButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                          context,
+                                          '/receipt',
+                                          arguments: {
+                                            'id': id,
+                                            'name': name,
+                                            'datetime': date,
+                                            'amount': amount,
+                                            'receiptId': code,
+                                            'phone': phone,
+                                            'service': service,
                                           },
-                                          child: Text(
-                                            "Cancel appointment",
+                                        );
+                                        // context.read<AppointmentBloc>().add(
+                                        //       DeleteAppointmentEvent(
+                                        //           id: id),
+                                        //     );
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.receipt_long_rounded,
+                                            color: Colors.white,
+                                          ),
+                                          SizedBox(width: 5),
+                                          Text(
+                                            "View Receipt",
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodySmall!
                                                 .copyWith(
-                                                  fontSize: 10,
-                                                  color: Colors.red,
+                                                  fontSize: 12,
+                                                  color: Colors.white,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                           ),
-                                        ),
+                                        ],
                                       ),
-                                    )
-                                  ],
+                                    ),
+                                  ),
                                 )
                               ],
-                            ),
-                          ),
+                            )
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 5),
           ],
         ),
       ),

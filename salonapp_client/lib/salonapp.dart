@@ -55,6 +55,12 @@ class SalonApp extends StatelessWidget {
             return MaterialPageRoute(
               builder: (context) => ReceiptPage(
                 id: args['id'],
+                name: args['name'],
+                datetime: args['datetime'],
+                amount: args['amount'],
+                receiptId: args['receiptId'],
+                phone: args['phone'],
+                service: args['service'],
               ),
             );
           }

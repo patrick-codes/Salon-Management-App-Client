@@ -8,11 +8,13 @@ class CustomButton extends StatelessWidget {
   String text;
   final void Function() onpressed;
   Color color;
+  IconData? icon;
   CustomButton({
     Key? key,
     required this.text,
     required this.onpressed,
     required this.color,
+    this.icon,
   }) : super(key: key);
 
   @override
@@ -27,13 +29,22 @@ class CustomButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(5),
         ),
         child: Center(
-          child: Text(
-            text,
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  color: secondaryColor,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                color: Colors.white,
+              ),
+              Text(
+                text,
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: secondaryColor,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ],
           ),
         ),
       ),

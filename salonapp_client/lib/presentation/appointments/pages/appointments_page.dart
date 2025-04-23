@@ -21,22 +21,9 @@ class AppointmentsPage extends StatefulWidget {
 }
 
 class _AppointmentsPageState extends State<AppointmentsPage> {
-  // AppointmentBloc? appointmentBloc;
-  // AppointmentState? state;
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   appointmentBloc = context.read<AppointmentBloc>()
-  //     ..add(ViewAppointmentEvent());
-  //   state = appointmentBloc!.state;
-  // }
-
   @override
   Widget build(BuildContext context) {
     ShowMToast toast = ShowMToast(context);
-    // appointmentBloc = context.read<AppointmentBloc>()
-    //   ..add(ViewAppointmentEvent());
-    // final state = appointmentBloc!.state;
     return BlocConsumer<AppointmentBloc, AppointmentState>(
       listener: (context, state) {
         if (state is AppointmentsFetchFailureState) {

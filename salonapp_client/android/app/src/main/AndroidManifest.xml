@@ -5,12 +5,16 @@
 <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
 <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
 
 
     <application
         android:label="Hairvana"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:requestLegacyExternalStorage="true">
        
         <meta-data
         android:name="com.google.android.geo.API_KEY"

@@ -46,14 +46,14 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
       builder: (context, state) {
         if (state is AppointmentsFetchedState) {
           return Scaffold(
-            backgroundColor: secondaryColor,
+            backgroundColor: secondaryBg,
             extendBodyBehindAppBar: true,
             appBar: AppBar(
               systemOverlayStyle: const SystemUiOverlayStyle(
                 statusBarColor: primaryColor,
                 statusBarIconBrightness: Brightness.light,
               ),
-              backgroundColor: Colors.transparent,
+              backgroundColor: Colors.white,
               leading: const Icon(
                 MingCute.arrow_left_fill,
               ),
@@ -122,7 +122,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                 statusBarColor: primaryColor,
                 statusBarIconBrightness: Brightness.light,
               ),
-              backgroundColor: Colors.transparent,
+              backgroundColor: Colors.white,
               leading: const Icon(
                 MingCute.arrow_left_fill,
               ),
@@ -171,7 +171,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
               statusBarColor: primaryColor,
               statusBarIconBrightness: Brightness.light,
             ),
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.white,
             leading: const Icon(
               MingCute.arrow_left_fill,
             ),
@@ -235,7 +235,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
         borderRadius: BorderRadius.circular(13),
         border: Border.all(
           width: 1,
-          color: Colors.green.shade300,
+          color: Colors.grey.shade300,
         ),
       ),
       child: Padding(
@@ -270,12 +270,6 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                             fontWeight: FontWeight.bold,
                             fontSize: 15,
                           ),
-                    ),
-                    SizedBox(width: 5),
-                    Icon(
-                      MingCute.toggle_right_fill,
-                      size: 30,
-                      color: primaryColor,
                     ),
                   ],
                 )
@@ -411,7 +405,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                                   height: 35,
                                   width: 150,
                                   decoration: BoxDecoration(
-                                    color: blackColor,
+                                    color: Colors.green,
                                     borderRadius: BorderRadius.circular(5),
                                   ),
                                   child: Center(

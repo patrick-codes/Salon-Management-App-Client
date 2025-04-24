@@ -188,7 +188,7 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                               );
                             }
                           },
-                          color: primaryColor,
+                          color: Colors.green,
                         ),
                       ),
                     ),

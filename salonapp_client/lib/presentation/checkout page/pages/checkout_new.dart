@@ -74,19 +74,16 @@ class _CheckoutScreenState extends State<CheckoutScreen>
             type: QuickAlertType.success,
             confirmBtnColor: blackColor,
             title: 'Appointment Booked!!',
-            text: 'Salon appointment booked successfully with booking code:',
-            confirmBtnText: 'View E-Receipt',
+            text: 'Salon appointment booked successfully',
+            confirmBtnText: 'Back Home',
             confirmBtnTextStyle: TextStyle(
               fontSize: 12,
               color: Colors.white,
             ),
             onConfirmBtnTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(
-                context,
-                '/receipt',
-                arguments: {'id': widget.id},
-              );
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/mainhome', (Route<dynamic> route) => false);
             },
           );
         }

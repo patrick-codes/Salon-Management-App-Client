@@ -1,20 +1,21 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:typed_data';
-import 'dart:ui' as ui;
-
 import 'package:clipboard/clipboard.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:salonapp_client/helpers/colors/color_constants.dart';
+import '../../../helpers/colors/widgets/custom_button.dart';
+import '../../checkout page/components/cedi_sign_component.dart';
+import '../repository/receipt/receipt_service.dart';
+
+import 'dart:typed_data';
+// import 'dart:ui' as ui;
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:salonapp_client/helpers/colors/color_constants.dart';
-
-import '../../../helpers/colors/widgets/custom_button.dart';
-import '../../checkout page/components/cedi_sign_component.dart';
 
 class ReceiptPage extends StatefulWidget {
   final String id;
@@ -40,11 +41,11 @@ class ReceiptPage extends StatefulWidget {
 }
 
 class _ReceiptPageState extends State<ReceiptPage> {
-  GlobalKey _receiptKey = GlobalKey();
+  ReceiptService receiptService = ReceiptService();
 
-  Future<void> downloadReceiptAsPDF() async {
+  Future<void> downloadReceiptAsPDF(dynamic ui) async {
     try {
-      RenderRepaintBoundary boundary = _receiptKey.currentContext!
+      RenderRepaintBoundary boundary = ReceiptService.receiptKey.currentContext!
           .findRenderObject() as RenderRepaintBoundary;
       var image = await boundary.toImage(pixelRatio: 3.0);
       ByteData? byteData =
@@ -68,11 +69,6 @@ class _ReceiptPageState extends State<ReceiptPage> {
     } catch (e) {
       print("Error generating PDF: $e");
     }
-  }
-
-  double total() {
-    double total = widget.amount - 2;
-    return total;
   }
 
   @override
@@ -139,7 +135,9 @@ class _ReceiptPageState extends State<ReceiptPage> {
             child: CustomButton(
               icon: MingCute.pdf_line,
               text: ' Download Receipt',
-              onpressed: () => downloadReceiptAsPDF(),
+              onpressed: () {
+                ReceiptService.downloadReceiptAsPDF;
+              },
               color: blackColor,
             ),
           ),
@@ -154,7 +152,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
             child: Column(
               children: [
                 RepaintBoundary(
-                  key: _receiptKey,
+                  key: ReceiptService.receiptKey,
                   child: DottedBorder(
                     strokeWidth: 1,
                     dashPattern: const [6, 4],
@@ -226,7 +224,6 @@ class _ReceiptPageState extends State<ReceiptPage> {
                             SizedBox(height: 8),
                             const Divider(),
                             const SizedBox(height: 5),
-
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -271,7 +268,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                                       color: Colors.black87,
                                     ),
                                     Text(
-                                      " ${total()}",
+                                      " ${receiptService.total(widget.amount)}",
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall!

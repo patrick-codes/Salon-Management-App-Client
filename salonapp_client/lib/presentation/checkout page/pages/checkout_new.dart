@@ -1,5 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:clipboard/clipboard.dart';
 import 'package:currency_code_to_currency_symbol/currency_code_to_currency_symbol.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';

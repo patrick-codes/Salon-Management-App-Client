@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +7,6 @@ import 'package:m_toast/m_toast.dart';
 import 'package:salonapp_client/presentation/appointments/bloc/appointment_bloc.dart';
 import 'package:salonapp_client/presentation/checkout%20page/components/Transaction/other/show_up_animation.dart';
 import 'package:salonapp_client/presentation/checkout%20page/components/cedi_sign_component.dart';
-import 'package:shimmer/shimmer.dart';
 import '../../../helpers/colors/color_constants.dart';
 import '../../../helpers/colors/widgets/style.dart';
 import 'package:flutter_svg/flutter_svg.dart';

@@ -91,7 +91,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                               delay: 150,
                               child: appointmentContainer(
                                 context,
-                                appoint.id ?? '',
+                                appoint!.id ?? '',
                                 appoint.imgUrl ?? '',
                                 appoint.shopName!,
                                 appoint.amount ?? 0.0,

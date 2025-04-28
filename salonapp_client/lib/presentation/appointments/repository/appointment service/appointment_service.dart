@@ -52,6 +52,24 @@ class AppointmentServiceHelper {
     }
   }
 
+  Future<List<AppointmentModel?>> myAppointments(String? userId) async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot = await _db
+          .collection("appointments")
+          .where("ownerID", isEqualTo: userId)
+          .get();
+
+      final appointment = querySnapshot.docs
+          .map((doc) => AppointmentModel.fromSnapshot(doc))
+          .toList();
+      print("Fetched appointments for id: $userId successfully");
+      return appointment;
+    } catch (error) {
+      print("Error fetching salonshop by id: $error");
+      return [];
+    }
+  }
+
   Future<AppointmentModel?> deleteSingleAppointment(String? id) async {
     try {
       if (id == null) return null;

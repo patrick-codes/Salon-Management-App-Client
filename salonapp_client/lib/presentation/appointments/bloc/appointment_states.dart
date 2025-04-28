@@ -7,7 +7,7 @@ class AppointmentInitial extends AppointmentState {}
 class AppointmentsLoadingState extends AppointmentState {}
 
 class AppointmentsFetchedState extends AppointmentState {
-  final List<AppointmentModel>? appointment;
+  final List<AppointmentModel?>? appointment;
 
   AppointmentsFetchedState(this.appointment);
 }

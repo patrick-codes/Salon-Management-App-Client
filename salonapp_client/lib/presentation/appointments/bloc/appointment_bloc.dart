@@ -12,7 +12,7 @@ part 'appointment_states.dart';
 class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
   static AppointmentServiceHelper appointmentHelper =
       AppointmentServiceHelper();
-  List<AppointmentModel>? appointment;
+  List<AppointmentModel?>? appointment;
   List<AppointmentModel>? appointmentList2;
 
   AppointmentModel? appointmentList;
@@ -96,7 +96,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
           message: 'Appointment service created succesfuly!!', code: codegen));
       debugPrint("Appointment service created succesfuly.");
     } on FirebaseAuthException catch (error) {
-      debugPrint("❌ Firebase Error: $error");
+      debugPrint("Firebase Error: $error");
       emit(AppointmentCreateFailureState(error: e.toString()));
     } catch (e) {
       emit(AppointmentCreateFailureState(error: e.toString()));
@@ -104,11 +104,35 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     }
   }
 
+/*
   Future<List<AppointmentModel>?> fetchAppointments(
       ViewAppointmentEvent event, Emitter<AppointmentState> emit) async {
     emit(AppointmentsLoadingState());
     try {
       appointment = await appointmentHelper.fetchAllappointments();
+      emit(AppointmentsFetchedState(appointment));
+      debugPrint("Appointments fetched succesfully");
+
+      if (appointment!.isEmpty) {
+        emit(AppointmentsFetchFailureState(errorMessage: 'Empty List'));
+      }
+    } on FirebaseAuthException catch (error) {
+      emit(AppointmentsFetchFailureState(errorMessage: error.toString()));
+      debugPrint("Error: $error");
+    } catch (error) {
+      emit(AppointmentsFetchFailureState(errorMessage: error.toString()));
+      debugPrint("Error: $error");
+    }
+    return appointment;
+  }
+*/
+  Future<List<AppointmentModel?>?> fetchAppointments(
+      ViewAppointmentEvent event, Emitter<AppointmentState> emit) async {
+    emit(AppointmentsLoadingState());
+    debugPrint("Current User ID: ${firebaseUser.currentUser!.uid}");
+    try {
+      appointment =
+          await appointmentHelper.myAppointments(firebaseUser.currentUser!.uid);
       emit(AppointmentsFetchedState(appointment));
       debugPrint("Appointments fetched succesfully");
 

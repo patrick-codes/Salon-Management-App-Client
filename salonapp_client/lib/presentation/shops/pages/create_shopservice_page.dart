@@ -225,7 +225,9 @@ class _CreateShopPageState extends State<CreateShopPage> {
                           child: CircularProgressIndicator())
                       : SizedBox.shrink(),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.read<AuthBloc>().add(LogoutEvent());
+                    },
                     child: const Text("Logout"),
                   ),
                 ],

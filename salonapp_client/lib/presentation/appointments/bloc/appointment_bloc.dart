@@ -104,8 +104,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     }
   }
 
-/*
-  Future<List<AppointmentModel>?> fetchAppointments(
+  Future<List<AppointmentModel?>?> fetchallAppointments(
       ViewAppointmentEvent event, Emitter<AppointmentState> emit) async {
     emit(AppointmentsLoadingState());
     try {
@@ -125,7 +124,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     }
     return appointment;
   }
-*/
+
   Future<List<AppointmentModel?>?> fetchAppointments(
       ViewAppointmentEvent event, Emitter<AppointmentState> emit) async {
     emit(AppointmentsLoadingState());
@@ -137,7 +136,8 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
       debugPrint("Appointments fetched succesfully");
 
       if (appointment!.isEmpty) {
-        emit(AppointmentsFetchFailureState(errorMessage: 'Empty List'));
+        emit(AppointmentsFetchFailureState(
+            errorMessage: 'You have no appointments'));
       }
     } on FirebaseAuthException catch (error) {
       emit(AppointmentsFetchFailureState(errorMessage: error.toString()));

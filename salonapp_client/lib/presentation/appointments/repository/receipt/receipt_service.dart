@@ -1,5 +1,5 @@
-import 'dart:typed_data';
-// import 'dart:ui' as ui;
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -10,18 +10,17 @@ import 'package:printing/printing.dart';
 class ReceiptService {
   static GlobalKey receiptKey = GlobalKey();
 
-  double total(double amount) {
+  static double total(double amount) {
     double total = amount - 2;
     return total;
   }
 
-  static Future<void> downloadReceiptAsPDF(dynamic ui) async {
+  static Future<void> downloadReceiptAsPDF() async {
     try {
       RenderRepaintBoundary boundary = receiptKey.currentContext!
           .findRenderObject() as RenderRepaintBoundary;
       var image = await boundary.toImage(pixelRatio: 3.0);
-      ByteData? byteData =
-          await image.toByteData(format: ui.ImageByteFormat.png);
+      ByteData? byteData = await image.toByteData(format: ImageByteFormat.png);
       Uint8List pngBytes = byteData!.buffer.asUint8List();
 
       final pdfDoc = pw.Document();

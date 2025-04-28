@@ -7,8 +7,7 @@ import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import '../../../helpers/colors/widgets/custom_button.dart';
 import '../../checkout page/components/cedi_sign_component.dart';
 import '../repository/receipt/receipt_service.dart';
-
-// import 'dart:ui' as ui;
+import 'dart:ui' as ui;
 import 'package:flutter/rendering.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -38,36 +37,6 @@ class ReceiptPage extends StatefulWidget {
 }
 
 class _ReceiptPageState extends State<ReceiptPage> {
-  ReceiptService receiptService = ReceiptService();
-
-  Future<void> downloadReceiptAsPDF(dynamic ui) async {
-    try {
-      RenderRepaintBoundary boundary = ReceiptService.receiptKey.currentContext!
-          .findRenderObject() as RenderRepaintBoundary;
-      var image = await boundary.toImage(pixelRatio: 3.0);
-      ByteData? byteData =
-          await image.toByteData(format: ui.ImageByteFormat.png);
-      Uint8List pngBytes = byteData!.buffer.asUint8List();
-
-      final pdfDoc = pw.Document();
-      final imageProvider = pw.MemoryImage(pngBytes);
-
-      pdfDoc.addPage(
-        pw.Page(
-          pageFormat: PdfPageFormat.a4,
-          build: (pw.Context context) {
-            return pw.Center(child: pw.Image(imageProvider));
-          },
-        ),
-      );
-
-      await Printing.layoutPdf(
-          onLayout: (PdfPageFormat format) async => pdfDoc.save());
-    } catch (e) {
-      print("Error generating PDF: $e");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     print(widget.id);
@@ -132,9 +101,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
             child: CustomButton(
               icon: MingCute.pdf_line,
               text: ' Download Receipt',
-              onpressed: () {
-                ReceiptService.downloadReceiptAsPDF;
-              },
+              onpressed: () => ReceiptService.downloadReceiptAsPDF(),
               color: blackColor,
             ),
           ),
@@ -265,7 +232,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                                       color: Colors.black87,
                                     ),
                                     Text(
-                                      " ${receiptService.total(widget.amount)}",
+                                      " ${ReceiptService.total(widget.amount)}",
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall!

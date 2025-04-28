@@ -19,6 +19,13 @@ class AppointmentsPage extends StatefulWidget {
 }
 
 class _AppointmentsPageState extends State<AppointmentsPage> {
+  Future<void> refresh(BuildContext context) async {
+    setState(() {
+      context.read<AppointmentBloc>().add(ViewAppointmentEvent());
+      debugPrint("Refreshed");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     ShowMToast toast = ShowMToast(context);
@@ -77,36 +84,39 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                 padding: const EdgeInsets.all(13.0),
                 child: SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height - 180,
-                        width: MediaQuery.of(context).size.width,
-                        child: ListView.builder(
-                          itemCount: state.appointment!.length,
-                          scrollDirection: Axis.vertical,
-                          itemBuilder: (BuildContext context, int index) {
-                            var appoint = state.appointment![index];
-                            return ShowUpAnimation(
-                              delay: 150,
-                              child: appointmentContainer(
-                                context,
-                                appoint!.id ?? '',
-                                appoint.imgUrl ?? '',
-                                appoint.shopName!,
-                                appoint.amount ?? 0.0,
-                                appoint.appointmentTime.toString(),
-                                appoint.servicesType ?? '',
-                                appoint.appointmentDate.toString(),
-                                appoint.location ?? '',
-                                appoint.bookingCode ?? '',
-                                appoint.phone ?? '',
-                              ),
-                            );
-                          },
+                  child: RefreshIndicator(
+                    onRefresh: () => refresh(context),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height - 180,
+                          width: MediaQuery.of(context).size.width,
+                          child: ListView.builder(
+                            itemCount: state.appointment!.length,
+                            scrollDirection: Axis.vertical,
+                            itemBuilder: (BuildContext context, int index) {
+                              var appoint = state.appointment![index];
+                              return ShowUpAnimation(
+                                delay: 150,
+                                child: appointmentContainer(
+                                  context,
+                                  appoint!.id ?? '',
+                                  appoint.imgUrl ?? '',
+                                  appoint.shopName!,
+                                  appoint.amount ?? 0.0,
+                                  appoint.appointmentTime.toString(),
+                                  appoint.servicesType ?? '',
+                                  appoint.appointmentDate.toString(),
+                                  appoint.location ?? '',
+                                  appoint.bookingCode ?? '',
+                                  appoint.phone ?? '',
+                                ),
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

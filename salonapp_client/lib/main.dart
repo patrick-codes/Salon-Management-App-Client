@@ -5,6 +5,8 @@ import 'package:salonapp_client/salonapp_observer.dart';
 import 'firebase_options.dart';
 import 'salonapp_blocs.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = const SalonappObserver();

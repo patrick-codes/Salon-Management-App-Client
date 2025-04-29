@@ -11,6 +11,7 @@ import 'package:salonapp_client/helpers/colors/widgets/style.dart';
 import 'package:salonapp_client/presentation/appointments/bloc/appointment_bloc.dart';
 import 'package:salonapp_client/presentation/authentication%20screens/repository/data%20model/user_model.dart';
 import '../../../helpers/colors/color_constants.dart';
+import '../../appointments/repository/local notification/local_notification_service.dart';
 import '../components/Transaction/other/show_up_animation.dart';
 import '../components/Transaction/other/text.dart';
 import '../components/cedi_sign_component.dart';
@@ -44,6 +45,18 @@ class CheckoutScreen extends StatefulWidget {
 
 class _CheckoutScreenState extends State<CheckoutScreen>
     with SingleTickerProviderStateMixin {
+  void initState() {
+    super.initState();
+
+    Future.delayed(Duration.zero, () {
+      NotificationService.onNotificationClick = (String? payload) {
+        if (payload != null) {
+          Navigator.pushNamed(context, payload);
+        }
+      };
+    });
+  }
+
   String process = "Pay";
   CurrencyCode selectedCurrency = CurrencyCode.GHS;
   late DateTime selectedValue = DateTime.now();

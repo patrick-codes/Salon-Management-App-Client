@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salonapp_client/presentation/appointments/repository/appointment%20service/appointment_service.dart';
 import 'package:salonapp_client/presentation/appointments/repository/data%20model/appointment_model.dart';
 
+import '../repository/local notification/local_notification_service.dart';
+
 part 'appointment_events.dart';
 part 'appointment_states.dart';
 
@@ -95,6 +97,12 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
       emit(AppointmentCreatedSuccesState(
           message: 'Appointment service created succesfuly!!', code: codegen));
       debugPrint("Appointment service created succesfuly.");
+      NotificationService.showNotification(
+        id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        title: "Tap to open Appointments Page",
+        body: "Appointment service created succesfuly!!",
+        payload: "/appointments",
+      );
     } on FirebaseAuthException catch (error) {
       debugPrint("Firebase Error: $error");
       emit(AppointmentCreateFailureState(error: e.toString()));

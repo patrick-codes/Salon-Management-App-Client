@@ -30,6 +30,8 @@ class _CreateShopPageState extends State<CreateShopPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.error)),
           );
+        } else if (state is AuthLogoutSuccesState) {
+          Navigator.pushNamed(context, '/');
         }
       },
       builder: (BuildContext context, state) {

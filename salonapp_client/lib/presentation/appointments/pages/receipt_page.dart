@@ -7,11 +7,6 @@ import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import '../../../helpers/colors/widgets/custom_button.dart';
 import '../../checkout page/components/cedi_sign_component.dart';
 import '../repository/receipt/receipt_service.dart';
-import 'dart:ui' as ui;
-import 'package:flutter/rendering.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
 
 class ReceiptPage extends StatefulWidget {
   final String id;

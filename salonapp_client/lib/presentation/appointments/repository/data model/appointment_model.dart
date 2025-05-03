@@ -7,6 +7,7 @@ class AppointmentModel {
   late String? id;
   late double? amount;
   late String? userId;
+  late String? ownerID;
   late String? shopName;
   late String? category;
   late TimeOfDay? appointmentTime;
@@ -21,6 +22,7 @@ class AppointmentModel {
     this.id,
     this.amount,
     this.userId,
+    this.ownerID,
     this.shopName,
     this.category,
     this.appointmentTime,
@@ -35,7 +37,8 @@ class AppointmentModel {
   Map<String, dynamic> toJson() {
     return {
       "amount": amount,
-      "ownerID": userId,
+      "userID": userId,
+      "ownerID": ownerID,
       "shopName": shopName,
       "category": category,
       "appointmentTime": appointmentTime,
@@ -51,7 +54,8 @@ class AppointmentModel {
   AppointmentModel.defaultModel() {
     id = null;
     amount = 0.0;
-    userId = "ownerID";
+    userId = "userID";
+    ownerID = "ownerID";
     shopName = "shopName";
     category = "category";
     appointmentTime =
@@ -72,6 +76,7 @@ class AppointmentModel {
         id: document.id,
         amount: data["amount"] ?? 0.0,
         userId: data["userId"] ?? '',
+        ownerID: data["ownerID"] ?? '',
         shopName: data["shopName"] ?? '',
         category: data["category"] ?? '',
         appointmentTime: parseTimeOfDay(data["appointmentTime"]),

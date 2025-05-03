@@ -56,7 +56,7 @@ class AppointmentServiceHelper {
     try {
       QuerySnapshot<Map<String, dynamic>> querySnapshot = await _db
           .collection("appointments")
-          .where("ownerID", isEqualTo: userId)
+          .where("userID", isEqualTo: userId)
           .get();
 
       final appointment = querySnapshot.docs

@@ -104,6 +104,7 @@ class _DetailsPageState extends State<MainShopinfoPage> {
           Center(child: Text(state.errorMessage));
         } else if (state is SingleShopsFetchedState) {
           shop = state.shop;
+          debugPrint("Owner ID: ${shop!.shopOwnerId}");
         }
       },
       builder: (context, state) {

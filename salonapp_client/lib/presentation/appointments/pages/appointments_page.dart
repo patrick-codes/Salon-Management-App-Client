@@ -141,33 +141,30 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                       fontWeight: FontWeight.bold,
                     ),
               ),
-              actions: [
-                GestureDetector(
-                  onTap: () {},
-                  child: Icon(
-                    MingCute.more_2_fill,
-                  ),
-                ),
-                SizedBox(width: 8),
-              ],
             ),
             body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    'assets/svgs/undraw_file-search_cbur.svg',
-                    height: 150,
-                    width: 150,
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                child: RefreshIndicator(
+                  onRefresh: () => refresh(context),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/svgs/undraw_file-search_cbur.svg',
+                        height: 150,
+                        width: 150,
+                      ),
+                      SizedBox(height: 20),
+                      PrimaryText(
+                        text: state.errorMessage,
+                        color: iconGrey,
+                        size: 15,
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 20),
-                  PrimaryText(
-                    text: state.errorMessage,
-                    color: iconGrey,
-                    size: 15,
-                  ),
-                ],
+                ),
               ),
             ),
           );

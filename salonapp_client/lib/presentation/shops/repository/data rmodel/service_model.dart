@@ -84,7 +84,7 @@ class ShopModel {
       final data = document.data()!;
       return ShopModel(
         shopId: document.id,
-        shopOwnerId: data["shopOwnerId"] ?? '',
+        shopOwnerId: data["ownerID"] ?? '',
         shopName: data["shopName"] ?? '',
         category: data["category"] ?? '',
         cordinates: data["cordinates"] != null

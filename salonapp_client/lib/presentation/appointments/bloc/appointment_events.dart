@@ -6,6 +6,7 @@ sealed class AppointmentEvent {}
 class CreateAppointmentEvent extends AppointmentEvent {
   final double? amount;
   final String? userId;
+  final String? ownerID;
   final String? shopName;
   final String? category;
   final TimeOfDay? appointmentTime;
@@ -19,6 +20,7 @@ class CreateAppointmentEvent extends AppointmentEvent {
   CreateAppointmentEvent({
     required this.amount,
     this.userId,
+    required this.ownerID,
     required this.shopName,
     required this.category,
     required this.appointmentTime,

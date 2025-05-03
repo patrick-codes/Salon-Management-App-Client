@@ -81,6 +81,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
 
       final appointments = AppointmentModel(
         userId: firebaseUser.currentUser!.uid,
+        ownerID:event.ownerID,
         amount: event.amount,
         shopName: event.shopName,
         category: event.category,

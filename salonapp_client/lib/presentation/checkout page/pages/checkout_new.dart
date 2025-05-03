@@ -511,6 +511,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                                                   .read<AppointmentBloc>()
                                                   .add(
                                                     CreateAppointmentEvent(
+                                                      ownerID: widget.id,
                                                       shopName: widget.shop,
                                                       category: 'Male',
                                                       appointmentTime:

@@ -54,10 +54,6 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
             backgroundColor: secondaryBg,
             extendBodyBehindAppBar: true,
             appBar: AppBar(
-              systemOverlayStyle: const SystemUiOverlayStyle(
-                statusBarColor: primaryColor,
-                statusBarIconBrightness: Brightness.light,
-              ),
               backgroundColor: Colors.white,
               leading: const Icon(
                 MingCute.arrow_left_fill,

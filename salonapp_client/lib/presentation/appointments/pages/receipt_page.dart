@@ -37,10 +37,6 @@ class _ReceiptPageState extends State<ReceiptPage> {
     print(widget.id);
     return Scaffold(
       appBar: AppBar(
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: primaryColor,
-          statusBarIconBrightness: Brightness.light,
-        ),
         backgroundColor: Colors.white,
         leading: GestureDetector(
           onTap: () {

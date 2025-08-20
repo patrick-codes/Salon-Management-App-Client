@@ -15,5 +15,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   debugPrint("Firebase Connected Succesfuly");
+
+  ///
   runApp(const SalonAppBlocs());
 }

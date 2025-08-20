@@ -16,6 +16,5 @@ Future<void> main() async {
   );
   debugPrint("Firebase Connected Succesfuly");
 
-  ///
   runApp(const SalonAppBlocs());
 }

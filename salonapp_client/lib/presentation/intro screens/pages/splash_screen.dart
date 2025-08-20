@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../authentication screens/bloc/auth_bloc.dart';
 
 class SplashScreen extends StatefulWidget {

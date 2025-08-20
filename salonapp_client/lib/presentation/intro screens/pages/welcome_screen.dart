@@ -52,8 +52,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 delay: 300,
                 child: CustomButton(
                   text: "Get Started",
-                  onpressed: () =>
-                      Navigator.pushReplacementNamed(context, '/login'),
+                  onpressed: () {
+                    Navigator.pushReplacementNamed(context, '/login');
+                  },
                   color: primaryColor,
                 ),
               ),
@@ -218,4 +219,10 @@ List<TitleText> infos = [
     middleText: "The Fastest Way to Book your BarberShop ",
     appointmentText: "Appointment",
   ),
+];
+
+List<String> studentName = [
+  "John Doe",
+  "Jane Doe",
+  "Patrick Boateng",
 ];

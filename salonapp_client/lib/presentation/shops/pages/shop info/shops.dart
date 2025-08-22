@@ -3,15 +3,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:salonapp_client/helpers/colors/widgets/minimal_heading.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
+import 'package:salonapp_client/presentation/filter%20screen/pages/filter_screen.dart';
+import 'package:salonapp_client/presentation/shops/repository/data%20rmodel/h_shop_service_model.dart';
 import '../../../../helpers/colors/color_constants.dart';
 import '../../../checkout page/components/Transaction/other/show_up_animation.dart';
 import '../../../location/bloc/location_bloc.dart';
-import '../../bloc/shops_bloc.dart';
-import '../../repository/data rmodel/service_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../bloc/home shop bloc/h_shops_bloc.dart';
 
 class ShopsPage extends StatefulWidget {
   ShopsPage({super.key});
@@ -23,24 +25,12 @@ class ShopsPage extends StatefulWidget {
 class _ShopsPageState extends State<ShopsPage>
     with AutomaticKeepAliveClientMixin {
   bool get wantKeepAlive => true;
-  List<ShopModel>? shops;
+  List<HomeShopModel>? shops;
   bool isLoaded = false;
-  List<String> imgs = <String>[
-    "assets/images/img8.jpg",
-    "assets/images/img.jpg",
-    "assets/images/img3.jpg",
-    "assets/images/img5.jpg",
-    "assets/images/img9.jpg",
-    "assets/images/img6.jpg",
-    "assets/images/img3.jpg",
-    "assets/images/img5.jpg",
-    "assets/images/img9.jpg",
-    "assets/images/img6.jpg",
-  ];
   bool isFavClicked = false;
   final searchController = TextEditingController();
-  String text = 'No nearby shops available !!';
-  ShopsBloc? shopsBloc;
+  String text = 'No shops available !!';
+  HomeShopsBloc? HomeshopsBloc;
   String? address;
   void dispose() {
     searchController.dispose();
@@ -49,16 +39,22 @@ class _ShopsPageState extends State<ShopsPage>
 
   Future<void> refresh(BuildContext context) async {
     setState(() {
-      context.read<ShopsBloc>().add(ViewShopsEvent());
+      context.read<HomeShopsBloc>().add(ViewHomeShopsEvent());
       debugPrint("Refreshed");
     });
   }
+
+  String? selectedService;
+  String? selectedGender;
+  double? selectedDistance;
+  RangeValues? selectedPriceRange;
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     final locationState = context.watch<LocationBloc>().state;
-    return BlocConsumer<ShopsBloc, ShopsState>(listener: (context, state) {
+    return BlocConsumer<HomeShopsBloc, HomeShopsState>(
+        listener: (context, state) {
       if (state is ShopsFetchFailureState) {
         debugPrint("Shops Fetch Error: ${state.errorMessage}");
       }
@@ -93,7 +89,7 @@ class _ShopsPageState extends State<ShopsPage>
       if (locationState is LocationFetchedState) {
         address = locationState.address2;
         if (state is! ShopsFetchedState && state is! ShopsLoadingState) {
-          context.read<ShopsBloc>().add(ViewShopsEvent());
+          context.read<HomeShopsBloc>().add(ViewHomeShopsEvent());
         }
       }
 
@@ -127,7 +123,7 @@ class _ShopsPageState extends State<ShopsPage>
         return Scaffold(
           extendBodyBehindAppBar: true,
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(120),
+            preferredSize: Size.fromHeight(166),
             child: Container(
               color: Colors.white,
               child: Padding(
@@ -141,68 +137,60 @@ class _ShopsPageState extends State<ShopsPage>
                         statusBarIconBrightness: Brightness.light,
                       ),
                       backgroundColor: Colors.transparent,
-                      leading: const Icon(
-                        MingCute.arrow_left_fill,
-                      ),
                       centerTitle: true,
-                      title: Column(
+                      title: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Shops around ${address}",
+                            "Available Shops ",
                             overflow: TextOverflow.ellipsis,
                             style:
                                 Theme.of(context).textTheme.bodyLarge!.copyWith(
                                       fontWeight: FontWeight.bold,
                                     ),
                           ),
-                          // shops!.isEmpty
-                          //     ? SizedBox.shrink()
-                          //     : Text(
-                          //         " (${state.shop!.length})",
-                          //         style: Theme.of(context)
-                          //             .textTheme
-                          //             .bodyLarge!
-                          //             .copyWith(
-                          //               fontWeight: FontWeight.bold,
-                          //             ),
-                          //       ),
+                          shops!.isNotEmpty || shops!.length > 0
+                              ? Text(
+                                  "(${shops?.length})",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                )
+                              : SizedBox.shrink(),
                         ],
                       ),
-                      actions: [
-                        GestureDetector(
-                          onTap: () {},
-                          child: Icon(
-                            MingCute.more_2_fill,
-                          ),
-                        ),
-                        SizedBox(width: 8),
-                      ],
                     ),
                     ShowUpAnimation(
                       delay: 150,
                       child: TextFormField(
                         controller: searchController,
                         onChanged: (value) => context
-                            .read<ShopsBloc>()
+                            .read<HomeShopsBloc>()
                             .add(SearchShopEvent(query: searchController.text)),
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
                               fontSize: 14,
                             ),
                         decoration: InputDecoration(
-                          hintText: "Search....",
+                          hintText: "Search by shop name....",
                           hintStyle: TextStyle(fontSize: 13, color: iconGrey),
                           prefixIcon:
                               Icon(MingCute.search_3_line, color: iconGrey),
-                          suffixIcon: const SizedBox(
-                            width: 60,
+                          suffixIcon: SizedBox(
+                            width: 40,
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(MingCute.close_line, color: iconGrey),
-                                SizedBox(width: 10),
-                                Icon(MingCute.list_search_line,
-                                    color: iconGrey),
+                                GestureDetector(
+                                  onTap: () => searchController.clear(),
+                                  child: Icon(
+                                    MingCute.close_circle_fill,
+                                    color: iconGrey,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -228,15 +216,97 @@ class _ShopsPageState extends State<ShopsPage>
                           ),
                         ),
                       ),
+                    ), // Inside AppBar column (under the TextFormField)
+                    const SizedBox(height: 10),
+
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          _buildDropdown<String>(
+                            label: "Services",
+                            icon: Icons.cut,
+                            items: [
+                              "Haircut",
+                              "Braids",
+                              "Shaving",
+                              "Nails",
+                              "Locks",
+                            ],
+                            value: selectedService,
+                            onChanged: (value) {
+                              setState(() => selectedService = value);
+                              context.read<HomeShopsBloc>().add(
+                                    SearchShopEvent(
+                                      query: searchController.text,
+                                      service: value,
+                                    ),
+                                  );
+                            },
+                          ),
+                          const SizedBox(width: 12),
+                          _buildDropdown<String>(
+                            label: "Gender",
+                            icon: Icons.person,
+                            items: ["Male", "Female", "Unisex"],
+                            value: selectedGender,
+                            onChanged: (value) {
+                              setState(() => selectedGender = value);
+                              context.read<HomeShopsBloc>().add(
+                                    SearchShopEvent(
+                                      query: searchController.text,
+                                      gender: value,
+                                    ),
+                                  );
+                            },
+                          ),
+                          const SizedBox(width: 12),
+                          _buildDropdown<double>(
+                            label: "Distance km",
+                            icon: Icons.location_on,
+                            items: [2.0, 5.0, 10.0, 20.0],
+                            value: selectedDistance,
+                            onChanged: (value) {
+                              setState(() => selectedDistance = value);
+                              context.read<HomeShopsBloc>().add(
+                                    SearchShopEvent(
+                                      query: searchController.text,
+                                      distance: value,
+                                    ),
+                                  );
+                            },
+                          ),
+                          const SizedBox(width: 12),
+                          _buildDropdown<RangeValues>(
+                            label: "Price Range",
+                            icon: Icons.attach_money,
+                            items: const [
+                              RangeValues(0, 20),
+                              RangeValues(20, 50),
+                              RangeValues(50, 100),
+                            ],
+                            itemToString: (range) =>
+                                "GHS ${range.start.toInt()}–${range.end.toInt()}",
+                            value: selectedPriceRange, // ✅
+                            onChanged: (value) {
+                              setState(() => selectedPriceRange = value);
+                              context.read<HomeShopsBloc>().add(
+                                    SearchShopEvent(
+                                      query: searchController.text,
+                                      priceRange: value,
+                                    ),
+                                  );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
           ),
-          body: state is ShopsLoadingState ||
-                  // locationState is InitLocation ||
-                  locationState is LocationLoading
+          body: state is ShopsLoadingState
               ? Container(
                   child: const Center(
                     child: Column(
@@ -296,8 +366,13 @@ class _ShopsPageState extends State<ShopsPage>
                                     scrollDirection: Axis.vertical,
                                     itemBuilder:
                                         (BuildContext context, int index) {
-                                      var shopInfo = shops![index];
+                                      var shopInfo = state.shop![index];
 
+                                      if (state.shop!.isEmpty) {
+                                        return const Center(
+                                            child: Text(
+                                                "No shops match your filters"));
+                                      }
                                       return ShowUpAnimation(
                                         delay: 150,
                                         child: appointmentContainer(
@@ -311,7 +386,8 @@ class _ShopsPageState extends State<ShopsPage>
                                           shopInfo.services,
                                           isLoaded,
                                           shopInfo.distanceToUser,
-                                          shopInfo.isOpen,
+                                          shopInfo.isOpened,
+                                          shopInfo.category,
                                         ),
                                       );
                                     },
@@ -331,13 +407,12 @@ class _ShopsPageState extends State<ShopsPage>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SpinKitDoubleBounce(
-              // lineWidth: 3,
               size: 60,
               color: primaryColor,
             ),
             SizedBox(height: 20),
             PrimaryText(
-              text: 'Loading nearby shops....',
+              text: 'Loading shops....',
               color: secondaryColor3,
               size: 13,
             ),
@@ -345,6 +420,82 @@ class _ShopsPageState extends State<ShopsPage>
         ),
       );
     });
+  }
+
+  Widget _buildDropdown<T>({
+    required String label,
+    required IconData icon,
+    required List<T> items,
+    required T? value,
+    required Function(T?) onChanged,
+    String Function(T)? itemToString,
+    Color borderColor = Colors.black12,
+  }) {
+    return Container(
+      height: 35,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+      decoration: BoxDecoration(
+        border: Border.all(color: borderColor, width: 1),
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: Colors.grey[700]),
+          const SizedBox(width: 6),
+          DropdownButton<T>(
+            value: value,
+            underline: const SizedBox(), // removes default underline
+            elevation: 2,
+            dropdownColor: Colors.white,
+            focusColor: Colors.grey[300],
+            hint: Text(
+              label,
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+            items: items.map((item) {
+              return DropdownMenuItem<T>(
+                value: item,
+                child: Text(
+                  itemToString != null ? itemToString(item) : item.toString(),
+                  style: const TextStyle(fontSize: 14),
+                ),
+              );
+            }).toList(),
+            onChanged: onChanged,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<Map<String, dynamic>?> scrollBottomSheet(BuildContext context) {
+    return showModalBottomSheet<Map<String, dynamic>>(
+      context: context,
+      clipBehavior: Clip.hardEdge,
+      //enableDrag: true,
+      //useSafeArea: true,
+      showDragHandle: true,
+      isDismissible: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(25),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.8,
+          minChildSize: 0.2,
+          maxChildSize: 0.9,
+          builder: (BuildContext context, ScrollController scrollController) {
+            return FilterScreen();
+          },
+        );
+      },
+    );
   }
 
   Container appointmentContainer(
@@ -359,9 +510,10 @@ class _ShopsPageState extends State<ShopsPage>
     bool? isLoaded,
     double? distance,
     bool? isOpen,
+    String? category,
   ) {
     return Container(
-      height: 330,
+      height: 340,
       width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
@@ -618,69 +770,38 @@ class _ShopsPageState extends State<ShopsPage>
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  isFavClicked = !isFavClicked;
-                                });
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    duration: Duration(seconds: 1),
-                                    behavior: SnackBarBehavior.floating,
-                                    margin: const EdgeInsets.all(8),
-                                    content: Text(
-                                      isFavClicked == false
-                                          ? "Shop added to favorites!!"
-                                          : "Shop removed from favorites",
-                                      style: const TextStyle(),
-                                    ),
-                                    backgroundColor:
-                                        Color.fromARGB(255, 69, 66, 65),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                height: 30,
-                                width: 130,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(40),
-                                  border: Border.all(
-                                    color: Colors.black12,
-                                  ),
+                            Container(
+                              height: 40,
+                              width: 130,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(40),
+                                border: Border.all(
+                                  color: Colors.black12,
                                 ),
-                                child: Center(
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      isFavClicked == true
-                                          ? Icon(
-                                              MingCute.heart_line,
-                                              size: 15,
-                                              color: Colors.black45,
-                                            )
-                                          : Icon(
-                                              MingCute.heart_fill,
-                                              size: 15,
-                                              color: Colors.red,
-                                            ),
-                                      SizedBox(width: 3),
-                                      Text(
-                                        overflow: TextOverflow.ellipsis,
-                                        isFavClicked == true
-                                            ? 'Add to favorite'
-                                            : 'Favorite',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium!
-                                            .copyWith(
-                                              color: Colors.black45,
-                                              fontSize: 11,
-                                            ),
-                                      ),
-                                    ],
-                                  ),
+                              ),
+                              child: Center(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.male,
+                                      size: 22,
+                                      color: Colors.red,
+                                    ),
+                                    SizedBox(width: 3),
+                                    Text(
+                                      overflow: TextOverflow.ellipsis,
+                                      category ?? 'Category',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(
+                                            color: Colors.black45,
+                                            fontSize: 12.5,
+                                          ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -693,8 +814,8 @@ class _ShopsPageState extends State<ShopsPage>
                                 );
                               },
                               child: Container(
-                                height: 30,
-                                width: 150,
+                                height: 40,
+                                width: 180,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(40),
                                   color: primaryColor,
@@ -706,7 +827,7 @@ class _ShopsPageState extends State<ShopsPage>
                                         .textTheme
                                         .bodySmall!
                                         .copyWith(
-                                          fontSize: 10,
+                                          fontSize: 12.5,
                                           color: Colors.white,
                                           fontWeight: FontWeight.w700,
                                         ),

@@ -6,13 +6,15 @@ import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import 'package:salonapp_client/helpers/colors/widgets/minimal_heading.dart';
 import 'package:salonapp_client/presentation/authentication%20screens/repository/data%20model/user_model.dart';
 import 'package:salonapp_client/presentation/location/bloc/location_bloc.dart';
+import 'package:toastification/toastification.dart';
 import '../../helpers/colors/widgets/style.dart';
+import '../authentication screens/bloc/auth_bloc.dart';
 import '../checkout page/components/Transaction/other/show_up_animation.dart';
 import '../filter screen/pages/filter_screen.dart';
-import '../shops/bloc/home shop bloc/h_shops_bloc.dart';
+import '../shops/bloc/shops_bloc.dart';
 import '../shops/components/gridview.dart';
-import '../shops/repository/data rmodel/h_shop_service_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../shops/repository/data rmodel/service_model.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -21,7 +23,45 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage>
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
+  bool _wentToSettings = false;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    final locationState = BlocProvider.of<LocationBloc>(context).state;
+    // if (locationState is LocationFetchedState) {
+    //   BlocProvider.of<StationBloc>(context)
+    //     ..add(FetchStationEvent(
+    //       startingPoint: "${locationState.latitude},${locationState.longitude}",
+    //     ));
+    // }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed &&
+        context.read<LocationBloc>().wentToSettings) {
+      context.read<LocationBloc>().wentToSettings = false;
+      final userBloc =
+          context.read<AuthBloc>().add(CurrentUserEvent(user!.id ?? ''));
+      // debugPrint(userBloc);
+      Future.delayed(Duration(seconds: 2), () {
+        context.read<LocationBloc>().add(LoadLocationEvent());
+      });
+    }
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+
   List<Icon> icons = <Icon>[
     const Icon(
       MingCute.scissors_line,
@@ -62,42 +102,51 @@ class _MyHomePageState extends State<MyHomePage> {
     "undraw_pie-graph_8m6b",
   ];
 
-  String photoUrl =
-      "https://media.istockphoto.com/id/2166854040/photo/chairs-by-sink-bowl-at-hair-salon.webp?a=1&b=1&s=612x612&w=0&k=20&c=UltW4fSClI85zl07M0pmi4-uqjcUC4ADd4xfwBS6nWc=";
-  List<HomeShopModel>? shops;
+  List<ShopModel>? shops;
   UserModel? user;
   bool isLoaded = false;
   final searchController = TextEditingController();
   String text = 'No shops available !!';
+
   Future<void> refresh(BuildContext context) async {
     setState(() {
-      context.read<HomeShopsBloc>().add(ViewHomeShopsEvent());
+      context.read<ShopsBloc>().add(ViewShopsEvent());
       debugPrint("Refreshed");
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // final userBloc =
-    //     context.read<AuthBloc>().add(CurrentUserEvent(user!.id ?? ''));
-    return BlocConsumer<HomeShopsBloc, HomeShopsState>(
+    super.build(context);
+    // return BlocConsumer<ShopsBloc, ShopsState>(
+    //   listener: (context, state) {
+    //     if (state is ShopsLoadingState) {
+    //       CircularProgressIndicator();
+    //     }
+    //     if (state is ShopInitial) {
+    //       context.read<ShopsBloc>().add(ViewShopsEvent());
+    //     }
+    //   },
+    //   builder: (BuildContext context, state) {
+    //     if (state is ShopsFetchFailureState) {
+    //       Center(child: Text(state.errorMessage));
+    //     } else if (state is ShopsFetchedState) {
+    //       shops = state.shop;
+    //       isLoaded = true;
+    //       debugPrint("Shops Fetched:${state.shop!.length}");
+    //     }
+    return BlocConsumer<LocationBloc, LocationState>(
+      listenWhen: (previous, current) => current is LocationFetchedState,
       listener: (context, state) {
-        if (state is ShopsLoadingState) {
-          CircularProgressIndicator();
-        }
-        if (state is HomeShopInitial) {
-          context.read<HomeShopsBloc>().add(ViewHomeShopsEvent());
+        if (state is LocationFetchedState) {
+          BlocProvider.of<ShopsBloc>(context).add(ViewShopsEvent());
         }
       },
-      builder: (BuildContext context, state) {
-        if (state is ShopsFetchFailureState) {
-          Center(child: Text(state.errorMessage));
-        } else if (state is ShopsFetchedState) {
-          shops = state.shop;
-          isLoaded = true;
-          debugPrint("Shops Fetched:${state.shop!.length}");
+      builder: (context, state) {
+        if (state is LocationFailure &&
+            !context.read<LocationBloc>().wentToSettings) {
+          return Center(child: Text("Failed to fetch location"));
         }
-
         return Scaffold(
           backgroundColor: secondaryColor,
           body: SingleChildScrollView(
@@ -105,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 Container(
                   height: 250,
-                  width: MediaQuery.of(context).size.width,
+                  width: MediaQuery.of(context).size.width!,
                   decoration: const BoxDecoration(
                     // color: primaryColor,
                     gradient: LinearGradient(
@@ -144,6 +193,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     ),
                                     SizedBox(width: 3),
                                     BlocConsumer<LocationBloc, LocationState>(
+                                      listenWhen: (previous, current) =>
+                                          current is LocationFetchedState,
                                       listener: (context, locationState) {
                                         if (locationState is LocationOff) {
                                           ScaffoldMessenger.of(context)
@@ -155,11 +206,19 @@ class _MyHomePageState extends State<MyHomePage> {
                                         }
                                       },
                                       builder: (context, state) {
+                                        if (state is LocationFailure &&
+                                            !context
+                                                .read<LocationBloc>()
+                                                .wentToSettings) {
+                                          return Center(
+                                              child: Text(
+                                                  "Failed to fetch location"));
+                                        }
                                         if (state is LocationFetchedState) {
                                           return Text(
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
-                                            state.address!,
+                                            state.address ?? '',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium!
@@ -169,20 +228,34 @@ class _MyHomePageState extends State<MyHomePage> {
                                                   color: Colors.white,
                                                 ),
                                           );
-                                        } else
+                                        } else if (state is LocationLoading) {
                                           return Text(
-                                            maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
-                                            "Location loading......",
+                                            maxLines: 2,
+                                            'Location Loading.......',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium!
                                                 .copyWith(
-                                                  fontWeight: FontWeight.bold,
+                                                  fontWeight: FontWeight.w600,
                                                   fontSize: 12,
-                                                  color: Colors.white,
+                                                  color: whiteColor,
                                                 ),
                                           );
+                                        }
+                                        return Text(
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          'Getting your Location.......',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium!
+                                              .copyWith(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 12,
+                                                color: whiteColor,
+                                              ),
+                                        );
                                       },
                                     ),
                                   ],
@@ -190,33 +263,19 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () => refresh(context),
                               child: Container(
                                 height: 40,
                                 width: 40,
                                 decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: Image.network(
-                                      user?.profilePhoto ?? photoUrl,
-                                      loadingBuilder:
-                                          (context, child, loadingProgress) {
-                                        if (loadingProgress == null)
-                                          return child;
-                                        return Center(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      },
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return Icon(Icons.error,
-                                            size: 50, color: Colors.red);
-                                      },
-                                      fit: BoxFit.cover,
-                                    ).image,
-                                  ),
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(40),
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    MingCute.refresh_3_line,
+                                    color: blackColor,
+                                  ),
                                 ),
                               ),
                             ),
@@ -260,10 +319,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     fontSize: 15,
                                     fontWeight: FontWeight.w500,
                                   ),
-                          onChanged: (value) => context
-                              .read<HomeShopsBloc>()
-                              .add(SearchShopEvent(
-                                  query: searchController.text)),
+                          onChanged: (value) => context.read<ShopsBloc>().add(
+                              SearchShopEvent(query: searchController.text)),
                           validator: (value) {
                             if (value!.isEmpty) {
                               print('Type something');
@@ -281,9 +338,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               size: 23,
                             ),
                             suffixIcon: GestureDetector(
-                              onTap: () {
-                                scrollBottomSheet(context);
-                              },
+                              onTap: () async {},
                               child: const SizedBox(
                                 width: 60,
                                 child: Row(
@@ -320,8 +375,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     right: 15,
                   ),
                   child: MinimalHeadingText(
-                    leftText: "Categories",
-                    rightText: "See all",
+                    leftText: "Popular Shop",
+                    rightText: "",
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -339,15 +394,13 @@ class _MyHomePageState extends State<MyHomePage> {
                           height: 140,
                           width: MediaQuery.of(context).size.width,
                           child: ListView.builder(
-                            itemCount: svgs.length,
+                            itemCount: 1,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (BuildContext context, int index) {
                               return ShowUpAnimation(
                                 delay: 300,
-                                child: buildDisCountCard(
-                                    icons[index],
-                                    title[index],
-                                    "assets/svgs/${svgs[index]}.svg"),
+                                child: buildDisCountCard(icons[index],
+                                    title[index], "assets/images/img6.jpg"),
                               );
                             },
                           ),
@@ -357,65 +410,55 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15),
-                  child: MinimalHeadingText(
-                      leftText: "Nearby shops", rightText: "See all"),
-                ),
-                const SizedBox(height: 8),
-                SizedBox(
-                  height: 40,
-                  width: MediaQuery.of(context).size.width,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 8),
-                      SizedBox(
-                        height: 30,
-                        width: MediaQuery.of(context).size.width,
-                        child: ListView.builder(
-                          itemCount: icons.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (BuildContext context, int index) {
-                            return ShowUpAnimation(
-                              delay: 300,
-                              child: _buildSquareCategoryButton(
-                                  title[index],
-                                  index == 0
-                                      ? tertiaryColor.withOpacity(0.2)
-                                      : Colors.grey.shade300,
-                                  index == 0
-                                      ? primaryColor
-                                      : Colors.grey.shade300,
-                                  index == 0 ? primaryColor : Colors.black54),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                shops == null
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(height: 50),
-                            SpinKitDoubleBounce(
-                              // lineWidth: 3,
-                              size: 40,
-                              color: primaryColor,
+                ShowUpAnimation(
+                  delay: 300,
+                  child: BlocBuilder<ShopsBloc, ShopsState>(
+                    builder: (contex, state) {
+                      if (state is LocationLoading)
+                      //   Center(
+                      //     child: Column(
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: [
+                      //         SizedBox(height: 50),
+                      //         SpinKitDoubleBounce(
+                      //           // lineWidth: 3,
+                      //           size: 40,
+                      //           color: primaryColor,
+                      //         ),
+                      //         SizedBox(height: 8),
+                      //         PrimaryText(
+                      //           text: 'Loading nearby shops....',
+                      //           color: secondaryColor3,
+                      //           size: 12,
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   );
+
+                      if (state is ShopsFetchFailureState) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          toastification.show(
+                            showProgressBar: false,
+                            description: Column(
+                              children: [
+                                Text('${state.errorMessage}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12,
+                                      color: whiteColor,
+                                    )),
+                              ],
                             ),
-                            SizedBox(height: 8),
-                            PrimaryText(
-                              text: 'Loading nearby shops....',
-                              color: secondaryColor3,
-                              size: 12,
-                            ),
-                          ],
-                        ),
-                      )
-                    : (shops == null || shops == 0 || shops!.isEmpty)
-                        ? Center(
+                            autoCloseDuration: const Duration(seconds: 7),
+                            style: ToastificationStyle.fillColored,
+                            type: ToastificationType.error,
+                          );
+                        });
+                      }
+
+                      if (state is ShopsFetchedState) {
+                        if (shops == null || shops == 0 || shops!.isEmpty) {
+                          Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -434,14 +477,35 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                               ],
                             ),
-                          )
-                        : ShowUpAnimation(
-                            delay: 300,
-                            child: GridViewComponent(
-                              shops: shops!,
+                          );
+                        }
+                        return GridViewComponent(
+                          shops: state.shop!,
+                        );
+                      }
+
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(height: 50),
+                            SpinKitDoubleBounce(
+                              // lineWidth: 3,
+                              size: 40,
+                              color: primaryColor,
                             ),
-                          ),
-                const SizedBox(height: 8),
+                            SizedBox(height: 8),
+                            PrimaryText(
+                              text: 'Loading nearby shops....',
+                              color: secondaryColor3,
+                              size: 12,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ],
             ),
           ),
@@ -462,6 +526,8 @@ class _MyHomePageState extends State<MyHomePage> {
           width: 340,
           margin: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
+            image: DecorationImage(
+                fit: BoxFit.cover, image: Image.asset(imgs).image),
             color: secondaryColor2,
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
@@ -472,97 +538,79 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ],
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          child: Stack(
+            children: [
+              Positioned(
+                child: Container(
+                  height: 130,
+                  width: 340,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.black,
+                        primaryColor.withOpacity(0.5),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    PrimaryText(
-                      text: "25 % Discount",
-                      color: blackColor,
-                      fontWeight: FontWeight.w600,
-                      size: 20,
-                    ),
-                    SizedBox(height: 2),
-                    PrimaryText(
-                      text: "Learn style, Kumasi",
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w500,
-                      size: 11,
-                    ),
-                    SizedBox(height: 25),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/appointments');
-                      },
-                      child: Container(
-                        height: 30,
-                        width: 105,
-                        decoration: BoxDecoration(
-                          color: blackColor,
-                          borderRadius: BorderRadius.circular(5),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        PrimaryText(
+                          text: "Sams Hair Salon",
+                          color: whiteColor,
+                          fontWeight: FontWeight.w600,
+                          size: 20,
                         ),
-                        child: Center(
-                          child: Text(
-                            "View all Shops",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: 11,
+                        SizedBox(height: 2),
+                        PrimaryText(
+                          text: "Weija Old Barrier, Accra",
+                          color: whiteColor,
+                          fontWeight: FontWeight.w500,
+                          size: 11,
+                        ),
+                        SizedBox(height: 25),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, '/appointments');
+                          },
+                          child: Container(
+                            height: 30,
+                            width: 105,
+                            decoration: BoxDecoration(
+                              color: Colors.orange,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Center(
+                              child: Text(
+                                "View all Shops",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: blackColor,
+                                  fontSize: 11,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
-                Column(
-                  children: [
-                    SvgPicture.asset(
-                      imgs,
-                      height: 106,
-                      width: 108,
-                      fit: BoxFit.cover,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],
-    );
-  }
-
-  Future<void> scrollBottomSheet(BuildContext context) {
-    return showModalBottomSheet(
-      context: context,
-      clipBehavior: Clip.hardEdge,
-      //enableDrag: true,
-      //useSafeArea: true,
-      showDragHandle: true,
-      isDismissible: true,
-      isScrollControlled: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(25),
-        ),
-      ),
-      builder: (BuildContext context) {
-        return DraggableScrollableSheet(
-          expand: false,
-          initialChildSize: 0.8,
-          minChildSize: 0.2,
-          maxChildSize: 0.9,
-          builder: (BuildContext context, ScrollController scrollController) {
-            return FilterScreen();
-          },
-        );
-      },
     );
   }
 

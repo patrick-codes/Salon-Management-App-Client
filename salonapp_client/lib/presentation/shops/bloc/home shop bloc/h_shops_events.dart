@@ -51,6 +51,16 @@ class ViewSingleShopEvent extends HomeShopsEvent {
 
 class SearchShopEvent extends HomeShopsEvent {
   final String query;
+  final String? service;
+  final String? gender;
+  final double? distance; // in km
+  final RangeValues? priceRange;
 
-  SearchShopEvent({required this.query});
+  SearchShopEvent({
+    required this.query,
+    this.service,
+    this.gender,
+    this.distance,
+    this.priceRange,
+  });
 }

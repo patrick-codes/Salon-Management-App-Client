@@ -25,14 +25,9 @@ class _MainHomePageState extends State<MainHomePage> {
 
   List<Widget> pages = [
     MyHomePage(),
-    CreateShopPage(),
-    // MapDirectionScreen(
-    //   cordinates: LatLng(0, 0),
-    // ),
+    // CreateShopPage(),
     ShopsPage(),
-    //CreateShopPage(),
     AppointmentsPage(),
-    //Container(),
     ProfilePage(),
   ];
 
@@ -74,10 +69,6 @@ class _MainHomePageState extends State<MainHomePage> {
               GButton(
                 icon: MingCute.home_5_line,
                 text: 'Home',
-              ),
-              GButton(
-                icon: MingCute.location_line,
-                text: 'Explore',
               ),
               GButton(
                 icon: MingCute.scissors_line,

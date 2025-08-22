@@ -5,6 +5,7 @@ class HomeShopModel {
   late String? shopOwnerId;
   late String? shopName;
   late String? category;
+
   //late int? ratings;
   late String? openingDays;
   late String? operningTimes;
@@ -16,6 +17,8 @@ class HomeShopModel {
   late String? dateJoined;
   late List<String>? workImgs;
   late bool? isOpened;
+  late double distanceToUser;
+  late List<double?> cordinates;
 
   HomeShopModel({
     this.shopId,
@@ -32,6 +35,8 @@ class HomeShopModel {
     required this.dateJoined,
     required this.workImgs,
     this.isOpened,
+    required this.distanceToUser,
+    required this.cordinates,
   });
 
   Map<String, dynamic> toJson() {
@@ -50,6 +55,8 @@ class HomeShopModel {
       "dateJoined": dateJoined,
       "workImgs": workImgs,
       "isOpened": isOpened,
+      "distanceToUser": distanceToUser,
+      "cordinates": List<dynamic>.from(cordinates.map((x) => x)),
     };
   }
 
@@ -68,6 +75,7 @@ class HomeShopModel {
     dateJoined = "dateJoined";
     workImgs = [];
     isOpened = true;
+    cordinates = [];
   }
 
   factory HomeShopModel.fromSnapshot(
@@ -90,9 +98,10 @@ class HomeShopModel {
         workImgs:
             data["workImgs"] != null ? List<String>.from(data["workImgs"]) : [],
         isOpened: data["isOpened"] ?? false,
-        // ratings: data["Ratings"] is int
-        //     ? data["Ratings"]
-        //     : int.tryParse(data["Ratings"].toString()) ?? 0,
+        cordinates: data["cordinates"] != null
+            ? List<double>.from(data["cordinates"].map((x) => x.toDouble()))
+            : [],
+        distanceToUser: data["distanceToUser"] ?? 0,
       );
     } else {
       print('Document not found for id: ${document.id}');

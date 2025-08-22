@@ -25,9 +25,24 @@ class HomeShopsBloc extends Bloc<HomeShopsEvent, HomeShopsState> {
 
   HomeShopsBloc(this.authBloc) : super(HomeShopInitial()) {
     on<ViewHomeShopsEvent>(fetchShops);
-    on<SearchShopEvent>(searchShops);
+    on<SearchShopEvent>(onSearchShops);
     on<ViewSingleShopEvent>(fetchSingleShop);
   }
+
+  void onSearchShops(SearchShopEvent event, Emitter<HomeShopsState> emit) {
+    final results = searchShops(
+      shops: serviceman ?? [],
+      query: event.query,
+      service: event.service,
+      gender: event.gender,
+      distance: event.distance,
+      priceRange: event.priceRange,
+    );
+
+    serviceman2 = results;
+    emit(ShopsFetchedState(shop: results));
+  }
+
   void onSearchChanged(String query) {
     serviceman = serviceman2!
         .where((servicemen) => servicemen.shopName!
@@ -37,17 +52,25 @@ class HomeShopsBloc extends Bloc<HomeShopsEvent, HomeShopsState> {
         .toList();
   }
 
-  Future<void> searchShops(
-      SearchShopEvent event, Emitter<HomeShopsState> emit) async {
-    try {
-      emit(ShopsLoadingState());
-      if (event.query.isNotEmpty) {
-        onSearchChanged(event.query);
-        emit(ShopsFetchedState(shop: serviceman!));
-      }
-    } catch (e) {
-      print(e);
-    }
+  List<HomeShopModel> searchShops({
+    required List<HomeShopModel> shops,
+    String? query,
+    String? service,
+    String? gender,
+    double? distance,
+    RangeValues? priceRange,
+  }) {
+    return shops.where((shop) {
+      final matchesQuery = query == null ||
+          query.isEmpty ||
+          shop.shopName!.toLowerCase().contains(query.toLowerCase());
+
+      final matchesService = service == null ||
+          service.isEmpty ||
+          shop.services!.toLowerCase().contains(service.toLowerCase());
+
+      return matchesQuery && matchesService;
+    }).toList();
   }
 
   Future<List<HomeShopModel>?> fetchShops(

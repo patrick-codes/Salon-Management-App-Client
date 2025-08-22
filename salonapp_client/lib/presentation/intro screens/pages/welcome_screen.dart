@@ -198,24 +198,24 @@ List<TitleText> infos = [
   TitleText(
     title: "Say Goodbye ",
     subtitle:
-        "Delivers messages faster than any other application The world's fastest messaging app. It is free and secure.",
-    waitingText: "to Waiting ",
+        "Schedule your hair, beauty, or grooming sessions anytime, anywhere no more waiting in line.",
+    waitingText: "to Waiting, ",
     middleText: "The Fastest Way to Book your BarberShop ",
     appointmentText: "Appointment",
   ),
   TitleText(
-    title: "Say Goodbye ",
+    title: "Find the ",
     subtitle:
-        "Delivers messages faster than any other application The world's fastest messaging app. It is free and secure.",
-    waitingText: "to Waiting ",
-    middleText: "The Fastest Way to Book your BarberShop ",
-    appointmentText: "Appointment",
+        "Discover top-rated salons and barbershops in your area with just a few taps.",
+    waitingText: "Perfect  ",
+    middleText: " & Easy to book Salon & Barber Shops In and Around ",
+    appointmentText: "Your Area Today",
   ),
   TitleText(
-    title: "Say Goodbye ",
+    title: "Look Good, ",
     subtitle:
-        "Delivers messages faster than any other application The world's fastest messaging app. It is free and secure.",
-    waitingText: "to Waiting ",
+        "Get personalized services from trusted professionals and step out with style.",
+    waitingText: "Feel Confident ",
     middleText: "The Fastest Way to Book your BarberShop ",
     appointmentText: "Appointment",
   ),

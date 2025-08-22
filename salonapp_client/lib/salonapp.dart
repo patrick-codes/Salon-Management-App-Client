@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:salonapp_client/presentation/shops/pages/create_shopservice_page.dart';
 import 'package:salonapp_client/presentation/shops/pages/shop%20info/shop_info.dart';
 import 'helpers/colors/color_constants.dart';
 import 'presentation/appointments/pages/appointments_page.dart';
@@ -9,6 +11,7 @@ import 'presentation/home/home.dart';
 import 'presentation/home/main_home.dart';
 import 'presentation/intro screens/pages/splash_screen.dart';
 import 'presentation/intro screens/pages/welcome_screen.dart';
+import 'presentation/location/bloc/location_bloc.dart';
 import 'presentation/shops/components/map_directions_screen.dart';
 import 'presentation/shops/pages/main_shop_page.dart';
 import 'package:toastification/toastification.dart';
@@ -19,63 +22,73 @@ class SalonApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ToastificationWrapper(
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Hairvana',
-        initialRoute: '/',
-        routes: {
-          '/': (context) => const SplashScreen(),
-          '/welcome': (context) => const WelcomeScreen(),
-          '/login': (context) => const LoginScreen(),
-          '/signup': (context) => const SignupScren(),
-          '/main': (context) => const MyHomePage(),
-          '/mainhome': (context) => const MainHomePage(),
-          '/shopinfo': (context) => const ShopInfo(),
-          '/shops': (context) => ShopsPage(),
-          '/appointments': (context) => AppointmentsPage(),
-        },
-        onGenerateRoute: (settings) {
-          if (settings.name == '/mainshopinfo') {
-            final args = settings.arguments as Map<String, dynamic>;
-            return MaterialPageRoute(
-              builder: (context) => MainShopinfoPage(id: args['id']),
-            );
-          }
-          if (settings.name == '/map') {
-            final args = settings.arguments as Map<String, dynamic>;
-            return MaterialPageRoute(
-              builder: (context) => MapDirectionScreen(
-                cordinates: args['latlng'],
-              ),
-            );
-          }
-          if (settings.name == '/receipt') {
-            final args = settings.arguments as Map<String, dynamic>;
-            return MaterialPageRoute(
-              builder: (context) => ReceiptPage(
-                id: args['id'],
-                name: args['name'],
-                datetime: args['datetime'],
-                amount: args['amount'],
-                receiptId: args['receiptId'],
-                phone: args['phone'],
-                service: args['service'],
-              ),
-            );
-          }
-          return null;
-        },
-        theme: ThemeData(
-          fontFamily: 'Poppins',
-          // textTheme: GoogleFonts.interTextTheme(
-          //   Theme.of(context).textTheme,
-          // ),
-          scaffoldBackgroundColor: primaryBg,
-          primarySwatch: Colors.blue,
-          useMaterial3: true,
-        ),
-      ),
+    return BlocConsumer<LocationBloc, LocationState>(
+      listener: (BuildContext context, state) {
+        if (state is LocationSucces) {
+          context.read<LocationBloc>()..add(LoadLocationEvent());
+        }
+      },
+      builder: (BuildContext context, state) {
+        return ToastificationWrapper(
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Hairvana',
+            initialRoute: '/',
+            routes: {
+              '/': (context) => const SplashScreen(),
+              '/welcome': (context) => const WelcomeScreen(),
+              '/login': (context) => const LoginScreen(),
+              '/signup': (context) => const SignupScren(),
+              '/main': (context) => const MyHomePage(),
+              '/mainhome': (context) => const MainHomePage(),
+              '/shopinfo': (context) => const ShopInfo(),
+              '/shops': (context) => ShopsPage(),
+              '/createShop': (context) => CreateShopPage(),
+              '/appointments': (context) => AppointmentsPage(),
+            },
+            onGenerateRoute: (settings) {
+              if (settings.name == '/mainshopinfo') {
+                final args = settings.arguments as Map<String, dynamic>;
+                return MaterialPageRoute(
+                  builder: (context) => MainShopinfoPage(id: args['id']),
+                );
+              }
+              if (settings.name == '/map') {
+                final args = settings.arguments as Map<String, dynamic>;
+                return MaterialPageRoute(
+                  builder: (context) => MapDirectionScreen(
+                    cordinates: args['latlng'],
+                  ),
+                );
+              }
+              if (settings.name == '/receipt') {
+                final args = settings.arguments as Map<String, dynamic>;
+                return MaterialPageRoute(
+                  builder: (context) => ReceiptPage(
+                    id: args['id'],
+                    name: args['name'],
+                    datetime: args['datetime'],
+                    amount: args['amount'],
+                    receiptId: args['receiptId'],
+                    phone: args['phone'],
+                    service: args['service'],
+                  ),
+                );
+              }
+              return null;
+            },
+            theme: ThemeData(
+              fontFamily: 'Poppins',
+              // textTheme: GoogleFonts.interTextTheme(
+              //   Theme.of(context).textTheme,
+              // ),
+              scaffoldBackgroundColor: primaryBg,
+              primarySwatch: Colors.blue,
+              useMaterial3: true,
+            ),
+          ),
+        );
+      },
     );
   }
 }

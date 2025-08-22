@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
+import 'package:salonapp_client/presentation/authentication%20screens/bloc/auth_bloc.dart';
 import '../../../helpers/colors/color_constants.dart';
 import '../../checkout page/components/Transaction/other/show_up_animation.dart';
 
@@ -119,26 +121,33 @@ class ProfilePage extends StatelessWidget {
               size: 15,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              height: 400,
-              width: MediaQuery.of(context).size.width,
-              child: ListView.builder(
-                itemCount: icons.length,
-                scrollDirection: Axis.vertical,
-                itemBuilder: (BuildContext context, int index) {
-                  return ShowUpAnimation(
-                    delay: 300,
-                    child: shopContainer(
-                      context,
-                      title[index],
-                      icons[index],
-                    ),
-                  );
-                },
-              ),
-            ),
+          BlocBuilder<AuthBloc, AuthState>(
+            builder: (BuildContext context, state) {
+              if (state is AuthLogoutSuccesState) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  Navigator.pushNamed(context, '/welcome');
+                });
+              }
+
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  height: 400,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView.builder(
+                    itemCount: icons.length,
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ShowUpAnimation(
+                        delay: 300,
+                        child: shopContainer(
+                            context, title[index], icons[index], index),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -149,10 +158,11 @@ class ProfilePage extends StatelessWidget {
     BuildContext context,
     String text,
     Icon icon,
+    int index,
   ) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/shopinfo');
+        context.read<AuthBloc>().add(LogoutEvent());
       },
       child: Container(
         height: 45,

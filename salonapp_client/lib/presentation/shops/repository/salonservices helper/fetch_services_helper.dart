@@ -20,28 +20,6 @@ class SalonServiceHelper {
     }
   }
 
-/*
-  Future<List<ShopModel>?> fetchAllSalonShops(
-      double userLatitude, double userLongitude) async {
-    try {
-      QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await _db.collection("salonshops").get();
-      final salonShops =
-          querySnapshot.docs.map((doc) => ShopModel.fromSnapshot(doc)).toList();
-      print("Fetched ${salonShops.length} salonShops successfully");
-
-      // Check if the station is nearby based on user's coordinates
-      if (isStationNearby(shop, userLongitude, userLatitude)) {
-        shopList.add(station);
-      }
-      totalService = salonShops.length;
-      return salonShops;
-    } catch (error) {
-      print("Error fetching salonShops: $error");
-      return [];
-    }
-  }
-*/
   Future<List<ShopModel>> fetchAllSalonShops(
       double? userLatitude, double? userLongitude) async {
     try {
@@ -176,27 +154,61 @@ class SalonServiceHelper {
     }
   }
 
-/*
-  static bool isShopNearby(
-      ShopModel shop, double? userLatitude, double? userLongitude) {
-    final Geodesy geodesy = Geodesy();
+  Future<List<HomeShopModel>> fetchFilteredSalonShops({
+    String? query,
+    String? category,
+    String? location,
+    String? service,
+    double? userLatitude,
+    double? userLongitude,
+  }) async {
+    try {
+      Query<Map<String, dynamic>> firestoreQuery = _db.collection("salonshops");
 
-    LatLng userLatLng = LatLng(userLatitude!, userLongitude!);
-    LatLng stationLatLng =
-        LatLng(shop.cordinates[0] as double, shop.cordinates[1] as double);
+      // Apply Firestore filters
+      if (category != null && category.isNotEmpty) {
+        firestoreQuery = firestoreQuery.where("category", isEqualTo: category);
+      }
 
-    num distanceNum =
-        geodesy.distanceBetweenTwoGeoPoints(userLatLng, stationLatLng);
+      if (location != null && location.isNotEmpty) {
+        firestoreQuery = firestoreQuery.where("location", isEqualTo: location);
+      }
 
-    // Convert distance from meters to kilometers
-    double distanceInKm = (distanceNum as double) / 1000.0;
-    shop.distanceToUser = distanceInKm;
+      // 🔑 If "services" is a list field → use arrayContains
+      if (service != null && service.isNotEmpty) {
+        firestoreQuery =
+            firestoreQuery.where("services", arrayContains: service);
+      }
 
-    const double maxDistance = 6.0; //6 Maximum distance in kilometers
+      final snapshot = await firestoreQuery.get();
+      List<HomeShopModel> shops =
+          snapshot.docs.map((doc) => HomeShopModel.fromSnapshot(doc)).toList();
 
-    print('Distance $distanceInKm km');
+      // Text search (shopName)
+      if (query != null && query.isNotEmpty) {
+        shops = shops
+            .where((shop) =>
+                shop.shopName!.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
 
-    return distanceInKm <= maxDistance;
+      // Nearby filter
+      if (userLatitude != null && userLongitude != null) {
+        shops = shops
+            .where((shop) => isShopNearby(
+                  ShopModel.fromSnapshot(
+                      snapshot.docs.firstWhere((d) => d.id == shop.shopId)),
+                  userLatitude,
+                  userLongitude,
+                ))
+            .toList();
+      }
+
+      print("Fetched ${shops.length} shops with filters applied");
+      return shops;
+    } catch (e) {
+      print("Error in fetchFilteredSalonShops: $e");
+      return [];
+    }
   }
-*/
 }

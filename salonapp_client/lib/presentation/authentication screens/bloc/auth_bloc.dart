@@ -211,7 +211,7 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
       emit(AuthLoadingState());
 
       await _auth.signOut();
-      // await GoogleSignIn().signOut();
+      // //await GoogleSignIn().signOut();
 
       emit(AuthLogoutSuccesState(message: 'User Logged out Succesfuly!!'));
       final SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -21,9 +21,8 @@ class _AccountPageState extends State<AccountPage> {
   UserModel? user;
   @override
   void initState() {
-    final authBloc = context.read<AuthBloc>();
-    authBloc.add(CurrentUserEvent(user?.fullname ?? ''));
     super.initState();
+    context.read<AuthBloc>().add(CurrentUserEvent());
   }
 
   @override
@@ -32,6 +31,10 @@ class _AccountPageState extends State<AccountPage> {
       listener: (BuildContext context, state) {
         if (state is AuthLogoutSuccesState) {
           Navigator.pushReplacementNamed(context, '/welcome');
+        }
+        if (state is CurrentUserState) {
+          user = state.user;
+          debugPrint("User loaded: ${user!.fullname}");
         }
       },
       builder: (BuildContext context, AuthState state) {
@@ -54,14 +57,7 @@ class _AccountPageState extends State<AccountPage> {
             );
           });
         }
-        if (state is CurrentUserState) {
-          if (state.user != null) {
-            user = state.user;
-            debugPrint("User loaded: ${user!.fullname}");
-          } else {
-            debugPrint("Received CurrentUserState but userData is null");
-          }
-        }
+
         return Scaffold(
           backgroundColor: whiteColor,
           body: SingleChildScrollView(

@@ -5,13 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/presentation/checkout%20page/components/cedi_sign_component.dart';
-import 'package:salonapp_client/presentation/shops/bloc/shops_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../helpers/colors/color_constants.dart';
 import '../../../helpers/colors/widgets/custom_button.dart';
 import '../../../helpers/colors/widgets/minimal_heading.dart';
 import '../../checkout page/components/Transaction/other/show_up_animation.dart';
 import '../../checkout page/pages/checkout_new.dart';
+import '../bloc/single shop bloc/single_shop_bloc.dart';
 import '../repository/data rmodel/service_model.dart';
 
 import '../repository/external launcher/external_launcher.dart';
@@ -91,12 +91,12 @@ class _DetailsPageState extends State<MainShopinfoPage> {
   @override
   void initState() {
     super.initState();
-    context.read<ShopsBloc>().add(ViewSingleShopEvent(widget.id));
+    context.read<SingleShopBloc>().add(ViewSingleShopEvent(widget.id));
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ShopsBloc, ShopsState>(
+    return BlocConsumer<SingleShopBloc, SingleShopsState>(
       listener: (context, state) {
         if (state is ShopsLoadingState) {
           CircularProgressIndicator();

@@ -26,7 +26,6 @@ class HomeShopsBloc extends Bloc<HomeShopsEvent, HomeShopsState> {
   HomeShopsBloc(this.authBloc) : super(HomeShopInitial()) {
     on<ViewHomeShopsEvent>(fetchShops);
     on<SearchShopEvent>(onSearchShops);
-    on<ViewSingleShopEvent>(fetchSingleShop);
   }
 
   void onSearchShops(SearchShopEvent event, Emitter<HomeShopsState> emit) {
@@ -100,35 +99,5 @@ class HomeShopsBloc extends Bloc<HomeShopsEvent, HomeShopsState> {
       debugPrint('Error:${error.toString()}');
     }
     return serviceman2;
-  }
-
-  Future<HomeShopModel?> fetchSingleShop(
-      ViewSingleShopEvent event, Emitter<HomeShopsState> emit) async {
-    try {
-      String? userId = event.id;
-      //  if (userId != null) {
-      emit(ShopsLoadingState());
-      singleServiceMan = await salonHelper.fetchSingleHomeSalonshops(userId);
-
-      if (singleServiceMan != null) {
-        singleService = singleServiceMan;
-        emit(SingleShopsFetchedState(shop: singleService));
-        debugPrint("Single Shop: $singleService");
-        total = serviceNum;
-      } else {
-        emit(ShopsFetchFailureState(errorMessage: "Shop not found"));
-        debugPrint("Single Shop not found");
-      }
-      //}
-      print(total);
-    } on FirebaseAuthException catch (error) {
-      emit(ShopsFetchFailureState(errorMessage: error.toString()));
-      debugPrint(error.toString());
-    } catch (error) {
-      emit(ShopsFetchFailureState(errorMessage: error.toString()));
-      debugPrint('Error:${error.toString()}');
-    }
-
-    return singleService;
   }
 }

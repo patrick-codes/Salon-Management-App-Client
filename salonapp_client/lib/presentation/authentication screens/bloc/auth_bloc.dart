@@ -157,25 +157,6 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
     }
   }
 
-  // Future<void> currentUser(
-  //     CurrentUserEvent event, Emitter<AuthState> emit) async {
-  //   try {
-  //     UserModel? userData;
-  //     emit(UserLoadingState());
-  //     debugPrint("Loading current user..");
-  //     if (event.userId.isNotEmpty) {
-  //       userData = await UserHelper.getCurrentUser(event.userId);
-  //       emit(CurrentUserState(userData));
-  //       debugPrint("Current user:$userData");
-  //     } else {
-  //       emit(UserLoadingFailState("Current user fetch fail.."));
-  //     }
-  //   } catch (e) {
-  //     emit(UserLoadingFailState(e.toString()));
-  //     debugPrint(e.toString());
-  //   }
-  // }
-
   Future<void> currentUser(
     CurrentUserEvent event,
     Emitter<AuthState> emit,
@@ -183,7 +164,8 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
     emit(UserLoadingState());
 
     try {
-      final user = await UserModel.getCurrentUser();
+      final user =
+          await UserModel.getCurrentUser(); // uses FirebaseAuth internally
 
       if (user.id!.isNotEmpty) {
         emit(CurrentUserState(user));

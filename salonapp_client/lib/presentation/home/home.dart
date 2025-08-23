@@ -50,12 +50,12 @@ class _MyHomePageState extends State<MyHomePage>
     if (state == AppLifecycleState.resumed &&
         context.read<LocationBloc>().wentToSettings) {
       context.read<LocationBloc>().wentToSettings = false;
-      final userBloc =
-          context.read<AuthBloc>().add(CurrentUserEvent(user!.id ?? ''));
+      final userBloc = context.read<AuthBloc>().add(CurrentUserEvent());
       // debugPrint(userBloc);
       Future.delayed(Duration(seconds: 2), () {
         context.read<LocationBloc>().add(LoadLocationEvent());
       });
+      context.read<ShopsBloc>().add(ViewShopsEvent());
     }
   }
 
@@ -118,25 +118,11 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    // return BlocConsumer<ShopsBloc, ShopsState>(
-    //   listener: (context, state) {
-    //     if (state is ShopsLoadingState) {
-    //       CircularProgressIndicator();
-    //     }
-    //     if (state is ShopInitial) {
-    //       context.read<ShopsBloc>().add(ViewShopsEvent());
-    //     }
-    //   },
-    //   builder: (BuildContext context, state) {
-    //     if (state is ShopsFetchFailureState) {
-    //       Center(child: Text(state.errorMessage));
-    //     } else if (state is ShopsFetchedState) {
-    //       shops = state.shop;
-    //       isLoaded = true;
-    //       debugPrint("Shops Fetched:${state.shop!.length}");
-    //     }
     return BlocConsumer<LocationBloc, LocationState>(
       listenWhen: (previous, current) => current is LocationFetchedState,
+      buildWhen: (previous, current) {
+        return current is ShopsFetchedState;
+      },
       listener: (context, state) {
         if (state is LocationFetchedState) {
           BlocProvider.of<ShopsBloc>(context).add(ViewShopsEvent());

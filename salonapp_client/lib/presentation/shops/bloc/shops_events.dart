@@ -57,12 +57,6 @@ class DeleteShopEvent extends ShopsEvent {
 
 class ViewShopsEvent extends ShopsEvent {}
 
-class ViewSingleShopEvent extends ShopsEvent {
-  final String? id;
-
-  ViewSingleShopEvent(this.id);
-}
-
 class SearchShopEvent extends ShopsEvent {
   final String query;
 

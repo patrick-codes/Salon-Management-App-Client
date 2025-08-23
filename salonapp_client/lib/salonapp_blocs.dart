@@ -6,6 +6,7 @@ import 'package:salonapp_client/salonapp.dart';
 import 'presentation/authentication screens/bloc/auth_bloc.dart';
 import 'presentation/shops/bloc/home shop bloc/h_shops_bloc.dart';
 import 'presentation/shops/bloc/shops_bloc.dart';
+import 'presentation/shops/bloc/single shop bloc/single_shop_bloc.dart';
 
 class SalonAppBlocs extends StatelessWidget {
   const SalonAppBlocs({super.key});
@@ -20,11 +21,7 @@ class SalonAppBlocs extends StatelessWidget {
         BlocProvider(
           create: (context) => LocationBloc()..add(LoadLocationEvent()),
         ),
-        // BlocProvider(
-        //   create: (context) =>
-        //       ShopsBloc(context.read<LocationBloc>())..add(ViewShopsEvent()),
-        // ),
-
+        BlocProvider(create: (context) => SingleShopBloc()),
         BlocProvider(
           create: (context) => AppointmentBloc()..add(ViewAppointmentEvent()),
         ),

@@ -10,6 +10,7 @@ import 'package:salonapp_client/presentation/filter%20screen/pages/filter_screen
 import 'package:salonapp_client/presentation/shops/repository/data%20rmodel/h_shop_service_model.dart';
 import '../../../../helpers/colors/color_constants.dart';
 import '../../../checkout page/components/Transaction/other/show_up_animation.dart';
+import '../../../checkout page/components/cedi_sign_component.dart';
 import '../../../location/bloc/location_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -757,18 +758,60 @@ class _ShopsPageState extends State<ShopsPage>
                                   ),
                         ),
                         const SizedBox(height: 3),
-                        Text(
-                          services != null && services!.isNotEmpty
-                              ? services!
-                                  .map((s) => "${s.name} - \$${s.price}")
-                                  .join(", ")
-                              : "No services available",
-                          overflow: TextOverflow.visible,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                    color: Colors.black45,
-                                    fontSize: 13,
-                                  ),
+                        Wrap(
+                          spacing: 8, // space between services
+                          runSpacing: 4, // if it wraps to next line
+                          children: services != null && services!.isNotEmpty
+                              ? services!.map((s) {
+                                  return Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        '${s.name} - ',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(
+                                              color: Colors.black45,
+                                              fontSize: 13,
+                                            ),
+                                      ),
+                                      CediSign(size: 13, color: Colors.black45),
+                                      Text(
+                                        "${s.price}",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(
+                                              color: Colors.black45,
+                                              fontSize: 13,
+                                            ),
+                                      ),
+                                      Text(
+                                        ", ",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(
+                                              color: Colors.black45,
+                                              fontSize: 13,
+                                            ),
+                                      ),
+                                    ],
+                                  );
+                                }).toList()
+                              : [
+                                  Text(
+                                    "No services available",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          color: Colors.black45,
+                                          fontSize: 13,
+                                        ),
+                                  )
+                                ],
                         ),
                         SizedBox(height: 15),
                         Row(
@@ -850,6 +893,30 @@ class _ShopsPageState extends State<ShopsPage>
           ),
         ],
       ),
+    );
+  }
+
+  Widget Newtext(String name, String price) {
+    return Row(
+      children: [
+        CediSign(size: 13, color: Colors.black45),
+        Text(
+          '$name - ',
+          overflow: TextOverflow.visible,
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: Colors.black45,
+                fontSize: 13,
+              ),
+        ),
+        Text(
+          price,
+          overflow: TextOverflow.visible,
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: Colors.black45,
+                fontSize: 13,
+              ),
+        ),
+      ],
     );
   }
 }

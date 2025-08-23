@@ -43,12 +43,6 @@ class DeleteShopEvent extends HomeShopsEvent {
 
 class ViewHomeShopsEvent extends HomeShopsEvent {}
 
-class ViewSingleShopEvent extends HomeShopsEvent {
-  final String? id;
-
-  ViewSingleShopEvent(this.id);
-}
-
 class SearchShopEvent extends HomeShopsEvent {
   final String query;
   final String? service;

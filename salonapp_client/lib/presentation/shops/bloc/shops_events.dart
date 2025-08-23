@@ -13,13 +13,17 @@ class CreateShopEvent extends ShopsEvent {
   final String location;
   final String phone;
   final String whatsapp;
-  final String services;
-  final String profileImg;
+  final List<Service>? services;
+  String? profileImg; // will be filled after upload
   final String dateJoined;
-  final List<String> workImgs = [];
-  late double distanceToUser;
-  late List<double?> cordinates;
-  late bool isOpen;
+  List<String> workImgs = []; // will be filled after upload
+  double distanceToUser = 0.0;
+  List<double?> cordinates = []; // will be filled in Bloc
+  bool isOpen;
+
+  // NEW: raw files (optional)
+  final File? profileImgFile;
+  final List<File>? workImgFiles;
 
   CreateShopEvent({
     this.shopId,
@@ -35,8 +39,14 @@ class CreateShopEvent extends ShopsEvent {
     required this.profileImg,
     required this.dateJoined,
     required this.isOpen,
+    this.profileImgFile,
+    this.workImgFiles,
   });
 }
+
+class PickProfileImageEvent extends ShopsEvent {}
+
+class PickShopImageEvent extends ShopsEvent {}
 
 class DeleteShopEvent extends ShopsEvent {
   final String message;

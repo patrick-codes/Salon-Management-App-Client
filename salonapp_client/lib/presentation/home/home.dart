@@ -329,27 +329,13 @@ class _MyHomePageState extends State<MyHomePage>
                             return null;
                           },
                           decoration: InputDecoration(
-                            hintText: "Search",
+                            hintText: "Search nearby shops....",
                             hintStyle:
-                                const TextStyle(color: iconGrey, fontSize: 15),
+                                const TextStyle(color: iconGrey, fontSize: 14),
                             prefixIcon: const Icon(
                               MingCute.search_2_line,
                               color: iconGrey,
                               size: 23,
-                            ),
-                            suffixIcon: GestureDetector(
-                              onTap: () async {},
-                              child: const SizedBox(
-                                width: 60,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    SizedBox(width: 20),
-                                    Icon(MingCute.list_search_line,
-                                        color: iconGrey),
-                                  ],
-                                ),
-                              ),
                             ),
                             filled: true,
                             isDense: true,

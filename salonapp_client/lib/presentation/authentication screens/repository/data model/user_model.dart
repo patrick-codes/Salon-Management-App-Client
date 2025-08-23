@@ -67,4 +67,54 @@ class UserModel {
       return UserModel.defaultModel();
     }
   }
+
+  factory UserModel.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
+    final data = snapshot.data();
+    if (data == null) throw Exception('User data is null');
+
+    return UserModel(
+      id: data['id'] ?? snapshot.id,
+      fullname: data['username'] ?? 'Unknown',
+      email: data['email'] ?? '',
+      phone: data['phone'],
+      password: data['password'],
+      profilePhoto: data['profilePhoto'],
+    );
+  }
+
+  factory UserModel.empty() {
+    return UserModel(
+      id: '',
+      email: '',
+      phone: null,
+      fullname: 'Guest',
+      password: '',
+      profilePhoto: '',
+    );
+  }
+
+  static Future<UserModel> getCurrentUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return UserModel.empty();
+    }
+
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      if (doc.exists) {
+        return UserModel.fromFirestore(doc, null);
+      }
+      return UserModel.empty();
+    } catch (e) {
+      print('Error fetching user: $e');
+      return UserModel.empty();
+    }
+  }
 }

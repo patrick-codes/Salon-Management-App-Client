@@ -1,6 +1,10 @@
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../../data repository/image uploader/cloudinary_uploader.dart';
 import '../../location/bloc/location_bloc.dart';
 import '../repository/data rmodel/service_model.dart';
 import '../repository/salonservices helper/fetch_services_helper.dart';
@@ -13,6 +17,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
   ShopModel? singleServiceMan;
   ShopModel? singleService;
   final LocationBloc locationBloc;
+  final firebaseUser = FirebaseAuth.instance.currentUser!.uid;
 
   List<ShopModel>? serviceman2 = [];
   List<ShopModel>? serviceman3 = [];
@@ -24,6 +29,8 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
   ShopsBloc(this.locationBloc) : super(ShopInitial()) {
     on<ViewShopsEvent>(fetchShops);
     on<SearchShopEvent>(searchShops);
+    on<PickProfileImageEvent>(onPickImage);
+    on<PickShopImageEvent>(onPickWorkImage);
     on<CreateShopEvent>(createShop);
     on<ViewSingleShopEvent>(fetchSingleShop);
   }
@@ -49,35 +56,91 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
     }
   }
 
+  Future<void> onPickImage(
+      PickProfileImageEvent event, Emitter<ShopsState> emit) async {
+    try {
+      final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (picked != null) {
+        final file = File(picked.path);
+        final url = await CloudinaryHelper2.uploadImage(File(picked.path));
+        if (url != null) {
+          emit(ImagePickedState(pickedFile: file, imageUrl: url));
+        }
+      }
+    } catch (e) {
+      debugPrint('${e.toString()}');
+      emit(ShopCreateFailureState(error: e.toString()));
+    }
+  }
+
+  Future<void> onPickWorkImage(
+      PickShopImageEvent event, Emitter<ShopsState> emit) async {
+    try {
+      final pickedFiles = await ImagePicker().pickMultiImage();
+      if (pickedFiles != null && pickedFiles.isNotEmpty) {
+        final files = pickedFiles.map((e) => File(e.path)).toList();
+        emit(LocalImagesPickedState(files)); // just send picked files
+      }
+    } catch (e) {
+      debugPrint('Error picking images: $e');
+      emit(ShopCreateFailureState(error: e.toString()));
+    }
+  }
+
   Future<void> createShop(
-      CreateShopEvent event, Emitter<ShopsState> emit) async {
+    CreateShopEvent event,
+    Emitter<ShopsState> emit,
+  ) async {
     try {
       emit(ShopsLoadingState());
-      debugPrint("Creating shop service......");
-      final shop = ShopModel(
-        shopOwnerId: event.shopOwnerId,
+
+      String? profileImgUrl;
+      List<String> workImgUrls = [];
+
+      //  Upload profile image if picked
+      if (event.profileImgFile != null) {
+        profileImgUrl =
+            await CloudinaryHelper2.uploadImage(event.profileImgFile!);
+      }
+
+      if (event.workImgFiles != null && event.workImgFiles!.isNotEmpty) {
+        for (var file in event.workImgFiles!) {
+          final url = await CloudinaryHelper.uploadImage(file);
+          if (url != null) workImgUrls.add(url);
+        }
+      }
+
+      //  Get coordinates
+      final position = await Geolocator.getCurrentPosition();
+      event.cordinates = [position.latitude, position.longitude];
+
+      //  Save shop to Firestore with uploaded URLs
+      final shopData = ShopModel(
+        shopOwnerId: firebaseUser,
         shopName: event.shopName,
         category: event.category,
+        cordinates: event.cordinates,
         openingDays: event.openingDays,
         operningTimes: event.operningTimes,
         location: event.location,
         phone: event.phone,
         whatsapp: event.whatsapp,
         services: event.services,
-        profileImg: event.profileImg,
+        profileImg: profileImgUrl ?? "", //  uploaded profile image URL
         dateJoined: event.dateJoined,
-        workImgs: event.workImgs,
-        cordinates: event.cordinates,
+        workImgs: workImgUrls, //  use uploaded work image URLs
         distanceToUser: event.distanceToUser,
         isOpen: event.isOpen,
       );
-      salonHelper.createService(shop);
-      emit(
-          ShopCreatedSuccesState(message: 'Shop service created succesfuly!!'));
-      debugPrint("Shop service created succesfuly!!");
-    } catch (e) {
-      emit(ShopCreateFailureState(error: e.toString()));
-      debugPrint(e.toString());
+
+      await salonHelper.createService(shopData);
+
+      debugPrint('✅ Shop Created Successfully');
+      emit(ShopCreatedSuccesState(message: 'Shop Created Successfully'));
+    } catch (e, st) {
+      debugPrint('❌ Failed to create shop: $e');
+      debugPrintStack(stackTrace: st);
+      emit(ShopCreateFailureState(error: "Failed to create shop: $e"));
     }
   }
 

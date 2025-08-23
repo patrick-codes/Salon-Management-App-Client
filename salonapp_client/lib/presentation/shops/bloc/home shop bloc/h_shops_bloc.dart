@@ -67,7 +67,7 @@ class HomeShopsBloc extends Bloc<HomeShopsEvent, HomeShopsState> {
 
       final matchesService = service == null ||
           service.isEmpty ||
-          shop.services!.toLowerCase().contains(service.toLowerCase());
+          shop.services!.contains(service.toLowerCase());
 
       return matchesQuery && matchesService;
     }).toList();

@@ -1,209 +1,317 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:salonapp_client/helpers/colors/widgets/style.dart';
-import 'package:salonapp_client/presentation/authentication%20screens/bloc/auth_bloc.dart';
+
 import '../../../helpers/colors/color_constants.dart';
+import '../../../helpers/widgets/text_widgets.dart';
+import '../../authentication screens/bloc/auth_bloc.dart';
+import '../../authentication screens/repository/data model/user_model.dart';
 import '../../checkout page/components/Transaction/other/show_up_animation.dart';
 
-class ProfilePage extends StatelessWidget {
-  ProfilePage({super.key});
+class AccountPage extends StatefulWidget {
+  const AccountPage({super.key});
+
+  @override
+  State<AccountPage> createState() => _AccountPageState();
+}
+
+class _AccountPageState extends State<AccountPage> {
   File? image;
-  List<Icon> icons = <Icon>[
-    const Icon(
-      MingCute.user_4_line,
-      color: blackColor,
-    ),
-    const Icon(
-      MingCute.package_line,
-      color: blackColor,
-    ),
-    const Icon(
-      MingCute.card_pay_line,
-      color: blackColor,
-    ),
-    const Icon(
-      MingCute.bookmark_line,
-      color: blackColor,
-    ),
-    const Icon(
-      MingCute.notification_line,
-      color: blackColor,
-    ),
-    const Icon(
-      MingCute.exit_line,
-      color: blackColor,
-    ),
-  ];
-  List<String> title = <String>[
-    "Profile",
-    "Our Packages",
-    "Payment Method",
-    "My Bookmarks",
-    "Notifications",
-    "Log out",
-  ];
+  UserModel? user;
+  @override
+  void initState() {
+    final authBloc = context.read<AuthBloc>();
+    authBloc.add(CurrentUserEvent(user?.fullname ?? ''));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: whiteColor,
-      body: Column(
-        children: [
-          const SizedBox(height: 60),
-          ShowUpAnimation(
-            delay: 300,
-            child: Center(
-              child: GestureDetector(
-                onTap: () {},
-                //  context.read<AuthBloc>().add(PickImageEvent()),
-                child: Stack(
-                  children: [
-                    Container(
-                      height: 120,
-                      width: 120,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: image != null
-                              ? Image.file(image!).image
-                              : Image.asset(
-                                      fit: BoxFit.fitHeight,
-                                      height: 120,
-                                      width: 120,
-                                      "assets/images/userImage.png")
-                                  .image,
-                        ),
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(200),
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (BuildContext context, state) {
+        if (state is AuthLogoutSuccesState) {
+          Navigator.pushReplacementNamed(context, '/welcome');
+        }
+      },
+      builder: (BuildContext context, AuthState state) {
+        if (state is AuthLoadingState) {
+          debugPrint('Logging out....!!');
+        }
+        if (state is AuthLogoutFailureState) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                elevation: 0.5,
+                behavior: SnackBarBehavior.floating,
+                margin: const EdgeInsets.all(8),
+                content: Text(
+                  state.error,
+                  style: const TextStyle(),
+                ),
+                backgroundColor: blackColor,
+              ),
+            );
+          });
+        }
+        if (state is CurrentUserState) {
+          if (state.user != null) {
+            user = state.user;
+            debugPrint("User loaded: ${user!.fullname}");
+          } else {
+            debugPrint("Received CurrentUserState but userData is null");
+          }
+        }
+        return Scaffold(
+          backgroundColor: whiteColor,
+          body: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 295,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.center,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.grey.withOpacity(0.95),
+                        whiteColor,
+                      ],
+                    ),
+                  ),
+                  child: Stack(children: [
+                    Positioned(
+                      bottom: 5,
+                      top: -180,
+                      right: -50,
+                      child: Icon(
+                        Icons.circle_outlined,
+                        size: 200,
+                        color: whiteColor.withOpacity(0.05),
                       ),
                     ),
                     Positioned(
-                      bottom: 2,
-                      left: 80,
-                      child: Container(
-                        height: 30,
-                        width: 30,
-                        decoration: BoxDecoration(
-                          color: primaryColor2,
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            MingCute.edit_4_line,
-                            color: whiteColor,
-                            size: 16,
-                          ),
+                      bottom: -190,
+                      top: 5,
+                      left: -50,
+                      child: Icon(
+                        Icons.circle_outlined,
+                        size: 280,
+                        color: whiteColor.withOpacity(0.05),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 20,
+                      top: 20,
+                      right: 20,
+                      left: 20,
+                      child: ShowUpAnimation(
+                        delay: 200,
+                        child: Column(
+                          children: [
+                            SizedBox(height: 20),
+                            Center(
+                              child: GestureDetector(
+                                onTap: () {},
+                                child: Container(
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        height: 120,
+                                        width: 120,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: image != null
+                                                ? Image.file(image!).image
+                                                : Image.asset(
+                                                        fit: BoxFit.fitHeight,
+                                                        height: 120,
+                                                        width: 120,
+                                                        "assets/images/logo.jpg")
+                                                    .image,
+                                          ),
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(200),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        bottom: 2,
+                                        left: 80,
+                                        child: Container(
+                                          height: 30,
+                                          width: 30,
+                                          decoration: BoxDecoration(
+                                            color: secondaryColor4,
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                          ),
+                                          child: const Center(
+                                            child: Icon(
+                                              MingCute.camera_line,
+                                              color: primaryColor,
+                                              size: 16,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 18),
+                            headingTextMedium(
+                              context,
+                              user?.fullname ?? 'username',
+                              FontWeight.w600,
+                              23,
+                              blackColor,
+                            ),
+                            subheadingText(
+                              context,
+                              'Member since 2025',
+                              size: 12,
+                              color: Colors.black45,
+                            ),
+                            SizedBox(height: 15),
+                            GestureDetector(
+                              onTap: () {},
+                              child: Container(
+                                height: 30,
+                                width: 120,
+                                decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: Center(
+                                  child: subheadingText(
+                                    context,
+                                    'Profile',
+                                    size: 12.5,
+                                    color: whiteColor,
+                                    weight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                          ],
                         ),
                       ),
                     ),
-                  ],
+                  ]),
                 ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 15),
-          ShowUpAnimation(
-            delay: 300,
-            child: PrimaryText(
-              text: "Flint Banaman",
-              fontWeight: FontWeight.bold,
-              color: blackColor,
-            ),
-          ),
-          ShowUpAnimation(
-            delay: 300,
-            child: PrimaryText(
-              text: "(+233) 2455 13607",
-              color: iconGrey,
-              size: 15,
-            ),
-          ),
-          BlocBuilder<AuthBloc, AuthState>(
-            builder: (BuildContext context, state) {
-              if (state is AuthLogoutSuccesState) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  Navigator.pushNamed(context, '/welcome');
-                });
-              }
-
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  height: 400,
-                  width: MediaQuery.of(context).size.width,
-                  child: ListView.builder(
-                    itemCount: icons.length,
-                    scrollDirection: Axis.vertical,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ShowUpAnimation(
-                        delay: 300,
-                        child: shopContainer(
-                            context, title[index], icons[index], index),
-                      );
-                    },
+                Divider(color: primaryContainerShade),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                backgroundColor: Colors.white,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(8.0),
+                                    bottom: Radius.circular(8),
+                                  ),
+                                ),
+                                title: Center(
+                                  child: headingTextMedium(
+                                    context,
+                                    'Confirm Action',
+                                    FontWeight.bold,
+                                    16,
+                                  ),
+                                ),
+                                content: headingTextMedium(
+                                  context,
+                                  'Are you sure you want to log out?',
+                                  FontWeight.w500,
+                                  12,
+                                ),
+                                actions: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      context
+                                          .read<AuthBloc>()
+                                          .add(LogoutEvent());
+                                    },
+                                    child: headingTextMedium(
+                                      context,
+                                      'Confirm',
+                                      FontWeight.w600,
+                                      12,
+                                      iconGrey,
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: headingTextMedium(
+                                      context,
+                                      'Cancel',
+                                      FontWeight.w600,
+                                      12,
+                                      Colors.red,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        dense: true,
+                        horizontalTitleGap: 12,
+                        minVerticalPadding: 2,
+                        minTileHeight: 5,
+                        contentPadding: EdgeInsets.symmetric(),
+                        leading: Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Center(
+                            child: Icon(
+                              MingCute.exit_line,
+                              color: Colors.red,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                        title: headingTextMedium(
+                          context,
+                          "Logout",
+                          FontWeight.w500,
+                          13,
+                          blackColor,
+                        ),
+                        subtitle: subheadingTextMedium(
+                          context,
+                          'Logout your account',
+                          11.5,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget shopContainer(
-    BuildContext context,
-    String text,
-    Icon icon,
-    int index,
-  ) {
-    return GestureDetector(
-      onTap: () {
-        context.read<AuthBloc>().add(LogoutEvent());
-      },
-      child: Container(
-        height: 45,
-        margin: const EdgeInsets.symmetric(vertical: 6),
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: secondaryColor2,
-          border: Border.all(
-            width: 0.6,
-            color: secondaryColor,
-          ),
-        ),
-        child: SizedBox(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    icon,
-                    SizedBox(width: 5),
-                    PrimaryText(
-                      size: 12,
-                      text: text,
-                      color: blackColor,
-                    ),
-                  ],
-                ),
-                Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  color: blackColor,
-                  size: 18,
-                )
               ],
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

@@ -17,13 +17,21 @@ class GridViewComponent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Nearby Shops',
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
+          shops!.length == 0
+              ? Text(
+                  'Nearby Shops',
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                )
+              : Text(
+                  'Nearby Shops (${shops!.length})',
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
                 ),
-          ),
           GridView.builder(
             shrinkWrap: true,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -67,7 +75,10 @@ class GridViewComponent extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CachedNetworkImage(
-                            imageUrl: shops![index].profileImg ?? '',
+                            imageUrl: shops![index].profileImg != null &&
+                                    shops![index].profileImg!.isNotEmpty
+                                ? shops![index].profileImg!
+                                : 'https://via.placeholder.com/150',
                             imageBuilder: (context, imageProvider) => Container(
                               height: 90,
                               width: MediaQuery.of(context).size.width,

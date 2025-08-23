@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:googleapis/mybusinesslodging/v1.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/helpers/colors/widgets/minimal_heading.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
@@ -52,46 +53,46 @@ class _ShopsPageState extends State<ShopsPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final locationState = context.watch<LocationBloc>().state;
+    // final locationState = context.watch<LocationBloc>().state;
     return BlocConsumer<HomeShopsBloc, HomeShopsState>(
         listener: (context, state) {
       if (state is ShopsFetchFailureState) {
         debugPrint("Shops Fetch Error: ${state.errorMessage}");
       }
     }, builder: (context, state) {
-      if (locationState is LocationFailure) {
-        return Container(
-          color: secondaryBg,
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.location_off_rounded,
-                  color: Colors.black26,
-                  size: 80,
-                ),
-                SizedBox(height: 18),
-                PrimaryText(
-                  fontWeight: FontWeight.w200,
-                  size: 15,
-                  color: iconGrey,
-                  text:
-                      "Turn on your device's location service or wait for app to fetch device location to access nearby shops.",
-                ),
-              ],
-            ),
-          ),
-        );
-      }
+      // if (locationState is LocationFailure) {
+      //   return Container(
+      //     color: secondaryBg,
+      //     child: Padding(
+      //       padding: const EdgeInsets.all(15.0),
+      //       child: Column(
+      //         mainAxisAlignment: MainAxisAlignment.center,
+      //         children: [
+      //           Icon(
+      //             Icons.location_off_rounded,
+      //             color: Colors.black26,
+      //             size: 80,
+      //           ),
+      //           SizedBox(height: 18),
+      //           PrimaryText(
+      //             fontWeight: FontWeight.w200,
+      //             size: 15,
+      //             color: iconGrey,
+      //             text:
+      //                 "Turn on your device's location service or wait for app to fetch device location to access nearby shops.",
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //   );
+      // }
 
-      if (locationState is LocationFetchedState) {
-        address = locationState.address2;
-        if (state is! ShopsFetchedState && state is! ShopsLoadingState) {
-          context.read<HomeShopsBloc>().add(ViewHomeShopsEvent());
-        }
-      }
+      // if (locationState is LocationFetchedState) {
+      //   address = locationState.address2;
+      //   if (state is! ShopsFetchedState && state is! ShopsLoadingState) {
+      //     context.read<HomeShopsBloc>().add(ViewHomeShopsEvent());
+      //   }
+      // }
 
       if (state is ShopsFetchFailureState) {
         return Scaffold(
@@ -218,7 +219,6 @@ class _ShopsPageState extends State<ShopsPage>
                       ),
                     ), // Inside AppBar column (under the TextFormField)
                     const SizedBox(height: 10),
-
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
@@ -386,7 +386,7 @@ class _ShopsPageState extends State<ShopsPage>
                                           shopInfo.services,
                                           isLoaded,
                                           shopInfo.distanceToUser,
-                                          shopInfo.isOpened,
+                                          shopInfo.isOpen,
                                           shopInfo.category,
                                         ),
                                       );
@@ -506,7 +506,7 @@ class _ShopsPageState extends State<ShopsPage>
     String? location,
     String? openingDays,
     String? openingTime,
-    String? services,
+    List<HomeService>? services,
     bool? isLoaded,
     double? distance,
     bool? isOpen,
@@ -758,8 +758,12 @@ class _ShopsPageState extends State<ShopsPage>
                         ),
                         const SizedBox(height: 3),
                         Text(
+                          services != null && services!.isNotEmpty
+                              ? services!
+                                  .map((s) => "${s.name} - \$${s.price}")
+                                  .join(", ")
+                              : "No services available",
                           overflow: TextOverflow.visible,
-                          services!,
                           style:
                               Theme.of(context).textTheme.bodyMedium!.copyWith(
                                     color: Colors.black45,

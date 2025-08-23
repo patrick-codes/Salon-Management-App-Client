@@ -7,13 +7,12 @@ class ShopModel {
   late String? shopName;
   late String? category;
   late List<double?> cordinates;
-  //late int? ratings;
   late String? openingDays;
   late String? operningTimes;
   late String? location;
   late String? phone;
   late String? whatsapp;
-  late String? services;
+  late List<Service>? services; // <-- FIXED
   late String? profileImg;
   late String? dateJoined;
   late List<String>? workImgs;
@@ -45,37 +44,19 @@ class ShopModel {
       "ownerID": shopOwnerId,
       "shopName": shopName,
       "category": category,
-      "cordinates": List<dynamic>.from(cordinates.map((x) => x)),
+      "cordinates": cordinates,
       "openingDays": openingDays,
       "operningTimes": operningTimes,
       "location": location,
       "phone": phone,
       "whatsapp": whatsapp,
-      "services": services,
+      "services": services?.map((s) => s.toJson()).toList(),
       "profileImg": profileImg,
       "dateJoined": dateJoined,
       "workImgs": workImgs,
       "distanceToUser": distanceToUser,
       "isOpened": isOpen,
     };
-  }
-
-  ShopModel.defaultModel() {
-    shopId = null;
-    shopOwnerId = "ownerID";
-    shopName = "shopName";
-    category = "category";
-    cordinates = [];
-    openingDays = "openingDays";
-    operningTimes = "operningTimes";
-    location = "location";
-    phone = "phone";
-    whatsapp = "whatsapp";
-    services = "services";
-    profileImg = "profileImg";
-    dateJoined = "dateJoined";
-    workImgs = [];
-    // distanceToUser = 0.0;
   }
 
   factory ShopModel.fromSnapshot(
@@ -88,24 +69,73 @@ class ShopModel {
         shopName: data["shopName"] ?? '',
         category: data["category"] ?? '',
         cordinates: data["cordinates"] != null
-            ? List<double>.from(data["cordinates"].map((x) => x.toDouble()))
-            : [],
+            ? List<double>.from(
+                data["cordinates"].map((e) => (e as num).toDouble()))
+            : [0.0, 0.0],
         openingDays: data["openingDays"] ?? '',
         operningTimes: data["operningTimes"] ?? '',
         location: data["location"] ?? '',
         phone: data["phone"] ?? '',
         whatsapp: data["whatsapp"] ?? '',
-        services: data["services"] ?? '',
+        services: data["services"] != null
+            ? (data["services"] as List)
+                .map((s) => Service.fromJson(Map<String, dynamic>.from(s)))
+                .toList()
+            : [],
         profileImg: data["profileImg"] ?? '',
         dateJoined: data["dateJoined"] ?? '',
         workImgs:
             data["workImgs"] != null ? List<String>.from(data["workImgs"]) : [],
-        distanceToUser: data["distanceToUser"] ?? 0,
+        distanceToUser:
+            (data["distanceToUser"] ?? 0).toDouble(), // ensure double
         isOpen: data['isOpened'] ?? false,
       );
     } else {
       print('Document not found for id: ${document.id}');
       return ShopModel.defaultModel();
     }
+  }
+
+  ShopModel.defaultModel() {
+    shopId = null;
+    shopOwnerId = "ownerID";
+    shopName = "shopName";
+    category = "category";
+    cordinates = [0.0, 0.0];
+    openingDays = "openingDays";
+    operningTimes = "operningTimes";
+    location = "location";
+    phone = "phone";
+    whatsapp = "whatsapp";
+    services = [];
+    profileImg = "profileImg";
+    dateJoined = "dateJoined";
+    workImgs = [];
+    distanceToUser = 0.0;
+    isOpen = false;
+  }
+}
+
+class Service {
+  final String name;
+  final double price;
+
+  Service({
+    required this.name,
+    required this.price,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      "name": name,
+      "price": price,
+    };
+  }
+
+  factory Service.fromJson(Map<String, dynamic> json) {
+    return Service(
+      name: json["name"] ?? '',
+      price: (json["price"] ?? 0).toDouble(),
+    );
   }
 }

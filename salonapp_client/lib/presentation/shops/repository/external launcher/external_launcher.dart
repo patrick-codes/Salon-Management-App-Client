@@ -9,7 +9,7 @@ class ExternalAppLauncher {
 
   static Future<void> downloadLink() async {
     downloadUri = Uri.parse(
-        "https://drive.google.com/drive/u/3/folders/1yyRH_LcvUVhUeQNmvyIqiQs1fUl358rB");
+        "https://drive.google.com/drive/u/3/folders/1v5kclO6Q7XqZue5L5vi73kZgpFpewTYx");
 
     if (await canLaunchUrl(downloadUri!)) {
       await launchUrl(downloadUri!, mode: LaunchMode.externalApplication);

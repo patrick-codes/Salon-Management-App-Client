@@ -67,7 +67,7 @@ class SalonApp extends StatelessWidget {
                   builder: (context) => ReceiptPage(
                     id: args['id'],
                     name: args['name'],
-                    datetime: args['datetime'],
+                    datetime: args['datetime'] as DateTime?,
                     amount: args['amount'],
                     receiptId: args['receiptId'],
                     phone: args['phone'],

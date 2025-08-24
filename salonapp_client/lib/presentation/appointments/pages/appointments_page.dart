@@ -1,15 +1,21 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:intl/intl.dart';
 import 'package:m_toast/m_toast.dart';
 import 'package:salonapp_client/presentation/appointments/bloc/appointment_bloc.dart';
 import 'package:salonapp_client/presentation/checkout%20page/components/Transaction/other/show_up_animation.dart';
 import 'package:salonapp_client/presentation/checkout%20page/components/cedi_sign_component.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../helpers/colors/color_constants.dart';
 import '../../../helpers/colors/widgets/style.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../helpers/widgets/text_widgets.dart';
+import '../bloc/all appointments bloc/all_appm_bloc.dart';
 
 class AppointmentsPage extends StatefulWidget {
   AppointmentsPage({super.key});
@@ -19,9 +25,15 @@ class AppointmentsPage extends StatefulWidget {
 }
 
 class _AppointmentsPageState extends State<AppointmentsPage> {
+  @override
+  void initState() {
+    context.read<AllAppointmentBloc>().add(ViewAllAppointmentEvent());
+    super.initState();
+  }
+
   Future<void> refresh(BuildContext context) async {
     setState(() {
-      context.read<AppointmentBloc>().add(ViewAppointmentEvent());
+      context.read<AllAppointmentBloc>().add(ViewAllAppointmentEvent());
       debugPrint("Refreshed");
     });
   }
@@ -29,19 +41,22 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
   @override
   Widget build(BuildContext context) {
     ShowMToast toast = ShowMToast(context);
-    return BlocConsumer<AppointmentBloc, AppointmentState>(
+    return BlocConsumer<AllAppointmentBloc, AllAppointmentState>(
       listener: (context, state) {
-        if (state is AppointmentsFetchFailureState) {
+        if (state is AllAppointmentsFetchFailureState) {
           toast.errorToast(
             message: state.errorMessage,
             alignment: Alignment.topCenter,
           );
-        } else if (state is AppointmentDeletedSuccesState) {
+        } else if (state is AllAppointmentDeletedSuccesState) {
+          setState(() {
+            context.read<AllAppointmentBloc>().add(ViewAllAppointmentEvent());
+          });
           toast.successToast(
             message: state.message,
             alignment: Alignment.topCenter,
           );
-        } else if (state is AppointmentDeletedFailureState) {
+        } else if (state is AllAppointmentDeletedFailureState) {
           toast.errorToast(
             message: state.message,
             alignment: Alignment.topCenter,
@@ -49,7 +64,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
         }
       },
       builder: (context, state) {
-        if (state is AppointmentsFetchedState) {
+        if (state is AllAppointmentsFetchedState) {
           return Scaffold(
             backgroundColor: secondaryBg,
             extendBodyBehindAppBar: true,
@@ -94,18 +109,125 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                               var appoint = state.appointment![index];
                               return ShowUpAnimation(
                                 delay: 150,
-                                child: appointmentContainer(
-                                  context,
-                                  appoint!.id ?? '',
-                                  appoint.imgUrl ?? '',
-                                  appoint.shopName!,
-                                  appoint.amount ?? 0.0,
-                                  appoint.appointmentTime.toString(),
-                                  appoint.servicesType ?? '',
-                                  appoint.appointmentDate.toString(),
-                                  appoint.location ?? '',
-                                  appoint.bookingCode ?? '',
-                                  appoint.phone ?? '',
+                                child: ListTile(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/receipt',
+                                      arguments: {
+                                        'id': appoint.id,
+                                        'name': appoint.shopName,
+                                        'datetime': appoint.appointmentDate,
+                                        'amount': appoint.amount,
+                                        'receiptId': appoint.bookingCode,
+                                        'phone': appoint.phone,
+                                        'service': appoint.servicesType,
+                                      },
+
+                                      //  appointmentContainer(
+                                      //   context,
+                                      //   appoint!.id ?? '',
+                                      //   appoint.imgUrl ?? '',
+                                      //   appoint.shopName!,
+                                      //   appoint.amount ?? 0.0,
+                                      //   appoint.appointmentTime.toString(),
+                                      //   appoint.servicesType ?? '',
+                                      //   appoint.appointmentDate.toString(),
+                                      //   appoint.location ?? '',
+                                      //   appoint.bookingCode ?? '',
+                                      //   appoint.phone ?? '',
+                                      // ),
+                                    );
+                                  },
+                                  //dense: true,
+                                  horizontalTitleGap: 12,
+                                  minVerticalPadding: 15,
+                                  minTileHeight: 10,
+                                  contentPadding: EdgeInsets.symmetric(),
+                                  leading: Container(
+                                    height: 120,
+                                    width: 80,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      borderRadius: BorderRadius.circular(80),
+                                    ),
+                                    child: CachedNetworkImage(
+                                      imageUrl: appoint!.imgUrl ?? '',
+                                      imageBuilder: (context, imageProvider) =>
+                                          Container(
+                                        height: 158,
+                                        width: 90,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: imageProvider,
+                                          ),
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                      ),
+                                      placeholder: (context, url) => Center(
+                                        child: Shimmer.fromColors(
+                                          baseColor: Colors.grey[300]!,
+                                          highlightColor: Colors.grey[200]!,
+                                          child: Container(
+                                            height: 95,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            decoration: BoxDecoration(
+                                              color: secondaryColor3,
+                                              borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(8),
+                                                topLeft: Radius.circular(8),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          SizedBox(
+                                        height: 40,
+                                        child: Center(
+                                          child: SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: const Icon(
+                                              Icons.error,
+                                              color: iconGrey,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  title: headingTextMedium(
+                                    context,
+                                    appoint.shopName!,
+                                    FontWeight.w500,
+                                    14,
+                                    blackColor,
+                                  ),
+                                  subtitle: subheadingTextMedium(
+                                    context,
+                                    appoint.servicesType!,
+                                    12.5,
+                                    Colors.green,
+                                  ),
+                                  trailing: IconButton(
+                                    onPressed: () {
+                                      context.read<AllAppointmentBloc>()
+                                        ..add(
+                                          DeleteAllAppointmentEvent(
+                                              id: appoint.id ?? ''),
+                                        );
+                                    },
+                                    icon: Icon(
+                                      MingCute.delete_line,
+                                      color: Colors.red,
+                                    ),
+                                  ),
                                 ),
                               );
                             },
@@ -118,7 +240,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
               ),
             ),
           );
-        } else if (state is AppointmentsFetchFailureState) {
+        } else if (state is AllAppointmentsFetchFailureState) {
           return Scaffold(
             backgroundColor: secondaryBg,
             appBar: AppBar(
@@ -284,51 +406,51 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-                    // CachedNetworkImage(
-                    //   imageUrl: imgurl,
-                    //   imageBuilder: (context, imageProvider) => Container(
-                    //     height: 158,
-                    //     width: 90,
-                    //     decoration: BoxDecoration(
-                    //       image: DecorationImage(
-                    //         fit: BoxFit.cover,
-                    //         image: imageProvider,
-                    //       ),
-                    //       color: Colors.white,
-                    //       borderRadius: BorderRadius.circular(5),
-                    //     ),
-                    //   ),
-                    //   placeholder: (context, url) => Center(
-                    //     child: Shimmer.fromColors(
-                    //       baseColor: Colors.grey[300]!,
-                    //       highlightColor: Colors.grey[200]!,
-                    //       child: Container(
-                    //         height: 95,
-                    //         width: MediaQuery.of(context).size.width,
-                    //         decoration: BoxDecoration(
-                    //           color: secondaryColor3,
-                    //           borderRadius: BorderRadius.only(
-                    //             topRight: Radius.circular(8),
-                    //             topLeft: Radius.circular(8),
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ),
-                    //   errorWidget: (context, url, error) => SizedBox(
-                    //     height: 40,
-                    //     child: Center(
-                    //       child: SizedBox(
-                    //         height: 20,
-                    //         width: 20,
-                    //         child: const Icon(
-                    //           Icons.error,
-                    //           color: iconGrey,
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
+                    CachedNetworkImage(
+                      imageUrl: imgurl,
+                      imageBuilder: (context, imageProvider) => Container(
+                        height: 158,
+                        width: 90,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: imageProvider,
+                          ),
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                      placeholder: (context, url) => Center(
+                        child: Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[200]!,
+                          child: Container(
+                            height: 95,
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              color: secondaryColor3,
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(8),
+                                topLeft: Radius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => SizedBox(
+                        height: 40,
+                        child: Center(
+                          child: SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: const Icon(
+                              Icons.error,
+                              color: iconGrey,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                     SizedBox(
                       width: MediaQuery.of(context).size.width,
                       child: Padding(
@@ -425,7 +547,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                                             'service': service,
                                           },
                                         );
-                                        // context.read<AppointmentBloc>().add(
+                                        // context.read<AllAppointmentBloc>().add(
                                         //       DeleteAppointmentEvent(
                                         //           id: id),
                                         //     );

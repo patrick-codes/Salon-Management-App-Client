@@ -350,8 +350,9 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                                                       color: primaryColor,
                                                     ),
                                                     const SizedBox(width: 3),
+                                                    
                                                     Text(
-                                                      "${shop!.distanceToUser!.ceil()}km away",
+                                                    shop!.distanceToUser ==0? "few meters away": "${shop!.distanceToUser!.ceil()}km away",
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodySmall!
@@ -833,13 +834,6 @@ class _DetailsPageState extends State<MainShopinfoPage> {
             } else if (index == 2) {
               ExternalAppLauncher.openGoogleMaps(
                   [cordinates[0], cordinates[1]]);
-              // Navigator.pushNamed(
-              //   context,
-              //   '/map',
-              //   arguments: {
-              //     'latlng': [cordinates[0], cordinates[1]]
-              //   },
-              // );
               debugPrint("latlng: ${[cordinates[0], cordinates[1]]}");
             } else if (index == 3) {
               ExternalAppLauncher.shareContent(

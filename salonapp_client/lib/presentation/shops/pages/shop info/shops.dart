@@ -224,32 +224,32 @@ class _ShopsPageState extends State<ShopsPage>
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: [
+                          // _buildDropdown<String>(
+                          //   label: "Services",
+                          //   icon: Icons.cut,
+                          //   items: [
+                          //     "Haircut",
+                          //     "Braids",
+                          //     "Shaving",
+                          //     "Nails",
+                          //     "Locks",
+                          //   ],
+                          //   value: selectedService,
+                          //   onChanged: (value) {
+                          //     setState(() => selectedService = value);
+                          //     context.read<HomeShopsBloc>().add(
+                          //           SearchShopEvent(
+                          //             query: searchController.text,
+                          //             service: value,
+                          //           ),
+                          //         );
+                          //   },
+                          // ),
+                          // const SizedBox(width: 12),
                           _buildDropdown<String>(
-                            label: "Services",
-                            icon: Icons.cut,
-                            items: [
-                              "Haircut",
-                              "Braids",
-                              "Shaving",
-                              "Nails",
-                              "Locks",
-                            ],
-                            value: selectedService,
-                            onChanged: (value) {
-                              setState(() => selectedService = value);
-                              context.read<HomeShopsBloc>().add(
-                                    SearchShopEvent(
-                                      query: searchController.text,
-                                      service: value,
-                                    ),
-                                  );
-                            },
-                          ),
-                          const SizedBox(width: 12),
-                          _buildDropdown<String>(
-                            label: "Gender",
+                            label: "Category",
                             icon: Icons.person,
-                            items: ["Male", "Female", "Unisex"],
+                            items: ["Men", "Women", "Unisex"],
                             value: selectedGender,
                             onChanged: (value) {
                               setState(() => selectedGender = value);
@@ -351,31 +351,30 @@ class _ShopsPageState extends State<ShopsPage>
                   : SafeArea(
                       child: SingleChildScrollView(
                         physics: BouncingScrollPhysics(),
-                        child: RefreshIndicator(
-                          color: blackColor,
-                          onRefresh: () => refresh(context),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height - 250,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: ListView.builder(
-                                    itemCount: shops!.length,
-                                    scrollDirection: Axis.vertical,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      var shopInfo = state.shop![index];
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height - 280,
+                                width: MediaQuery.of(context).size.width,
+                                child: ListView.builder(
+                                  itemCount: shops!.length,
+                                  scrollDirection: Axis.vertical,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    var shopInfo = state.shop![index];
 
-                                      if (state.shop!.isEmpty) {
-                                        return const Center(
-                                            child: Text(
-                                                "No shops match your filters"));
-                                      }
-                                      return ShowUpAnimation(
-                                        delay: 150,
+                                    if (state.shop!.isEmpty) {
+                                      return const Center(
+                                          child: Text(
+                                              "No shops match your filters"));
+                                    }
+                                    return ShowUpAnimation(
+                                      delay: 150,
+                                      child: Expanded(
+                                        flex: 1,
                                         child: appointmentContainer(
                                           context,
                                           shopInfo.shopId,
@@ -390,13 +389,13 @@ class _ShopsPageState extends State<ShopsPage>
                                           shopInfo.isOpen,
                                           shopInfo.category,
                                         ),
-                                      );
-                                    },
-                                  ),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -514,7 +513,7 @@ class _ShopsPageState extends State<ShopsPage>
     String? category,
   ) {
     return Container(
-      height: 340,
+      // height: 340,
       width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
@@ -639,7 +638,9 @@ class _ShopsPageState extends State<ShopsPage>
                                       ),
                                       const SizedBox(width: 3),
                                       Text(
-                                        "${distance!.ceil()}km away",
+                                        distance == 0
+                                            ? "few meters away"
+                                            : "${distance!.ceil()}km away",
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall!

@@ -79,14 +79,22 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
 
       String codegen = generateBookingCode(event.shopName.toString());
 
+      final combinedDateTime = DateTime(
+        event.appointmentDate!.year,
+        event.appointmentDate!.month,
+        event.appointmentDate!.day,
+        event.appointmentTime!.hour,
+        event.appointmentTime!.minute,
+      );
+
       final appointments = AppointmentModel(
         userId: firebaseUser.currentUser!.uid,
-        ownerID:event.ownerID,
+        ownerID: event.ownerID,
         amount: event.amount,
         shopName: event.shopName,
         category: event.category,
         appointmentTime: event.appointmentTime,
-        appointmentDate: event.appointmentDate,
+        appointmentDate: combinedDateTime,
         phone: event.phone,
         servicesType: event.servicesType,
         bookingCode: codegen,
@@ -100,8 +108,8 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
       debugPrint("Appointment service created succesfuly.");
       NotificationService.showNotification(
         id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-        title: "Tap to open Appointments Page",
-        body: "Appointment service created succesfuly!!",
+        title: "Appointment Created!!",
+        body: "Your appointment service has being scheduled succesfuly!!",
         payload: "/appointments",
       );
     } on FirebaseAuthException catch (error) {

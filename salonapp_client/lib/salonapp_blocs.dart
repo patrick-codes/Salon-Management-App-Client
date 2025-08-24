@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salonapp_client/presentation/appointments/bloc/appointment_bloc.dart';
 import 'package:salonapp_client/presentation/location/bloc/location_bloc.dart';
 import 'package:salonapp_client/salonapp.dart';
+import 'presentation/appointments/bloc/all appointments bloc/all_appm_bloc.dart';
 import 'presentation/authentication screens/bloc/auth_bloc.dart';
 import 'presentation/shops/bloc/home shop bloc/h_shops_bloc.dart';
 import 'presentation/shops/bloc/shops_bloc.dart';
@@ -36,9 +37,10 @@ class SalonAppBlocs extends StatelessWidget {
             create: (context) => HomeShopsBloc(context.read<AuthBloc>())
               ..add(ViewHomeShopsEvent()),
           ),
-          // BlocProvider(
-          //   create: (context) => AppointmentBloc()..add(ViewAppointmentEvent()),
-          // ),
+          BlocProvider(
+            create: (context) =>
+                AllAppointmentBloc()..add(ViewAllAppointmentEvent()),
+          ),
         ],
         child: SalonApp(),
       ),

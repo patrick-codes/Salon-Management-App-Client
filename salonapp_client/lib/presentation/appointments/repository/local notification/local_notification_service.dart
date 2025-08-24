@@ -30,9 +30,9 @@ class NotificationService {
   }) async {
     const BigTextStyleInformation bigTextStyleInformation =
         BigTextStyleInformation(
-      'Appointment service created succesfuly!!',
+      'Your appointment service has being scheduled succesfuly!!',
       htmlFormatBigText: true,
-      contentTitle: 'Tap To Open Appointments Page',
+      contentTitle: 'Appointment Created!!',
       htmlFormatContentTitle: true,
       summaryText: 'Appointments Created',
       htmlFormatSummaryText: true,

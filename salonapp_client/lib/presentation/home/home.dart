@@ -15,6 +15,7 @@ import '../shops/bloc/shops_bloc.dart';
 import '../shops/components/gridview.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../shops/repository/data rmodel/service_model.dart';
+import '../shops/repository/external launcher/external_launcher.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -55,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage>
       Future.delayed(Duration(seconds: 2), () {
         context.read<LocationBloc>().add(LoadLocationEvent());
       });
-      context.read<ShopsBloc>().add(ViewShopsEvent());
+      //context.read<ShopsBloc>().add(ViewShopsEvent());
     }
   }
 
@@ -347,7 +348,7 @@ class _MyHomePageState extends State<MyHomePage>
                     right: 15,
                   ),
                   child: MinimalHeadingText(
-                    leftText: "Popular Shop",
+                    leftText: "Featured",
                     rightText: "",
                   ),
                 ),
@@ -538,33 +539,33 @@ class _MyHomePageState extends State<MyHomePage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         PrimaryText(
-                          text: "Sams Hair Salon",
+                          text: "Do you own a shop?",
                           color: whiteColor,
                           fontWeight: FontWeight.w600,
                           size: 20,
                         ),
                         SizedBox(height: 2),
                         PrimaryText(
-                          text: "Weija Old Barrier, Accra",
+                          text: "Download the shop owner app!",
                           color: whiteColor,
                           fontWeight: FontWeight.w500,
-                          size: 11,
+                          size: 9.5,
                         ),
                         SizedBox(height: 25),
                         GestureDetector(
                           onTap: () {
-                            Navigator.pushNamed(context, '/appointments');
+                            ExternalAppLauncher.downloadLink();
                           },
                           child: Container(
                             height: 30,
-                            width: 105,
+                            width: 110,
                             decoration: BoxDecoration(
                               color: Colors.orange,
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Center(
                               child: Text(
-                                "View all Shops",
+                                "Download Now",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: blackColor,

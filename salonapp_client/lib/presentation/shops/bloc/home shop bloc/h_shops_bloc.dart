@@ -1,3 +1,4 @@
+import 'dart:core';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,7 +34,7 @@ class HomeShopsBloc extends Bloc<HomeShopsEvent, HomeShopsState> {
       shops: serviceman ?? [],
       query: event.query,
       service: event.service,
-      gender: event.gender,
+      category: event.gender,
       distance: event.distance,
       priceRange: event.priceRange,
     );
@@ -55,21 +56,60 @@ class HomeShopsBloc extends Bloc<HomeShopsEvent, HomeShopsState> {
     required List<HomeShopModel> shops,
     String? query,
     String? service,
-    String? gender,
+    String? category,
     double? distance,
     RangeValues? priceRange,
   }) {
     return shops.where((shop) {
-      final matchesQuery = query == null ||
-          query.isEmpty ||
-          shop.shopName!.toLowerCase().contains(query.toLowerCase());
+      final matchesQuery = query == null || query.isEmpty
+          ? true
+          : shop.shopName!.toLowerCase().contains(query.toLowerCase());
 
-      final matchesService = service == null ||
-          service.isEmpty ||
-          shop.services!.contains(service.toLowerCase());
+      final matchesService = (service == null || service.isEmpty)
+          ? true
+          : _offersService(shop.services, service);
 
-      return matchesQuery && matchesService;
+      final matchesCategory = category == null || category.isEmpty
+          ? true
+          : shop.category?.toLowerCase() == category.toLowerCase();
+
+      return matchesQuery && matchesService && matchesCategory;
     }).toList();
+  }
+
+  bool _offersService(dynamic services, String wanted) {
+    if (services == null || wanted.isEmpty) return true;
+
+    final needle = wanted.toLowerCase().trim();
+
+    if (services is Map) {
+      if (services.containsKey(wanted)) {
+        final v = services[wanted];
+        if (v is bool) return v;
+        // if (v is num) return v != 0;   // ✅ now works
+        if (v is String) return v.toLowerCase() == 'true';
+        if (v is Map) return true;
+        return true;
+      }
+      return services.keys
+          .map((k) => k.toString().toLowerCase().trim())
+          .contains(needle);
+    }
+
+    if (services is List) {
+      return services
+          .map((e) => e.toString().toLowerCase().trim())
+          .contains(needle);
+    }
+
+    if (services is String) {
+      return services
+          .split(',')
+          .map((e) => e.trim().toLowerCase())
+          .contains(needle);
+    }
+
+    return false;
   }
 
   Future<List<HomeShopModel>?> fetchShops(

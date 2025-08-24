@@ -5,6 +5,18 @@ class ExternalAppLauncher {
   static Uri? googleMapsUri;
   static Uri? whatsappUri;
   static Uri? phoneUri;
+  static Uri? downloadUri;
+
+  static Future<void> downloadLink() async {
+    downloadUri = Uri.parse(
+        "https://drive.google.com/drive/u/3/folders/1yyRH_LcvUVhUeQNmvyIqiQs1fUl358rB");
+
+    if (await canLaunchUrl(downloadUri!)) {
+      await launchUrl(downloadUri!, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch Download Link';
+    }
+  }
 
   static Future<void> openGoogleMaps(List<double?> cordinates) async {
     googleMapsUri = Uri.parse(

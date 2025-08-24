@@ -37,12 +37,17 @@ class AppointmentModel {
   Map<String, dynamic> toJson() {
     return {
       "amount": amount,
-      "userID": userId,
+      "userId": userId,
       "ownerID": ownerID,
       "shopName": shopName,
       "category": category,
-      "appointmentTime": appointmentTime,
-      "appointmentDate": appointmentDate,
+      // Save appointmentDate as Firestore Timestamp
+      "appointmentDate":
+          appointmentDate != null ? Timestamp.fromDate(appointmentDate!) : null,
+      // Save appointmentTime as String (or merge into appointmentDate)
+      "appointmentTime": appointmentTime != null
+          ? "${appointmentTime!.hour}:${appointmentTime!.minute}"
+          : null,
       "phone": phone,
       "servicesType": servicesType,
       "bookingCode": bookingCode,

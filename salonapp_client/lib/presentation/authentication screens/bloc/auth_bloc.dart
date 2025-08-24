@@ -21,7 +21,7 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
 
   AuthBloc() : super(AuthInitial()) {
     on<AppStartedEvent>(onAppStarted);
-    // on<PickImageEvent>(_onPickImage);
+    on<PickImageEvent>(onPickImage);
     on<SignupEvent>(registerUser);
     on<LoginEvent>(loginUser);
     on<ForgotPasswordEvent>(resetPassword);
@@ -48,6 +48,22 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
       if (!emit.isDone) {
         emit(UnAuthenticatedState());
       }
+    }
+  }
+
+  Future<void> onPickImage(
+      PickImageEvent event, Emitter<AuthState> emit) async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile =
+        await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      _image = File(pickedFile.path);
+      emit(ImagePickSuccesState(
+        imgUrl: _image!,
+      ));
+    } else {
+      emit(ImagePickFailureState(error: 'No image selected'));
     }
   }
 

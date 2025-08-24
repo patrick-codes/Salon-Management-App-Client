@@ -280,53 +280,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 15),
+                          const SizedBox(height: 50),
                           Divider(
                             color: Colors.grey.shade400,
-                          ),
-                          const SizedBox(height: 20),
-                          GestureDetector(
-                            onTap: () {
-                              //  AuthenticationRepository.instance.signInWithGoogle();
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 1,
-                                  color: primaryColor,
-                                ),
-                                //color: ColorConstants.primaryColor,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              height: 55,
-                              width: double.infinity,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const SizedBox(width: 5),
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        "Login with ",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Brand(Brands.google, size: 20),
-                                      const Text(
-                                        "oogle",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
                           ),
                           const SizedBox(height: 50),
                           GestureDetector(

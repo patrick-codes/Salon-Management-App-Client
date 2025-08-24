@@ -13,7 +13,6 @@ import '../../checkout page/components/Transaction/other/show_up_animation.dart'
 import '../../checkout page/pages/checkout_new.dart';
 import '../bloc/single shop bloc/single_shop_bloc.dart';
 import '../repository/data rmodel/service_model.dart';
-
 import '../repository/external launcher/external_launcher.dart';
 
 class MainShopinfoPage extends StatefulWidget {
@@ -198,7 +197,6 @@ class _DetailsPageState extends State<MainShopinfoPage> {
           body: shop == null
               ? const Center(
                   child: SpinKitDoubleBounce(
-                    // lineWidth: 3,
                     size: 60,
                     color: primaryColor,
                   ),
@@ -350,9 +348,10 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                                                       color: primaryColor,
                                                     ),
                                                     const SizedBox(width: 3),
-                                                    
                                                     Text(
-                                                    shop!.distanceToUser ==0? "few meters away": "${shop!.distanceToUser!.ceil()}km away",
+                                                      shop!.distanceToUser == 0
+                                                          ? "few meters away"
+                                                          : "${shop!.distanceToUser!.ceil()}km away",
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodySmall!

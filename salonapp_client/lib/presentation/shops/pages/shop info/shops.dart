@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:googleapis/mybusinesslodging/v1.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:salonapp_client/helpers/colors/widgets/minimal_heading.dart';
 import 'package:salonapp_client/helpers/colors/widgets/style.dart';
 import 'package:salonapp_client/presentation/filter%20screen/pages/filter_screen.dart';
 import 'package:salonapp_client/presentation/shops/repository/data%20rmodel/h_shop_service_model.dart';
 import '../../../../helpers/colors/color_constants.dart';
 import '../../../checkout page/components/Transaction/other/show_up_animation.dart';
 import '../../../checkout page/components/cedi_sign_component.dart';
-import '../../../location/bloc/location_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
@@ -373,22 +370,18 @@ class _ShopsPageState extends State<ShopsPage>
                                     }
                                     return ShowUpAnimation(
                                       delay: 150,
-                                      child: Expanded(
-                                        flex: 1,
-                                        child: appointmentContainer(
-                                          context,
-                                          shopInfo.shopId,
-                                          shopInfo.profileImg,
-                                          shopInfo.shopName,
-                                          shopInfo.location,
-                                          shopInfo.openingDays,
-                                          shopInfo.operningTimes,
-                                          shopInfo.services,
-                                          isLoaded,
-                                          shopInfo.distanceToUser,
-                                          shopInfo.isOpen,
-                                          shopInfo.category,
-                                        ),
+                                      child: appointmentContainer(
+                                        context,
+                                        shopInfo.shopId,
+                                        shopInfo.profileImg,
+                                        shopInfo.shopName,
+                                        shopInfo.location,
+                                        shopInfo.openingDays,
+                                        shopInfo.operningTimes,
+                                        shopInfo.services,
+                                        shopInfo.distanceToUser,
+                                        shopInfo.isOpen,
+                                        shopInfo.category,
                                       ),
                                     );
                                   },
@@ -498,7 +491,7 @@ class _ShopsPageState extends State<ShopsPage>
     );
   }
 
-  Container appointmentContainer(
+  Widget appointmentContainer(
     BuildContext context,
     String? id,
     String? img,
@@ -507,7 +500,6 @@ class _ShopsPageState extends State<ShopsPage>
     String? openingDays,
     String? openingTime,
     List<HomeService>? services,
-    bool? isLoaded,
     double? distance,
     bool? isOpen,
     String? category,

@@ -110,6 +110,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                               return ShowUpAnimation(
                                 delay: 150,
                                 child: ListTile(
+                                  tileColor: whiteColor,
                                   onTap: () {
                                     Navigator.pushNamed(
                                       context,
@@ -139,13 +140,14 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                                       // ),
                                     );
                                   },
-                                  //dense: true,
-                                  horizontalTitleGap: 12,
-                                  minVerticalPadding: 15,
+                                  dense: true,
+                                  horizontalTitleGap: 15,
+                                  minVerticalPadding: 10,
                                   minTileHeight: 10,
-                                  contentPadding: EdgeInsets.symmetric(),
+                                  contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 5),
                                   leading: Container(
-                                    height: 120,
+                                    height: 150,
                                     width: 80,
                                     decoration: BoxDecoration(
                                       color: Colors.grey[200],
@@ -209,11 +211,26 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                                     14,
                                     blackColor,
                                   ),
-                                  subtitle: subheadingTextMedium(
-                                    context,
-                                    appoint.servicesType!,
-                                    12.5,
-                                    Colors.green,
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      subheadingTextMedium(
+                                        context,
+                                        appoint.bookingCode.toString()!,
+                                        12.5,
+                                        iconGrey,
+                                      ),
+                                      SizedBox(height: 5),
+                                      subheadingTextMedium(
+                                        context,
+                                        appoint.servicesType!,
+                                        12,
+                                        Colors.black87,
+                                      ),
+                                      SizedBox(height: 10),
+                                      Divider(),
+                                    ],
                                   ),
                                   trailing: IconButton(
                                     onPressed: () {

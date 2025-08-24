@@ -82,7 +82,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
           debugPrint("Booking code: ${state.code}");
           QuickAlert.show(
             context: context,
-            animType: QuickAlertAnimType.slideInUp,
+            animType: QuickAlertAnimType.rotate,
             type: QuickAlertType.success,
             confirmBtnColor: blackColor,
             title: 'Appointment Booked!!',
@@ -504,6 +504,8 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                                         onTap: () {
                                           try {
                                             if (widget.serviceType != null ||
+                                                selectedTime != null ||
+                                                selectedValue != null ||
                                                 widget.amount != null ||
                                                 widget.location != null ||
                                                 widget.id != null) {
@@ -528,8 +530,10 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                                                   );
                                             } else {
                                               toast.errorToast(
+                                                width: double.infinity,
+                                                duration: 2000,
                                                 message:
-                                                    'an unexpected error occured',
+                                                    'An error occured. Schedule Date & Time',
                                                 alignment: Alignment.topCenter,
                                               );
                                             }

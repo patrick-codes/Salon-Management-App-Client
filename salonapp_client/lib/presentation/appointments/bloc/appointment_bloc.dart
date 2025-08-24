@@ -76,7 +76,16 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     try {
       emit(AppointmentsLoadingState());
       debugPrint("Creating Apppointment service......");
+      if (event.appointmentDate == null || event.appointmentTime == null) {
+        emit(AppointmentCreateFailureState(
+            error: "Appointment date or time not selected"));
+        return;
+      }
 
+      if (firebaseUser.currentUser == null) {
+        emit(AppointmentCreateFailureState(error: "User not logged in"));
+        return;
+      }
       String codegen = generateBookingCode(event.shopName.toString());
 
       final combinedDateTime = DateTime(
@@ -117,7 +126,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
       emit(AppointmentCreateFailureState(error: e.toString()));
     } catch (e) {
       emit(AppointmentCreateFailureState(error: e.toString()));
-      debugPrint(e.toString());
+      debugPrint('Error: ${e.toString()}');
     }
   }
 

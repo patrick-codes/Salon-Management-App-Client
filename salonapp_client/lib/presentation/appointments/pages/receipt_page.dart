@@ -2,6 +2,7 @@ import 'package:clipboard/clipboard.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:intl/intl.dart';
 import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import '../../../helpers/colors/widgets/custom_button.dart';
 import '../../checkout page/components/cedi_sign_component.dart';
@@ -10,7 +11,7 @@ import '../repository/receipt/receipt_service.dart';
 class ReceiptPage extends StatefulWidget {
   final String id;
   final String name;
-  final String datetime;
+  final DateTime? datetime;
   final double amount;
   final String receiptId;
   final String phone;
@@ -31,9 +32,14 @@ class ReceiptPage extends StatefulWidget {
 }
 
 class _ReceiptPageState extends State<ReceiptPage> {
+  String formatFirebaseStyle(DateTime dateTime) {
+    return DateFormat("MMMM d, y 'at' h:mm:ss a").format(dateTime.toUtc());
+  }
+
   @override
   Widget build(BuildContext context) {
     print(widget.id);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -281,7 +287,9 @@ class _ReceiptPageState extends State<ReceiptPage> {
                                           color: Colors.black45),
                                 ),
                                 Text(
-                                  widget.datetime,
+                                  widget.datetime != null
+                                      ? formatFirebaseStyle(widget.datetime!)
+                                      : "Not set",
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodySmall!

@@ -25,15 +25,10 @@ class _MainHomePageState extends State<MainHomePage> {
 
   List<Widget> pages = [
     MyHomePage(),
-    CreateShopPage(),
-    // MapDirectionScreen(
-    //   cordinates: LatLng(0, 0),
-    // ),
+    // CreateShopPage(),
     ShopsPage(),
-    //CreateShopPage(),
     AppointmentsPage(),
-    //Container(),
-    ProfilePage(),
+    AccountPage(),
   ];
 
   int initPage = 0;
@@ -75,10 +70,10 @@ class _MainHomePageState extends State<MainHomePage> {
                 icon: MingCute.home_5_line,
                 text: 'Home',
               ),
-              GButton(
-                icon: MingCute.location_line,
-                text: 'Explore',
-              ),
+              // GButton(
+              //   icon: MingCute.certificate_line,
+              //   text: 'Create',
+              // ),
               GButton(
                 icon: MingCute.scissors_line,
                 text: 'Shops',

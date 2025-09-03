@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:salonapp_client/presentation/appointments/repository/appointment
 import 'package:salonapp_client/presentation/appointments/repository/data%20model/appointment_model.dart';
 
 import '../repository/local notification/local_notification_service.dart';
+import '../repository/sms/sms_service.dart';
 
 part 'appointment_events.dart';
 part 'appointment_states.dart';
@@ -16,6 +18,7 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
       AppointmentServiceHelper();
   List<AppointmentModel?>? appointment;
   List<AppointmentModel>? appointmentList2;
+  SmsService smsService = SmsService();
 
   AppointmentModel? appointmentList;
   List<AppointmentModel>? appointments = [];
@@ -76,17 +79,34 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
     try {
       emit(AppointmentsLoadingState());
       debugPrint("Creating Apppointment service......");
+      if (event.appointmentDate == null || event.appointmentTime == null) {
+        emit(AppointmentCreateFailureState(
+            error: "Appointment date or time not selected"));
+        return;
+      }
 
+      if (firebaseUser.currentUser == null) {
+        emit(AppointmentCreateFailureState(error: "User not logged in"));
+        return;
+      }
       String codegen = generateBookingCode(event.shopName.toString());
+
+      final combinedDateTime = DateTime(
+        event.appointmentDate!.year,
+        event.appointmentDate!.month,
+        event.appointmentDate!.day,
+        event.appointmentTime!.hour,
+        event.appointmentTime!.minute,
+      );
 
       final appointments = AppointmentModel(
         userId: firebaseUser.currentUser!.uid,
-        ownerID:event.ownerID,
+        ownerID: event.ownerID,
         amount: event.amount,
         shopName: event.shopName,
         category: event.category,
         appointmentTime: event.appointmentTime,
-        appointmentDate: event.appointmentDate,
+        appointmentDate: combinedDateTime,
         phone: event.phone,
         servicesType: event.servicesType,
         bookingCode: codegen,
@@ -100,16 +120,47 @@ class AppointmentBloc extends Bloc<AppointmentEvent, AppointmentState> {
       debugPrint("Appointment service created succesfuly.");
       NotificationService.showNotification(
         id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-        title: "Tap to open Appointments Page",
-        body: "Appointment service created succesfuly!!",
+        title: "Appointment Created!!",
+        body: "Your appointment service has being scheduled succesfuly!!",
         payload: "/appointments",
       );
+
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(firebaseUser.currentUser!.uid)
+          .get();
+
+      if (userDoc.exists) {
+        final userData = userDoc.data()!;
+        final userName = userData['fullname'] ?? "Customer";
+        final userPhone = userData['phone'] ?? "";
+
+        await smsService.sendSmsNotification(
+          appId: codegen,
+          name: userName,
+          dateTime: combinedDateTime,
+          phone: userPhone,
+        );
+        debugPrint("Customer SMS sent Succesfully!!");
+
+        // Send SMS to shop owner
+        await smsService.sendOwnerSms(
+          appId: codegen,
+          name: userName,
+          dateTime: combinedDateTime,
+          phone: event.phone,
+        );
+
+        debugPrint("Shop Owner SMS sent Succesfully!!");
+      } else {
+        debugPrint("User details not found in Firestore.");
+      }
     } on FirebaseAuthException catch (error) {
       debugPrint("Firebase Error: $error");
       emit(AppointmentCreateFailureState(error: e.toString()));
     } catch (e) {
       emit(AppointmentCreateFailureState(error: e.toString()));
-      debugPrint(e.toString());
+      debugPrint('Error: ${e.toString()}');
     }
   }
 

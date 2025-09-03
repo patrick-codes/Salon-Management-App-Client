@@ -69,3 +69,26 @@ class EmptyShopState extends ShopsState {
 
   EmptyShopState({required this.message});
 }
+
+class ImagePickedState extends ShopsState {
+  final String imageUrl;
+  File? pickedFile;
+  ImagePickedState({required this.imageUrl, this.pickedFile});
+}
+
+class WorkImagesPickedState extends ShopsState {
+  final List<String> imageUrls;
+  WorkImagesPickedState(this.imageUrls);
+}
+
+class LocalImagesPickedState extends ShopsState {
+  final List<File> pickedFiles; // the files for preview
+
+  LocalImagesPickedState(this.pickedFiles); // positional
+}
+
+class ProfileImagesPickedState extends ShopsState {
+  final File? pickedFile; // the files for preview
+
+  ProfileImagesPickedState(this.pickedFile); // positional
+}

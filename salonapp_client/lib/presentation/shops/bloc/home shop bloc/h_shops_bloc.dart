@@ -1,3 +1,4 @@
+import 'dart:core';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,9 +26,23 @@ class HomeShopsBloc extends Bloc<HomeShopsEvent, HomeShopsState> {
 
   HomeShopsBloc(this.authBloc) : super(HomeShopInitial()) {
     on<ViewHomeShopsEvent>(fetchShops);
-    on<SearchShopEvent>(searchShops);
-    on<ViewSingleShopEvent>(fetchSingleShop);
+    on<SearchShopEvent>(onSearchShops);
   }
+
+  void onSearchShops(SearchShopEvent event, Emitter<HomeShopsState> emit) {
+    final results = searchShops(
+      shops: serviceman ?? [],
+      query: event.query,
+      service: event.service,
+      category: event.gender,
+      distance: event.distance,
+      priceRange: event.priceRange,
+    );
+
+    serviceman2 = results;
+    emit(ShopsFetchedState(shop: results));
+  }
+
   void onSearchChanged(String query) {
     serviceman = serviceman2!
         .where((servicemen) => servicemen.shopName!
@@ -37,17 +52,64 @@ class HomeShopsBloc extends Bloc<HomeShopsEvent, HomeShopsState> {
         .toList();
   }
 
-  Future<void> searchShops(
-      SearchShopEvent event, Emitter<HomeShopsState> emit) async {
-    try {
-      emit(ShopsLoadingState());
-      if (event.query.isNotEmpty) {
-        onSearchChanged(event.query);
-        emit(ShopsFetchedState(shop: serviceman!));
+  List<HomeShopModel> searchShops({
+    required List<HomeShopModel> shops,
+    String? query,
+    String? service,
+    String? category,
+    double? distance,
+    RangeValues? priceRange,
+  }) {
+    return shops.where((shop) {
+      final matchesQuery = query == null || query.isEmpty
+          ? true
+          : shop.shopName!.toLowerCase().contains(query.toLowerCase());
+
+      final matchesService = (service == null || service.isEmpty)
+          ? true
+          : _offersService(shop.services, service);
+
+      final matchesCategory = category == null || category.isEmpty
+          ? true
+          : shop.category?.toLowerCase() == category.toLowerCase();
+
+      return matchesQuery && matchesService && matchesCategory;
+    }).toList();
+  }
+
+  bool _offersService(dynamic services, String wanted) {
+    if (services == null || wanted.isEmpty) return true;
+
+    final needle = wanted.toLowerCase().trim();
+
+    if (services is Map) {
+      if (services.containsKey(wanted)) {
+        final v = services[wanted];
+        if (v is bool) return v;
+        // if (v is num) return v != 0;   // ✅ now works
+        if (v is String) return v.toLowerCase() == 'true';
+        if (v is Map) return true;
+        return true;
       }
-    } catch (e) {
-      print(e);
+      return services.keys
+          .map((k) => k.toString().toLowerCase().trim())
+          .contains(needle);
     }
+
+    if (services is List) {
+      return services
+          .map((e) => e.toString().toLowerCase().trim())
+          .contains(needle);
+    }
+
+    if (services is String) {
+      return services
+          .split(',')
+          .map((e) => e.trim().toLowerCase())
+          .contains(needle);
+    }
+
+    return false;
   }
 
   Future<List<HomeShopModel>?> fetchShops(
@@ -77,35 +139,5 @@ class HomeShopsBloc extends Bloc<HomeShopsEvent, HomeShopsState> {
       debugPrint('Error:${error.toString()}');
     }
     return serviceman2;
-  }
-
-  Future<HomeShopModel?> fetchSingleShop(
-      ViewSingleShopEvent event, Emitter<HomeShopsState> emit) async {
-    try {
-      String? userId = event.id;
-      //  if (userId != null) {
-      emit(ShopsLoadingState());
-      singleServiceMan = await salonHelper.fetchSingleHomeSalonshops(userId);
-
-      if (singleServiceMan != null) {
-        singleService = singleServiceMan;
-        emit(SingleShopsFetchedState(shop: singleService));
-        debugPrint("Single Shop: $singleService");
-        total = serviceNum;
-      } else {
-        emit(ShopsFetchFailureState(errorMessage: "Shop not found"));
-        debugPrint("Single Shop not found");
-      }
-      //}
-      print(total);
-    } on FirebaseAuthException catch (error) {
-      emit(ShopsFetchFailureState(errorMessage: error.toString()));
-      debugPrint(error.toString());
-    } catch (error) {
-      emit(ShopsFetchFailureState(errorMessage: error.toString()));
-      debugPrint('Error:${error.toString()}');
-    }
-
-    return singleService;
   }
 }

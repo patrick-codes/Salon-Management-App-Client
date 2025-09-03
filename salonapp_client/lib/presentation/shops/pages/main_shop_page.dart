@@ -5,15 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:salonapp_client/presentation/checkout%20page/components/cedi_sign_component.dart';
-import 'package:salonapp_client/presentation/shops/bloc/shops_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../helpers/colors/color_constants.dart';
 import '../../../helpers/colors/widgets/custom_button.dart';
 import '../../../helpers/colors/widgets/minimal_heading.dart';
 import '../../checkout page/components/Transaction/other/show_up_animation.dart';
 import '../../checkout page/pages/checkout_new.dart';
+import '../bloc/single shop bloc/single_shop_bloc.dart';
 import '../repository/data rmodel/service_model.dart';
-
 import '../repository/external launcher/external_launcher.dart';
 
 class MainShopinfoPage extends StatefulWidget {
@@ -91,12 +90,12 @@ class _DetailsPageState extends State<MainShopinfoPage> {
   @override
   void initState() {
     super.initState();
-    context.read<ShopsBloc>().add(ViewSingleShopEvent(widget.id));
+    context.read<SingleShopBloc>().add(ViewSingleShopEvent(widget.id));
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ShopsBloc, ShopsState>(
+    return BlocConsumer<SingleShopBloc, SingleShopsState>(
       listener: (context, state) {
         if (state is ShopsLoadingState) {
           CircularProgressIndicator();
@@ -198,7 +197,6 @@ class _DetailsPageState extends State<MainShopinfoPage> {
           body: shop == null
               ? const Center(
                   child: SpinKitDoubleBounce(
-                    // lineWidth: 3,
                     size: 60,
                     color: primaryColor,
                   ),
@@ -351,7 +349,9 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                                                     ),
                                                     const SizedBox(width: 3),
                                                     Text(
-                                                      "${shop!.distanceToUser.ceil()}km away",
+                                                      shop!.distanceToUser == 0
+                                                          ? "few meters away"
+                                                          : "${shop!.distanceToUser!.ceil()}km away",
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodySmall!
@@ -414,7 +414,7 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                         padding: const EdgeInsets.only(left: 15.0, right: 15),
                         child: MinimalHeadingText(
                           leftText: 'Our latest works',
-                          rightText: 'View all',
+                          rightText: '',
                         ),
                       ),
                       const SizedBox(height: 13),
@@ -424,13 +424,47 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                           height: 125,
                           width: MediaQuery.of(context).size.width,
                           child: ListView.builder(
-                            itemCount: shop!.workImgs!.length,
                             scrollDirection: Axis.horizontal,
+                            itemCount: shop!.workImgs?.length ?? 0,
                             itemBuilder: (BuildContext context, int index) {
-                              return buildLatestWorksSquare(
-                                shop!.workImgs![index],
-                                // services[index],
-                                // prices[index],
+                              final imgUrl = shop!.workImgs![index];
+
+                              // Skip empty or invalid URLs
+                              if (imgUrl.isEmpty ||
+                                  !imgUrl.startsWith('http')) {
+                                return const SizedBox.shrink();
+                              }
+
+                              return Padding(
+                                padding: const EdgeInsets.only(left: 12),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(
+                                    imgUrl,
+                                    height: 125,
+                                    width: 125,
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            Container(
+                                      color: Colors.grey[300],
+                                      height: 125,
+                                      width: 125,
+                                      child: const Icon(Icons.broken_image,
+                                          color: Colors.grey),
+                                    ),
+                                    loadingBuilder: (context, child, progress) {
+                                      if (progress == null) return child;
+                                      return Container(
+                                        height: 125,
+                                        width: 125,
+                                        color: Colors.grey[300],
+                                        child: const Center(
+                                            child: CircularProgressIndicator()),
+                                      );
+                                    },
+                                  ),
+                                ),
                               );
                             },
                           ),
@@ -439,12 +473,9 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                       const SizedBox(height: 15),
                       Padding(
                         padding: const EdgeInsets.only(left: 15.0, right: 15),
-                        child: GestureDetector(
-                          onTap: () => scrollBottomSheet(context),
-                          child: MinimalHeadingText(
-                            leftText: 'Choose service',
-                            rightText: 'View all',
-                          ),
+                        child: MinimalHeadingText(
+                          leftText: 'Choose service',
+                          rightText: '',
                         ),
                       ),
                       const SizedBox(height: 13),
@@ -453,32 +484,47 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                         child: SizedBox(
                           height: 135,
                           width: MediaQuery.of(context).size.width,
-                          child: ListView.builder(
-                            itemCount: imgs.length,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (BuildContext context, int index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    selectedIndex = index;
-                                    servicetype = services[index];
-                                    fee = prices[index];
-                                    shopname = shop!.shopName;
-                                  });
-                                  print(
-                                      "service selected: $servicetype with fee $fee for $shopname");
-                                },
-                                child: buildServicesSquare(
-                                  imgs[index],
-                                  services[index],
-                                  prices[index],
-                                  selectedIndex == index
-                                      ? primaryColor
-                                      : Colors.grey.shade200,
+                          child: shop!.services != null &&
+                                  shop!.services!.isNotEmpty
+                              ? ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: shop!.services!.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final service = shop!.services![index];
+
+                                    return GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          selectedIndex = index;
+                                          servicetype = service.name;
+                                          fee = service.price;
+                                          shopname = shop!.shopName;
+                                        });
+                                        debugPrint(
+                                            "Service selected: $servicetype with fee $fee for $shopname");
+                                      },
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 8.0),
+                                        child: buildServicesSquare(
+                                          service.name ?? '',
+                                          service.price ?? 0.0,
+                                          selectedIndex == index
+                                              ? primaryColor
+                                              : Colors.grey.shade200,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                )
+                              : Center(
+                                  child: Text(
+                                    "No services available",
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                  ),
                                 ),
-                              );
-                            },
-                          ),
                         ),
                       ),
                     ],
@@ -533,8 +579,7 @@ class _DetailsPageState extends State<MainShopinfoPage> {
     );
   }
 
-  Widget buildServicesSquare(
-      String imgurl, String services, double prices, Color brColor) {
+  Widget buildServicesSquare(String services, double prices, Color brColor) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -788,13 +833,6 @@ class _DetailsPageState extends State<MainShopinfoPage> {
             } else if (index == 2) {
               ExternalAppLauncher.openGoogleMaps(
                   [cordinates[0], cordinates[1]]);
-              // Navigator.pushNamed(
-              //   context,
-              //   '/map',
-              //   arguments: {
-              //     'latlng': [cordinates[0], cordinates[1]]
-              //   },
-              // );
               debugPrint("latlng: ${[cordinates[0], cordinates[1]]}");
             } else if (index == 3) {
               ExternalAppLauncher.shareContent(

@@ -2,64 +2,91 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:latlong2/latlong.dart';
 
 part 'location_state.dart';
 part 'location_events.dart';
 
 class LocationBloc extends Bloc<LocationEvent, LocationState> {
-  String locationMessage = 'Current Location of user';
-  bool serviceEnabled = false;
-  late LocationPermission permission;
-  Position? _currentUserLocation;
-  String currentAddress = 'Loading current location....';
-  String? placeLoc;
-  String? placeAdm;
-  String currentStreet = '';
-  double? distanceInMeters = 0.0;
-  double? distanceInKm = 0.0;
-  double? userLatitude;
-  double? userLongitude;
-  LatLng? coordinates;
-  bool isLoading = false;
-
   LocationBloc() : super(InitLocation()) {
     on<LoadLocationEvent>(_loadLocation);
   }
 
+  Position? _currentUserLocation;
+  String currentAddress = 'Loading current location...';
+  String? placeLoc;
+  String? placeAdm;
+  double? userLatitude;
+  double? userLongitude;
+  bool wentToSettings = false;
+  String? lastKnownAddress;
+
   Future<Position> _getLocation(Emitter<LocationState> emit) async {
     try {
       emit(LocationLoading());
-      debugPrint("Loading Location.....");
-      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      debugPrint("Checking location service and permissions...");
+
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
       if (!serviceEnabled) {
+        // Prompt user to enable GPS
         emit(LocationOff(message: 'Turn on location service'));
-        // throw Exception("Location service is disabled....");
-      } else if (serviceEnabled) {
-        await Geolocator.getCurrentPosition();
-        emit(CordinatesLoaded(message: currentAddress));
+        wentToSettings = true;
+
+        await Geolocator.openLocationSettings();
+
+        // Give system time to actually turn on GPS before checking again
+        await Future.delayed(Duration(seconds: 2));
+        serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+        if (!serviceEnabled) {
+          // Do not emit failure here if we just came from settings — let lifecycle handle retry
+          throw Exception("Location services are still disabled");
+        }
       }
 
-      permission = await Geolocator.checkPermission();
+      // Check permissions
+      LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          emit(PermissionDenied(
-              message: 'Location permission denied by device'));
+          emit(PermissionDenied(message: 'Location permission denied'));
           throw Exception("Location permission denied");
         }
       }
+
       if (permission == LocationPermission.deniedForever) {
         emit(PermissionDeniedForever(
-            message:
-                'Location permissions are permanently denied, we cannot request permission.'));
+            message: 'Location permissions are permanently denied.'));
+        await Geolocator.openAppSettings();
         throw Exception("Location permission permanently denied");
       }
 
-      return await Geolocator.getCurrentPosition();
+      // Use last known location immediately if available
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+// Resolve address from coordinates
+      final address = await _addressFromCoordinates(
+          emit); // Make sure this returns the address
+
+      if (address != null) {
+        lastKnownAddress = address;
+      }
+
+// Emit the fetched state
+      emit(LocationFetchedState(
+        latitude: position.latitude,
+        longitude: position.longitude,
+        address: address,
+      ));
+
+      return position;
     } catch (e) {
-      emit(LocationFailure(error: e.toString()));
+      // Only emit failure if we aren't in the "just returned from settings" case
+      if (!wentToSettings) {
+        emit(LocationFailure(error: e.toString()));
+      }
       debugPrint('Error: $e');
       rethrow;
     }
@@ -68,48 +95,47 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   Future<void> _loadLocation(
       LoadLocationEvent event, Emitter<LocationState> emit) async {
     try {
-      emit(LocationLoading());
-      _currentUserLocation = await _getLocation(emit);
+      Position position = await _getLocation(emit);
+      _currentUserLocation = position;
       await _addressFromCoordinates(emit);
-      //emit(CordinatesLoaded(message: '$currentAddress'));
+
       emit(LocationFetchedState(
         latitude: userLatitude,
         longitude: userLongitude,
         address: currentAddress,
         address2: placeLoc,
       ));
-      debugPrint('Address: $currentAddress');
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint("LoadLocation error: $e");
     }
   }
 
-  Future<void> _addressFromCoordinates(Emitter<LocationState> emit) async {
+  Future<String?> _addressFromCoordinates(Emitter<LocationState> emit) async {
     try {
-      if (_currentUserLocation == null) return;
+      if (_currentUserLocation == null) return null;
 
       List<Placemark> placemarks = await placemarkFromCoordinates(
-          _currentUserLocation!.latitude, _currentUserLocation!.longitude);
-      Placemark place = placemarks.first;
+        _currentUserLocation!.latitude,
+        _currentUserLocation!.longitude,
+      );
 
-      currentAddress = '${place.locality} , ${place.administrativeArea}';
+      Placemark place = placemarks.first;
+      currentAddress = '${place.locality}, ${place.subAdministrativeArea}';
       userLatitude = _currentUserLocation!.latitude;
       userLongitude = _currentUserLocation!.longitude;
       placeLoc = place.locality;
       placeAdm = place.country;
 
-      debugPrint("Location Fetched: $userLatitude, $userLongitude");
+      debugPrint("Address resolved: $currentAddress");
+
       emit(LocationFetchedState(
         latitude: userLatitude,
         longitude: userLongitude,
         address: currentAddress,
       ));
-
-      debugPrint('Location: $currentAddress');
-      debugPrint('Latitude: $userLatitude');
-      debugPrint('Longitude: $userLongitude');
     } catch (e) {
       debugPrint('Error fetching address: $e');
     }
+    return null;
   }
 }

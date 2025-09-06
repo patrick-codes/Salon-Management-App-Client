@@ -217,7 +217,7 @@ class _AppointmentsPageState extends State<AppointmentsPage> {
                                     children: [
                                       subheadingTextMedium(
                                         context,
-                                        appoint.bookingCode.toString()!,
+                                        appoint.bookingCode.toString(),
                                         12.5,
                                         iconGrey,
                                       ),

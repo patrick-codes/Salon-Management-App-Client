@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salonapp_client/presentation/shops/pages/create_shopservice_page.dart';
 import 'package:salonapp_client/presentation/shops/pages/shop%20info/shop_info.dart';
+import 'admin/presentation/appointments/pages/appointments_page.dart';
+import 'admin/presentation/home/pages/owner_home.dart';
+import 'admin/presentation/owner shops/pages/manage_shop.dart';
 import 'helpers/colors/color_constants.dart';
 import 'presentation/appointments/pages/appointments_page.dart';
 import 'presentation/appointments/pages/receipt_page.dart';
@@ -40,11 +43,16 @@ class SalonApp extends StatelessWidget {
               '/login': (context) => const LoginScreen(),
               '/signup': (context) => const SignupScren(),
               '/main': (context) => const MyHomePage(),
+              '/ownerhome': (context) => OwnerHomePage(),
               '/mainhome': (context) => const MainHomePage(),
               '/shopinfo': (context) => const ShopInfo(),
               '/shops': (context) => ShopsPage(),
-              '/createShop': (context) => CreateShopPage(),
+              '/createshop': (context) => const CreateShopPage(),
+              '/ownerappointment': (context) => OwnerAppointmentsPage(),
               '/appointments': (context) => AppointmentsPage(),
+              '/manageshop': (context) => ManageShopPage(
+                    shopId: '',
+                  ),
             },
             onGenerateRoute: (settings) {
               if (settings.name == '/mainshopinfo') {

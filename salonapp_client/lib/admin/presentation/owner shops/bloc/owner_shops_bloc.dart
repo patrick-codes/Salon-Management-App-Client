@@ -4,34 +4,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../data repository/image uploader/cloudinary_uploader.dart';
-import '../../location/bloc/location_bloc.dart';
+import '../../../data/image uploader/image_uploader.dart';
+import '../../owner location/bloc/owner_location_bloc.dart';
 import '../repository/data rmodel/service_model.dart';
-import '../repository/salonservices helper/fetch_services_helper.dart';
+import '../repository/salonservices helper/owner_fetch_services_helper.dart';
 
-part 'shops_events.dart';
-part 'shops_state.dart';
+part 'owner_shops_events.dart';
+part 'owner_shops_state.dart';
 
-class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
-  List<ShopModel>? serviceman;
-  ShopModel? singleServiceMan;
-  ShopModel? singleService;
-  final LocationBloc locationBloc;
+class OwnerShopsBloc extends Bloc<OwnerShopsEvent, OwnerShopsState> {
+  List<OwnerShopModel>? serviceman;
+  OwnerShopModel? singleServiceMan;
+  OwnerShopModel? singleService;
+  final OwnerLocationBloc locationBloc;
   final firebaseUser = FirebaseAuth.instance.currentUser!.uid;
 
-  List<ShopModel>? serviceman2 = [];
-  List<ShopModel>? serviceman3 = [];
-  static SalonServiceHelper salonHelper = SalonServiceHelper();
+  List<OwnerShopModel>? serviceman2 = [];
+  List<OwnerShopModel>? serviceman3 = [];
+  static OwnerSalonServiceHelper salonHelper = OwnerSalonServiceHelper();
   int serviceNum = 0;
   int num = 0;
   int total = 0;
 
-  ShopsBloc(this.locationBloc) : super(ShopInitial()) {
-    on<ViewShopsEvent>(fetchShops);
-    on<SearchShopEvent>(searchShops);
-    on<PickProfileImageEvent>(onPickImage);
-    on<PickShopImageEvent>(onPickWorkImage);
-    on<CreateShopEvent>(createShop);
+  final OwnerSalonServiceHelper shopHelper = OwnerSalonServiceHelper();
+  OwnerShopsBloc(
+    this.locationBloc,
+  ) : super(OwnerShopInitial()) {
+    on<ViewOwnerShopsEvent>(fetchShops);
+    on<OwnerSearchShopEvent>(searchShops);
+    on<OwnerPickProfileImageEvent>(onPickImage);
+    on<OwnerPickShopImageEvent>(onPickWorkImage);
+    on<OwnerCreateShopEvent>(createShop);
+    on<FetchOwnerShopEvent>(_onFetchOwnerShopEvent);
   }
   void onSearchChanged(String query) {
     serviceman = serviceman2!
@@ -43,12 +47,12 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
   }
 
   Future<void> searchShops(
-      SearchShopEvent event, Emitter<ShopsState> emit) async {
+      OwnerSearchShopEvent event, Emitter<OwnerShopsState> emit) async {
     try {
-      emit(ShopsLoadingState());
+      emit(OwnerShopsLoadingState());
       if (event.query.isNotEmpty) {
         onSearchChanged(event.query);
-        emit(ShopsFetchedState(shop: serviceman!));
+        emit(OwnerShopsFetchedState(shop: serviceman!));
       }
     } catch (e) {
       print(e);
@@ -56,42 +60,43 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
   }
 
   Future<void> onPickImage(
-      PickProfileImageEvent event, Emitter<ShopsState> emit) async {
+      OwnerPickProfileImageEvent event, Emitter<OwnerShopsState> emit) async {
     try {
       final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+      emit(OwnerProfileImageLoadingState());
       if (picked != null) {
         final file = File(picked.path);
         final url = await CloudinaryHelper2.uploadImage(File(picked.path));
         if (url != null) {
-          emit(ImagePickedState(pickedFile: file, imageUrl: url));
+          emit(OwnerImagePickedState(pickedFile: file, imageUrl: url));
         }
       }
     } catch (e) {
       debugPrint('${e.toString()}');
-      emit(ShopCreateFailureState(error: e.toString()));
+      emit(OwnerShopCreateFailureState(error: e.toString()));
     }
   }
 
   Future<void> onPickWorkImage(
-      PickShopImageEvent event, Emitter<ShopsState> emit) async {
+      OwnerPickShopImageEvent event, Emitter<OwnerShopsState> emit) async {
     try {
       final pickedFiles = await ImagePicker().pickMultiImage();
       if (pickedFiles.isNotEmpty) {
         final files = pickedFiles.map((e) => File(e.path)).toList();
-        emit(LocalImagesPickedState(files)); // just send picked files
+        emit(OwnerLocalImagesPickedState(files)); // just send picked files
       }
     } catch (e) {
       debugPrint('Error picking images: $e');
-      emit(ShopCreateFailureState(error: e.toString()));
+      emit(OwnerShopCreateFailureState(error: e.toString()));
     }
   }
 
   Future<void> createShop(
-    CreateShopEvent event,
-    Emitter<ShopsState> emit,
+    OwnerCreateShopEvent event,
+    Emitter<OwnerShopsState> emit,
   ) async {
     try {
-      emit(ShopsLoadingState());
+      emit(OwnerShopsLoadingState());
 
       String? profileImgUrl;
       List<String> workImgUrls = [];
@@ -114,7 +119,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
       event.cordinates = [position.latitude, position.longitude];
 
       //  Save shop to Firestore with uploaded URLs
-      final shopData = ShopModel(
+      final shopData = OwnerShopModel(
         shopOwnerId: firebaseUser,
         shopName: event.shopName,
         category: event.category,
@@ -124,7 +129,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
         location: event.location,
         phone: event.phone,
         whatsapp: event.whatsapp,
-        services: event.services,
+        ownerservices: event.services,
         profileImg: profileImgUrl ?? "", //  uploaded profile image URL
         dateJoined: event.dateJoined,
         workImgs: workImgUrls, //  use uploaded work image URLs
@@ -134,26 +139,26 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
 
       await salonHelper.createService(shopData);
 
-      debugPrint('✅ Shop Created Successfully');
-      emit(ShopCreatedSuccesState(message: 'Shop Created Successfully'));
+      debugPrint('Shop Created Successfully');
+      emit(OwnerShopCreatedSuccesState(message: 'Shop Created Successfully'));
     } catch (e, st) {
-      debugPrint('❌ Failed to create shop: $e');
+      debugPrint('Failed to create shop: $e');
       debugPrintStack(stackTrace: st);
-      emit(ShopCreateFailureState(error: "Failed to create shop: $e"));
+      emit(OwnerShopCreateFailureState(error: "Failed to create shop: $e"));
     }
   }
 
-  Future<List<ShopModel>?> fetchShops(
-      ViewShopsEvent event, Emitter<ShopsState> emit) async {
-    emit(ShopsLoadingState());
+  Future<List<OwnerShopModel>?> fetchShops(
+      ViewOwnerShopsEvent event, Emitter<OwnerShopsState> emit) async {
+    emit(OwnerShopsLoadingState());
     try {
       final locationState = locationBloc.state;
       debugPrint("LocationBloc State: $locationState");
 
-      if (locationState is LocationFetchedState) {
+      if (locationState is OwnerLocationFetchedState) {
         double? userLatitude = locationState.latitude;
         double? userLongitude = locationState.longitude;
-        debugPrint("✅ Location Fetched: $userLatitude, $userLongitude");
+        debugPrint("Location Fetched: $userLatitude, $userLongitude");
 
         serviceman =
             await salonHelper.fetchAllSalonShops(userLatitude, userLongitude);
@@ -162,26 +167,41 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
         serviceman3 = serviceman2;
         total = num;
 
-        debugPrint("✅ Total Nearby Shops: $num");
-        emit(ShopsFetchedState(shop: serviceman));
+        debugPrint("Total Nearby Shops: $num");
+        emit(OwnerShopsFetchedState(shop: serviceman));
 
         if (userLatitude == null || userLongitude == null) {
           debugPrint("Error: Latitude or Longitude is null!");
-          emit(ShopsFetchFailureState(
+          emit(OwnerShopsFetchFailureState(
               errorMessage: "User location not available."));
         }
       } else {
-        debugPrint("❌ Error: User location not available.");
-        emit(ShopsFetchFailureState(
+        debugPrint("Error: User location not available.");
+        emit(OwnerShopsFetchFailureState(
             errorMessage: "User location not available."));
       }
     } on FirebaseAuthException catch (error) {
-      debugPrint("❌ Firebase Error: $error");
-      emit(ShopsFetchFailureState(errorMessage: error.toString()));
+      debugPrint("Firebase Error: $error");
+      emit(OwnerShopsFetchFailureState(errorMessage: error.toString()));
     } catch (error) {
-      debugPrint("❌ Error: $error");
-      emit(ShopsFetchFailureState(errorMessage: error.toString()));
+      debugPrint("Error: $error");
+      emit(OwnerShopsFetchFailureState(errorMessage: error.toString()));
     }
     return serviceman;
+  }
+
+  Future<void> _onFetchOwnerShopEvent(
+      FetchOwnerShopEvent event, Emitter<OwnerShopsState> emit) async {
+    emit(OwnerShopLoading());
+    try {
+      final shop = await shopHelper.fetchOwnerSalonShop(event.ownerId);
+      if (shop != null) {
+        emit(OwnerShopLoaded(shop));
+      } else {
+        emit(OwnerShopFailure("No salon shop found for this owner."));
+      }
+    } catch (e) {
+      emit(OwnerShopFailure("Failed to fetch salon shop: $e"));
+    }
   }
 }

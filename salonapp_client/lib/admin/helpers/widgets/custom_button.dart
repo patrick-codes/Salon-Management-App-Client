@@ -1,21 +1,17 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
-import '../color_constants.dart';
+import '../constants/color_constants.dart';
 
-// ignore: must_be_immutable
 class CustomButton extends StatelessWidget {
   String text;
   final void Function() onpressed;
   Color color;
-  Color? textColor;
   IconData? icon;
   CustomButton({
     Key? key,
     required this.text,
     required this.onpressed,
     required this.color,
-    this.textColor,
     this.icon,
   }) : super(key: key);
 
@@ -41,7 +37,7 @@ class CustomButton extends StatelessWidget {
               Text(
                 text,
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: textColor ?? secondaryColor,
+                      color: secondaryColor,
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),

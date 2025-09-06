@@ -141,7 +141,7 @@ class _MyHomePageState extends State<MyHomePage>
               children: [
                 Container(
                   height: 250,
-                  width: MediaQuery.of(context).size.width!,
+                  width: MediaQuery.of(context).size.width,
                   decoration: const BoxDecoration(
                     // color: primaryColor,
                     gradient: LinearGradient(

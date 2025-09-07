@@ -28,6 +28,7 @@ class _SignupScrenState extends State<SignupScren> {
   File? image;
 
   final formKey = GlobalKey<FormState>();
+  String? selectedRole = "user";
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +53,14 @@ class _SignupScrenState extends State<SignupScren> {
             type: ToastificationType.error,
           );
         } else if (state is AuthenticatedState) {
-          Navigator.pushReplacementNamed(context, '/mainhome');
+          final user = state.user;
+
+          if (user?.role == "shopowner") {
+            Navigator.pushReplacementNamed(context, '/ownerhome');
+          } else {
+            Navigator.pushReplacementNamed(context, '/mainhome');
+          }
+
           toastification.show(
             showProgressBar: false,
             description: Column(
@@ -247,6 +255,29 @@ class _SignupScrenState extends State<SignupScren> {
                                   ),
                                 ),
                                 const SizedBox(height: 10),
+                                DropdownButtonFormField<String>(
+                                  value: selectedRole,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedRole = value!;
+                                    });
+                                  },
+                                  decoration: InputDecoration(
+                                    labelText: "Select Role",
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                  ),
+                                  items: const [
+                                    DropdownMenuItem(
+                                        value: "user", child: Text("User")),
+                                    DropdownMenuItem(
+                                        value: "shopowner",
+                                        child: Text("Shop Owner")),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
                                 TextFormField(
                                   controller: SignupController.email,
                                   keyboardType: TextInputType.emailAddress,
@@ -337,6 +368,7 @@ class _SignupScrenState extends State<SignupScren> {
                                         fullName: _fullName,
                                         gender: _gender,
                                         phone: _phone,
+                                        role: selectedRole!,
                                         email: _email,
                                         password: _password,
                                       ),

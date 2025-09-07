@@ -43,12 +43,27 @@ class _SplashScreenState extends State<SplashScreen>
       listener: (BuildContext context, state) async {
         if (state is AuthenticatedState) {
           await Future.delayed(const Duration(seconds: 3));
-          Navigator.pushNamedAndRemoveUntil(
-              context, '/mainhome', (route) => false);
+
+          if (state.user?.role == 'shopowner') {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              '/ownerhome',
+              (route) => false,
+            );
+          } else {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              '/mainhome',
+              (route) => false,
+            );
+          }
         } else if (state is UnAuthenticatedState) {
           await Future.delayed(const Duration(seconds: 3));
           Navigator.pushNamedAndRemoveUntil(
-              context, '/welcome', (route) => false);
+            context,
+            '/welcome',
+            (route) => false,
+          );
         }
       },
       child: Scaffold(

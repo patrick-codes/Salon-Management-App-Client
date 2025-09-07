@@ -12,14 +12,14 @@ import '../bloc/owner_shops_bloc.dart';
 import '../components/createservice_controllers.dart';
 import '../repository/data rmodel/service_model.dart';
 
-class CreateShopPage extends StatefulWidget {
-  const CreateShopPage({super.key});
+class OwnerCreateShopPage extends StatefulWidget {
+  const OwnerCreateShopPage({super.key});
 
   @override
-  State<CreateShopPage> createState() => _CreateShopPageState();
+  State<OwnerCreateShopPage> createState() => _OwnerCreateShopPageState();
 }
 
-class _CreateShopPageState extends State<CreateShopPage> {
+class _OwnerCreateShopPageState extends State<OwnerCreateShopPage> {
   final controller = CreateShopController();
   final firebaseUser = FirebaseAuth.instance.currentUser!.uid;
   final _formKey = GlobalKey<FormState>();

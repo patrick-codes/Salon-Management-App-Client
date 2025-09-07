@@ -1,6 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:salonapp_client/helpers/colors/color_constants.dart';
+import 'package:salonapp_client/presentation/authentication%20screens/bloc/auth_bloc.dart';
 
 class CustomAppBar extends StatelessWidget {
   int? count;
@@ -17,7 +20,7 @@ class CustomAppBar extends StatelessWidget {
       leadingWidth: 10,
       title: Row(
         children: [
-          avatarContainer(),
+          avatarContainer(context),
           const SizedBox(width: 8),
           titleContainer(context),
         ],
@@ -25,7 +28,7 @@ class CustomAppBar extends StatelessWidget {
       actions: [
         GestureDetector(
           onTap: () {
-            Navigator.pushNamed(context, '/appointment');
+            Navigator.pushNamed(context, '/ownerappointment');
           },
           child: count != null && count! > 0
               ? Badge(
@@ -39,6 +42,7 @@ class CustomAppBar extends StatelessWidget {
               : Icon(
                   MingCute.notification_line,
                   color: Colors.black87,
+                  size: 25,
                 ),
         ),
         SizedBox(width: 17),
@@ -46,19 +50,57 @@ class CustomAppBar extends StatelessWidget {
     );
   }
 
-  Container avatarContainer() {
-    return Container(
-      height: 40,
-      width: 40,
-      decoration: BoxDecoration(
-        color: Colors.black12,
-        borderRadius: BorderRadius.circular(40),
-      ),
-      child: Center(
-        child: Icon(
-          MingCute.user_5_line,
-        ),
-      ),
+  Widget avatarContainer(BuildContext context) {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (BuildContext context, state) {
+        if (state is CurrentUserState) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, '/account');
+            },
+            child: Container(
+              height: 45,
+              width: 45,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: Image.network(
+                    state.user?.profilePhoto ?? '',
+                  ).image,
+                ),
+                color: Colors.black12,
+                border: Border.all(
+                  color: outlineGrey,
+                  width: 4,
+                ),
+                borderRadius: BorderRadius.circular(40),
+              ),
+            ),
+          );
+        }
+        return GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, '/account');
+          },
+          child: Container(
+            height: 45,
+            width: 45,
+            decoration: BoxDecoration(
+              color: Colors.black12,
+              border: Border.all(
+                color: Colors.black26,
+                width: 1.5,
+              ),
+              borderRadius: BorderRadius.circular(40),
+            ),
+            child: Center(
+              child: Icon(
+                MingCute.user_5_line,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -66,13 +108,13 @@ class CustomAppBar extends StatelessWidget {
     return Expanded(
       flex: 1,
       child: Container(
-        height: 35,
+        height: 45,
         width: 180,
         decoration: BoxDecoration(
           color: Colors.grey.shade200.withOpacity(0.4),
           border: Border.all(
-            width: 1,
-            color: Colors.grey.shade400.withOpacity(0.5),
+            width: 1.5,
+            color: Colors.black26,
           ),
           borderRadius: BorderRadius.circular(40),
         ),

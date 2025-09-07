@@ -27,7 +27,7 @@ class _MainHomePageState extends State<MainHomePage> {
     MyHomePage(),
     ShopsPage(),
     AppointmentsPage(),
-    CreateShopPage(),
+//    CreateShopPage(),
     AccountPage(),
   ];
 
@@ -77,10 +77,6 @@ class _MainHomePageState extends State<MainHomePage> {
               GButton(
                 icon: MingCute.list_check_3_line,
                 text: 'Bookings',
-              ),
-              GButton(
-                icon: MingCute.add_circle_line,
-                text: 'Create',
               ),
               GButton(
                 icon: MingCute.user_1_line,

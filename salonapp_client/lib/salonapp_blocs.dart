@@ -35,6 +35,10 @@ class SalonAppBlocs extends StatelessWidget {
               OwnerAppointmentBloc()..add(ViewOwnerAppointmentEvent()),
         ),
         BlocProvider(
+          create: (context) =>
+              OwnerLocationBloc()..add(LoadOwnerLocationEvent()),
+        ),
+        BlocProvider(
           create: (context) => OwnerShopsBloc(context.read<OwnerLocationBloc>())
             ..add(ViewOwnerShopsEvent())
             ..add(FetchOwnerShopEvent(

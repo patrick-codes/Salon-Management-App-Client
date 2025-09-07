@@ -50,7 +50,14 @@ class _LoginScreenState extends State<LoginScreen> {
             type: ToastificationType.error,
           );
         } else if (state is AuthenticatedState) {
-          Navigator.pushReplacementNamed(context, '/mainhome');
+          final user = state.user;
+
+          if (user?.role == "shopowner") {
+            Navigator.pushReplacementNamed(context, '/ownerhome');
+          } else {
+            Navigator.pushReplacementNamed(context, '/mainhome');
+          }
+
           toastification.show(
             showProgressBar: false,
             description: Column(

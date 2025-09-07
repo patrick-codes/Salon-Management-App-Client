@@ -452,7 +452,9 @@ class _OwnerHomePageState extends State<OwnerHomePage>
     return Column(
       children: [
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(context, '/ownerappointment');
+          },
           child: Container(
             height: 130,
             width: MediaQuery.of(context).size.width,
@@ -534,7 +536,8 @@ class _OwnerHomePageState extends State<OwnerHomePage>
                             flex: 1,
                             child: GestureDetector(
                               onTap: () {
-                                Navigator.pushNamed(context, '/appointment');
+                                Navigator.pushNamed(
+                                    context, '/ownerappointment');
                               },
                               child: Container(
                                 height: 30,

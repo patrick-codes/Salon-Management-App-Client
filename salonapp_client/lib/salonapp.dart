@@ -5,6 +5,7 @@ import 'package:salonapp_client/presentation/shops/pages/shop%20info/shop_info.d
 import 'admin/presentation/appointments/pages/appointments_page.dart';
 import 'admin/presentation/home/pages/owner_home.dart';
 import 'admin/presentation/owner shops/pages/manage_shop.dart';
+import 'admin/presentation/owner shops/pages/owner_create_shopservice_page.dart';
 import 'helpers/colors/color_constants.dart';
 import 'presentation/appointments/pages/appointments_page.dart';
 import 'presentation/appointments/pages/receipt_page.dart';
@@ -15,6 +16,7 @@ import 'presentation/home/main_home.dart';
 import 'presentation/intro screens/pages/splash_screen.dart';
 import 'presentation/intro screens/pages/welcome_screen.dart';
 import 'presentation/location/bloc/location_bloc.dart';
+import 'presentation/profile screen/pages/profile_page.dart';
 import 'presentation/shops/components/map_directions_screen.dart';
 import 'presentation/shops/pages/main_shop_page.dart';
 import 'package:toastification/toastification.dart';
@@ -43,11 +45,12 @@ class SalonApp extends StatelessWidget {
               '/login': (context) => const LoginScreen(),
               '/signup': (context) => const SignupScren(),
               '/main': (context) => const MyHomePage(),
+              '/account': (context) => AccountPage(),
               '/ownerhome': (context) => OwnerHomePage(),
               '/mainhome': (context) => const MainHomePage(),
               '/shopinfo': (context) => const ShopInfo(),
               '/shops': (context) => ShopsPage(),
-              '/createshop': (context) => const CreateShopPage(),
+              '/createshop': (context) => const OwnerCreateShopPage(),
               '/ownerappointment': (context) => OwnerAppointmentsPage(),
               '/appointments': (context) => AppointmentsPage(),
               '/manageshop': (context) => ManageShopPage(

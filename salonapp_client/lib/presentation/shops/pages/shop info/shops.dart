@@ -754,8 +754,8 @@ class _ShopsPageState extends State<ShopsPage>
                         Wrap(
                           spacing: 8, // space between services
                           runSpacing: 4, // if it wraps to next line
-                          children: services != null && services!.isNotEmpty
-                              ? services!.map((s) {
+                          children: services != null && services.isNotEmpty
+                              ? services.map((s) {
                                   return Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [

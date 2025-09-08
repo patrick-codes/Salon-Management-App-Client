@@ -76,7 +76,7 @@ class ShopsBloc extends Bloc<ShopsEvent, ShopsState> {
       PickShopImageEvent event, Emitter<ShopsState> emit) async {
     try {
       final pickedFiles = await ImagePicker().pickMultiImage();
-      if (pickedFiles != null && pickedFiles.isNotEmpty) {
+      if (pickedFiles.isNotEmpty) {
         final files = pickedFiles.map((e) => File(e.path)).toList();
         emit(LocalImagesPickedState(files)); // just send picked files
       }

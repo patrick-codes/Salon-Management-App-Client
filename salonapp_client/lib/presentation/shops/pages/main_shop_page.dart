@@ -351,7 +351,7 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                                                     Text(
                                                       shop!.distanceToUser == 0
                                                           ? "few meters away"
-                                                          : "${shop!.distanceToUser!.ceil()}km away",
+                                                          : "${shop!.distanceToUser.ceil()}km away",
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodySmall!

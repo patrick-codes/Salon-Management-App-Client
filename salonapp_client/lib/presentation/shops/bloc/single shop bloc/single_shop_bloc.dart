@@ -2,14 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salonapp_client/presentation/shops/repository/data%20rmodel/service_model.dart';
+import '../../../../admin/presentation/owner shops/repository/data rmodel/service_model.dart';
 import '../../repository/salonservices helper/fetch_services_helper.dart';
 
 part 'single_shop_state.dart';
 part 'single_shop_event.dart';
 
 class SingleShopBloc extends Bloc<SingleShopsEvent, SingleShopsState> {
-  ShopModel? singleServiceMan;
-  ShopModel? singleService;
+  OwnerShopModel? singleServiceMan;
+  OwnerShopModel? singleService;
   final firebaseUser = FirebaseAuth.instance.currentUser!.uid;
 
   static SalonServiceHelper salonHelper = SalonServiceHelper();
@@ -20,7 +21,7 @@ class SingleShopBloc extends Bloc<SingleShopsEvent, SingleShopsState> {
     on<ViewSingleShopEvent>(fetchSingleShop);
   }
 
-  Future<ShopModel?> fetchSingleShop(
+  Future<OwnerShopModel?> fetchSingleShop(
       ViewSingleShopEvent event, Emitter<SingleShopsState> emit) async {
     try {
       String? userId = event.id;

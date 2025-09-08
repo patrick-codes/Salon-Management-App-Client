@@ -12,7 +12,7 @@ class OwnerShopModel {
   late String? location;
   late String? phone;
   late String? whatsapp;
-  late List<OwnerService>? ownerservices; // <-- FIXED
+  late List<OwnerService>? services; // <-- FIXED
   late String? profileImg;
   late String? dateJoined;
   late List<String>? workImgs;
@@ -30,7 +30,7 @@ class OwnerShopModel {
     required this.location,
     required this.phone,
     required this.whatsapp,
-    required this.ownerservices,
+    required this.services,
     required this.profileImg,
     required this.dateJoined,
     required this.workImgs,
@@ -50,7 +50,7 @@ class OwnerShopModel {
       "location": location,
       "phone": phone,
       "whatsapp": whatsapp,
-      "ownerservices": ownerservices?.map((s) => s.toJson()).toList(),
+      "service": services?.map((s) => s.toJson()).toList(),
       "profileImg": profileImg,
       "dateJoined": dateJoined,
       "workImgs": workImgs,
@@ -77,8 +77,8 @@ class OwnerShopModel {
         location: data["location"] ?? '',
         phone: data["phone"] ?? '',
         whatsapp: data["whatsapp"] ?? '',
-        ownerservices: data["ownerservices"] != null
-            ? (data["ownerservices"] as List)
+        services: data["service"] != null
+            ? (data["service"] as List)
                 .map((s) => OwnerService.fromJson(Map<String, dynamic>.from(s)))
                 .toList()
             : [],
@@ -107,7 +107,7 @@ class OwnerShopModel {
     location = "location";
     phone = "phone";
     whatsapp = "whatsapp";
-    ownerservices = [];
+    services = [];
     profileImg = "profileImg";
     dateJoined = "dateJoined";
     workImgs = [];

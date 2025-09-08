@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:salonapp_client/data%20repository/image%20uploader/cloudinary_uploader.dart';
+import '../../../../admin/presentation/owner shops/repository/data rmodel/service_model.dart';
 import '../data rmodel/h_shop_service_model.dart';
 import '../data rmodel/service_model.dart';
 import 'package:geodesy/geodesy.dart';
@@ -170,14 +171,15 @@ class SalonServiceHelper {
     }
   }
 
-  Future<List<ShopModel>> fetchShopOwner(String name) async {
+  Future<List<OwnerShopModel>> fetchShopOwner(String name) async {
     try {
       QuerySnapshot<Map<String, dynamic>> querySnapshot = await _db
           .collection("salonshops")
           .where("Category", isEqualTo: name)
           .get();
-      final salonshops =
-          querySnapshot.docs.map((doc) => ShopModel.fromSnapshot(doc)).toList();
+      final salonshops = querySnapshot.docs
+          .map((doc) => OwnerShopModel.fromSnapshot(doc))
+          .toList();
       print("Fetched ${salonshops.length} $name successfully");
       totalService2 = salonshops.length;
       return salonshops;
@@ -187,13 +189,13 @@ class SalonServiceHelper {
     }
   }
 
-  Future<ShopModel?> fetchSinglesalonshops(String? id) async {
+  Future<OwnerShopModel?> fetchSinglesalonshops(String? id) async {
     try {
       if (id == null) return null;
       DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
           await _db.collection("salonshops").doc(id).get();
       if (documentSnapshot.exists) {
-        final salonshops = ShopModel.fromSnapshot(documentSnapshot);
+        final salonshops = OwnerShopModel.fromSnapshot(documentSnapshot);
         print("Fetched salonshop with id: $id successfully");
         return salonshops;
       } else {

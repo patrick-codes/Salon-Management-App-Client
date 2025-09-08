@@ -19,7 +19,7 @@ class EmptyShopState extends SingleShopsState {
 }
 
 class SingleShopsFetchedState extends SingleShopsState {
-  ShopModel? shop;
+  OwnerShopModel? shop;
 
   SingleShopsFetchedState({required this.shop});
 }

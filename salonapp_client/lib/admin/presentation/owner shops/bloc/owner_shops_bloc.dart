@@ -129,7 +129,7 @@ class OwnerShopsBloc extends Bloc<OwnerShopsEvent, OwnerShopsState> {
         location: event.location,
         phone: event.phone,
         whatsapp: event.whatsapp,
-        ownerservices: event.services,
+        services: event.services,
         profileImg: profileImgUrl ?? "", //  uploaded profile image URL
         dateJoined: event.dateJoined,
         workImgs: workImgUrls, //  use uploaded work image URLs

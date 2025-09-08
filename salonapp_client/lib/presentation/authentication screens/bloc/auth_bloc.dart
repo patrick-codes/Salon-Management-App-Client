@@ -162,21 +162,24 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
 
       final userId = credential.user!.uid;
 
-      // 🔎 Fetch user document from Firestore to get role
+      // 🔎 Try to fetch user from Firestore
       final doc = await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
           .get();
 
-      if (!doc.exists) {
-        emit(AuthFailureState(errorMessage: "User record not found"));
-        return;
+      String role = "user"; // default
+      UserModel? userModel;
+
+      if (doc.exists) {
+        final data = doc.data()!;
+        role = data['role'] ?? "user";
+        userModel = UserModel.fromFirestore(doc, null);
+      } else {
+        debugPrint("⚠️ Firestore record not found for $userId");
       }
 
-      final data = doc.data()!;
-      final role = data['role'] ?? 'user'; // fallback to "user"
-
-      // Save token + role in SharedPreferences
+      // Save UID + role in SharedPreferences
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('authToken', userId);
       await prefs.setString('userRole', role);
@@ -184,9 +187,7 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
       debugPrint('AuthToken saved: $userId');
       debugPrint('Role saved: $role');
 
-      // Emit success state with role
-      final userModel = UserModel.fromFirestore(doc, null);
-
+      // Emit success
       emit(AuthenticatedState(
         message: 'Login Successful!!',
         user: userModel,
@@ -195,7 +196,7 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
       final exception =
           SignUpWithEmailAndPasswordFailure(error.message ?? error.code);
       emit(AuthFailureState(errorMessage: exception.message));
-      debugPrint("Firebase auth exception ${exception.message}");
+      debugPrint("Firebase auth exception: ${exception.message}");
     } catch (e) {
       emit(AuthFailureState(errorMessage: e.toString()));
       debugPrint('Error: ${e.toString()}');

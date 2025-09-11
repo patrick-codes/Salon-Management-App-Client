@@ -5,12 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:salonapp_client/presentation/authentication%20screens/bloc/auth_bloc.dart';
+import '../../../../presentation/shops/repository/data rmodel/service_model.dart';
 import '../../../helpers/config/size_config.dart';
 import '../../../helpers/constants/color_constants.dart';
 import '../../../helpers/text style/text_style.dart';
 import '../bloc/owner_shops_bloc.dart';
 import '../components/createservice_controllers.dart';
-import '../repository/data rmodel/service_model.dart';
 
 class OwnerCreateShopPage extends StatefulWidget {
   const OwnerCreateShopPage({super.key});
@@ -39,7 +39,7 @@ class _OwnerCreateShopPageState extends State<OwnerCreateShopPage> {
   String? selectedCategory;
   String? selectedDays;
   String? selectedTimes;
-  List<OwnerService> services = [];
+  List<Service> services = [];
   List<String> workImageUrls = [];
   String? profileImageUrl;
   bool? isLoading;
@@ -70,7 +70,7 @@ class _OwnerCreateShopPageState extends State<OwnerCreateShopPage> {
 
     if (name.isNotEmpty && price != null) {
       setState(() {
-        services.add(OwnerService(name: name, price: price));
+        services.add(Service(name: name, price: price));
       });
       serviceNameController.clear();
       servicePriceController.clear();
@@ -104,12 +104,14 @@ class _OwnerCreateShopPageState extends State<OwnerCreateShopPage> {
         } else if (state is OwnerShopCreateFailureState) {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(state.error)));
-        } else if (state is AuthLogoutSuccesState) {
-          Navigator.pushNamed(context, '/');
         }
+        //  else if (state is AuthLogoutSuccesState) {
+        //   Navigator.pushNamed(context, '/');
+        // }
         // else if (state is ProfileImageLoadingState) {}
       },
       builder: (context, state) {
+        debugPrint("🔄 Current OwnerShopsBloc state: $state");
         return Scaffold(
           backgroundColor: whiteColor,
           appBar: AppBar(
@@ -153,7 +155,7 @@ class _OwnerCreateShopPageState extends State<OwnerCreateShopPage> {
                           image: DecorationImage(
                             fit: BoxFit.cover,
                             image: NetworkImage(profileImageUrl ??
-                                'https://unsplash.com/photos/barber-shop-tools-on-old-wooden-background-cCRNOTyXl18'),
+                                'https://images.unsplash.com/photo-1522336572468-97b06e8ef143?w=800'),
                           ),
                           boxShadow: const [
                             BoxShadow(

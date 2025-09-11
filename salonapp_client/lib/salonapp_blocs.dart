@@ -39,10 +39,9 @@ class SalonAppBlocs extends StatelessWidget {
               OwnerLocationBloc()..add(LoadOwnerLocationEvent()),
         ),
         BlocProvider(
-          create: (context) => OwnerShopsBloc(context.read<OwnerLocationBloc>())
-            ..add(ViewOwnerShopsEvent())
+          create: (context) => OwnerShopsBloc()
             ..add(FetchOwnerShopEvent(
-              ownerId: FirebaseAuth.instance.currentUser!.uid,
+              ownerId: FirebaseAuth.instance.currentUser?.uid ?? '',
             )),
         ),
       ],

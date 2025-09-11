@@ -3,15 +3,15 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:salonapp_client/presentation/shops/repository/data%20rmodel/service_model.dart';
 import '../../../../data/image uploader/image_uploader.dart';
 import '../data rmodel/h_shop_service_model.dart';
-import '../data rmodel/service_model.dart';
 import 'package:geodesy/geodesy.dart';
 
 class OwnerSalonServiceHelper {
   int? totalService;
   int? totalService2;
-  List<OwnerShopModel> shopList = [];
+  List<ShopModel> shopList = [];
 
   final _db = FirebaseFirestore.instance;
   final firebaseUser = FirebaseAuth.instance.currentUser!.uid;
@@ -37,7 +37,7 @@ class OwnerSalonServiceHelper {
     return uploadedUrl;
   }
 
-  Future<void> createService(OwnerShopModel shop) async {
+  Future<void> createService(ShopModel shop) async {
     try {
       // Handle profile image safely
       final profileImgUrl = await uploadImage(shop.profileImg);
@@ -66,17 +66,17 @@ class OwnerSalonServiceHelper {
     }
   }
 
-  Future<List<OwnerShopModel>> fetchAllSalonShops(
+  Future<List<ShopModel>> fetchAllSalonShops(
       double? userLatitude, double? userLongitude) async {
     try {
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
           await _db.collection("salonshops").get();
 
-      final List<OwnerShopModel> salonShops = [];
+      final List<ShopModel> salonShops = [];
 
       for (var doc in querySnapshot.docs) {
         try {
-          salonShops.add(OwnerShopModel.fromSnapshot(doc));
+          salonShops.add(ShopModel.fromSnapshot(doc));
         } catch (e) {
           print("Skipping shop ${doc.id} due to parse error: $e");
         }
@@ -85,7 +85,7 @@ class OwnerSalonServiceHelper {
       print("Fetched ${salonShops.length} valid salonShops successfully");
 
       // Filter nearby shops
-      List<OwnerShopModel> nearbyShops = [];
+      List<ShopModel> nearbyShops = [];
       for (var shop in salonShops) {
         if (isShopNearby(shop, userLatitude, userLongitude)) {
           nearbyShops.add(shop);
@@ -100,15 +100,14 @@ class OwnerSalonServiceHelper {
     }
   }
 
-  Future<List<OwnerShopModel>> fetchShopOwner(String name) async {
+  Future<List<ShopModel>> fetchShopOwner(String name) async {
     try {
       QuerySnapshot<Map<String, dynamic>> querySnapshot = await _db
           .collection("salonshops")
           .where("Category", isEqualTo: name)
           .get();
-      final salonshops = querySnapshot.docs
-          .map((doc) => OwnerShopModel.fromSnapshot(doc))
-          .toList();
+      final salonshops =
+          querySnapshot.docs.map((doc) => ShopModel.fromSnapshot(doc)).toList();
       print("Fetched ${salonshops.length} $name successfully");
       totalService2 = salonshops.length;
       return salonshops;
@@ -118,7 +117,7 @@ class OwnerSalonServiceHelper {
     }
   }
 
-  Future<OwnerShopModel?> fetchOwnerSalonShop(String ownerId) async {
+  Future<ShopModel?> fetchOwnerSalonShop(String ownerId) async {
     try {
       final querySnapshot = await _db
           .collection("salonshops")
@@ -127,7 +126,7 @@ class OwnerSalonServiceHelper {
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        final salonShop = OwnerShopModel.fromSnapshot(querySnapshot.docs.first);
+        final salonShop = ShopModel.fromSnapshot(querySnapshot.docs.first);
         print("Fetched salonshop for ownerId: $ownerId successfully");
         return salonShop;
       } else {
@@ -160,7 +159,7 @@ class OwnerSalonServiceHelper {
   }
 
   static bool isShopNearby(
-      OwnerShopModel shop, double? userLatitude, double? userLongitude) {
+      ShopModel shop, double? userLatitude, double? userLongitude) {
     if (shop.cordinates.length < 2) {
       debugPrint("Error: Shop coordinates are missing or incomplete.");
       return false;

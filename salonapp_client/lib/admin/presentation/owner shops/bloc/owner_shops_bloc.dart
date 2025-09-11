@@ -4,33 +4,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../../presentation/shops/repository/data rmodel/service_model.dart';
 import '../../../data/image uploader/image_uploader.dart';
 import '../../owner location/bloc/owner_location_bloc.dart';
-import '../repository/data rmodel/service_model.dart';
 import '../repository/salonservices helper/owner_fetch_services_helper.dart';
 
 part 'owner_shops_events.dart';
 part 'owner_shops_state.dart';
 
 class OwnerShopsBloc extends Bloc<OwnerShopsEvent, OwnerShopsState> {
-  List<OwnerShopModel>? serviceman;
-  OwnerShopModel? singleServiceMan;
-  OwnerShopModel? singleService;
-  final OwnerLocationBloc locationBloc;
+  List<ShopModel>? serviceman;
+  ShopModel? singleServiceMan;
+  ShopModel? singleService;
+  // final OwnerLocationBloc locationBloc;
   final firebaseUser = FirebaseAuth.instance.currentUser!.uid;
 
-  List<OwnerShopModel>? serviceman2 = [];
-  List<OwnerShopModel>? serviceman3 = [];
-  static OwnerSalonServiceHelper salonHelper = OwnerSalonServiceHelper();
+  List<ShopModel>? serviceman2 = [];
+  List<ShopModel>? serviceman3 = [];
   int serviceNum = 0;
   int num = 0;
   int total = 0;
 
   final OwnerSalonServiceHelper shopHelper = OwnerSalonServiceHelper();
   OwnerShopsBloc(
-    this.locationBloc,
-  ) : super(OwnerShopInitial()) {
-    on<ViewOwnerShopsEvent>(fetchShops);
+      // this.locationBloc,
+      )
+      : super(OwnerShopInitial()) {
+    // on<ViewOwnerShopsEvent>(fetchShops);
     on<OwnerSearchShopEvent>(searchShops);
     on<OwnerPickProfileImageEvent>(onPickImage);
     on<OwnerPickShopImageEvent>(onPickWorkImage);
@@ -119,7 +119,7 @@ class OwnerShopsBloc extends Bloc<OwnerShopsEvent, OwnerShopsState> {
       event.cordinates = [position.latitude, position.longitude];
 
       //  Save shop to Firestore with uploaded URLs
-      final shopData = OwnerShopModel(
+      final shopData = ShopModel(
         shopOwnerId: firebaseUser,
         shopName: event.shopName,
         category: event.category,
@@ -137,7 +137,7 @@ class OwnerShopsBloc extends Bloc<OwnerShopsEvent, OwnerShopsState> {
         isOpen: event.isOpen,
       );
 
-      await salonHelper.createService(shopData);
+      await shopHelper.createService(shopData);
 
       debugPrint('Shop Created Successfully');
       emit(OwnerShopCreatedSuccesState(message: 'Shop Created Successfully'));
@@ -148,47 +148,47 @@ class OwnerShopsBloc extends Bloc<OwnerShopsEvent, OwnerShopsState> {
     }
   }
 
-  Future<List<OwnerShopModel>?> fetchShops(
-      ViewOwnerShopsEvent event, Emitter<OwnerShopsState> emit) async {
-    emit(OwnerShopsLoadingState());
-    try {
-      final locationState = locationBloc.state;
-      debugPrint("LocationBloc State: $locationState");
+  // Future<List<ShopModel>?> fetchShops(
+  //     ViewOwnerShopsEvent event, Emitter<OwnerShopsState> emit) async {
+  //   emit(OwnerShopsLoadingState());
+  //   try {
+  //     final locationState = locationBloc.state;
+  //     debugPrint("LocationBloc State: $locationState");
 
-      if (locationState is OwnerLocationFetchedState) {
-        double? userLatitude = locationState.latitude;
-        double? userLongitude = locationState.longitude;
-        debugPrint("Location Fetched: $userLatitude, $userLongitude");
+  //     if (locationState is OwnerLocationFetchedState) {
+  //       double? userLatitude = locationState.latitude;
+  //       double? userLongitude = locationState.longitude;
+  //       debugPrint("Location Fetched: $userLatitude, $userLongitude");
 
-        serviceman =
-            await salonHelper.fetchAllSalonShops(userLatitude, userLongitude);
-        num = serviceman?.length ?? 0;
-        serviceman2 = serviceman;
-        serviceman3 = serviceman2;
-        total = num;
+  //       serviceman =
+  //           await salonHelper.fetchAllSalonShops(userLatitude, userLongitude);
+  //       num = serviceman?.length ?? 0;
+  //       serviceman2 = serviceman;
+  //       serviceman3 = serviceman2;
+  //       total = num;
 
-        debugPrint("Total Nearby Shops: $num");
-        emit(OwnerShopsFetchedState(shop: serviceman));
+  //       debugPrint("Total Nearby Shops: $num");
+  //       emit(OwnerShopsFetchedState(shop: serviceman));
 
-        if (userLatitude == null || userLongitude == null) {
-          debugPrint("Error: Latitude or Longitude is null!");
-          emit(OwnerShopsFetchFailureState(
-              errorMessage: "User location not available."));
-        }
-      } else {
-        debugPrint("Error: User location not available.");
-        emit(OwnerShopsFetchFailureState(
-            errorMessage: "User location not available."));
-      }
-    } on FirebaseAuthException catch (error) {
-      debugPrint("Firebase Error: $error");
-      emit(OwnerShopsFetchFailureState(errorMessage: error.toString()));
-    } catch (error) {
-      debugPrint("Error: $error");
-      emit(OwnerShopsFetchFailureState(errorMessage: error.toString()));
-    }
-    return serviceman;
-  }
+  //       if (userLatitude == null || userLongitude == null) {
+  //         debugPrint("Error: Latitude or Longitude is null!");
+  //         emit(OwnerShopsFetchFailureState(
+  //             errorMessage: "User location not available."));
+  //       }
+  //     } else {
+  //       debugPrint("Error: User location not available.");
+  //       emit(OwnerShopsFetchFailureState(
+  //           errorMessage: "User location not available."));
+  //     }
+  //   } on FirebaseAuthException catch (error) {
+  //     debugPrint("Firebase Error: $error");
+  //     emit(OwnerShopsFetchFailureState(errorMessage: error.toString()));
+  //   } catch (error) {
+  //     debugPrint("Error: $error");
+  //     emit(OwnerShopsFetchFailureState(errorMessage: error.toString()));
+  //   }
+  //   return serviceman;
+  // }
 
   Future<void> _onFetchOwnerShopEvent(
       FetchOwnerShopEvent event, Emitter<OwnerShopsState> emit) async {

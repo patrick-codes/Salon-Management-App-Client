@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salonapp_client/presentation/shops/pages/shop%20info/shop_info.dart';
 import 'admin/presentation/appointments/pages/appointments_page.dart';
 import 'admin/presentation/home/pages/owner_home.dart';
+import 'admin/presentation/home/pages/owner_shop_lists_page.dart';
+import 'admin/presentation/home/pages/ownershop_details_page.dart';
 import 'admin/presentation/owner shops/pages/manage_shop.dart';
 import 'admin/presentation/owner shops/pages/owner_create_shopservice_page.dart';
 import 'helpers/colors/color_constants.dart';
@@ -52,6 +54,7 @@ class SalonApp extends StatelessWidget {
               '/createshop': (context) => const OwnerCreateShopPage(),
               '/ownerappointment': (context) => OwnerAppointmentsPage(),
               '/appointments': (context) => AppointmentsPage(),
+              '/listownershops': (context) => OwnerShopsListPage(),
               '/manageshop': (context) => ManageShopPage(
                     shopId: '',
                   ),
@@ -85,6 +88,7 @@ class SalonApp extends StatelessWidget {
                   ),
                 );
               }
+
               return null;
             },
             theme: ThemeData(

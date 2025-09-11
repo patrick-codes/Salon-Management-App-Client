@@ -7,13 +7,13 @@ class OwnerShopInitial extends OwnerShopsState {}
 class OwnerShopsLoadingState extends OwnerShopsState {}
 
 class OwnerShopsFetchedState extends OwnerShopsState {
-  List<OwnerShopModel>? shop;
+  List<ShopModel>? shop;
 
   OwnerShopsFetchedState({required this.shop});
 }
 
 class SingleOwnerShopsFetchedState extends OwnerShopsState {
-  OwnerShopModel? shop;
+  ShopModel? shop;
 
   SingleOwnerShopsFetchedState({required this.shop});
 }
@@ -98,7 +98,7 @@ class OwnerProfileImagesPickedState extends OwnerShopsState {
 class OwnerShopLoading extends OwnerShopsState {}
 
 class OwnerShopLoaded extends OwnerShopsState {
-  final OwnerShopModel shop;
+  final ShopModel shop;
   OwnerShopLoaded(this.shop);
 }
 

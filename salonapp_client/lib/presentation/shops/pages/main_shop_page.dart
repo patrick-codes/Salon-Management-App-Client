@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:icons_plus/icons_plus.dart';
-import 'package:salonapp_client/admin/presentation/owner%20shops/repository/data%20rmodel/service_model.dart';
 import 'package:salonapp_client/presentation/checkout%20page/components/cedi_sign_component.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../helpers/colors/color_constants.dart';
@@ -81,7 +80,7 @@ class _DetailsPageState extends State<MainShopinfoPage> {
     "Share",
   ];
   bool isOpen = true;
-  OwnerShopModel? shop;
+  ShopModel? shop;
   String text = 'No shops available !!';
   String? servicetype;
   double? fee;

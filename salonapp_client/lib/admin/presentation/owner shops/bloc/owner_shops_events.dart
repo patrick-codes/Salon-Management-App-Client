@@ -13,7 +13,7 @@ class OwnerCreateShopEvent extends OwnerShopsEvent {
   final String location;
   final String phone;
   final String whatsapp;
-  final List<OwnerService>? services;
+  final List<Service>? services;
   String? profileImg; // will be filled after upload
   final String dateJoined;
   List<String> workImgs = []; // will be filled after upload

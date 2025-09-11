@@ -6,6 +6,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:salonapp_client/helpers/colors/color_constants.dart';
 import '../../../../presentation/authentication screens/bloc/auth_bloc.dart';
+import '../../../../presentation/shops/repository/data rmodel/service_model.dart';
 import '../../../helpers/config/size_config.dart';
 import '../../../helpers/text style/text_style.dart';
 import '../../../helpers/widgets/app_bar.dart';
@@ -14,7 +15,6 @@ import '../../../helpers/widgets/show_up_animation.dart';
 import '../../appointments/bloc/owner_appointment_bloc.dart';
 import '../../owner location/bloc/owner_location_bloc.dart';
 import '../../notifications/components/local notification/local_notification_service.dart';
-import '../../owner shops/repository/data rmodel/service_model.dart';
 import '../../owner shops/repository/salonservices helper/owner_fetch_services_helper.dart';
 
 class OwnerHomePage extends StatefulWidget {
@@ -128,6 +128,16 @@ class _OwnerHomePageState extends State<OwnerHomePage>
               count: unreadCount,
             ),
           ),
+          floatingActionButton: FloatingActionButton(
+              backgroundColor: primaryColor,
+              shape: CircleBorder(),
+              child: Icon(
+                MingCute.scissors_line,
+                color: blackColor,
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, '/listownershops');
+              }),
           bottomNavigationBar: Padding(
               padding: const EdgeInsets.all(12.0),
               child: GestureDetector(
@@ -151,7 +161,8 @@ class _OwnerHomePageState extends State<OwnerHomePage>
                           size: 25,
                         ),
                         SizedBox(width: 5),
-                        fetchOwner.shopList.length! > 1
+                        (fetchOwner.shopList != null &&
+                                fetchOwner.shopList!.length > 1)
                             ? PrimaryText(
                                 text: 'Get Started',
                                 size: 14,
@@ -319,9 +330,9 @@ class _OwnerHomePageState extends State<OwnerHomePage>
         SizedBox(height: 8),
         ShowUpAnimation(
           delay: 300,
-          child: FutureBuilder<OwnerShopModel?>(
-            future: fetchOwner
-                .fetchOwnerSalonShop(FirebaseAuth.instance.currentUser!.uid),
+          child: FutureBuilder<ShopModel?>(
+            future: fetchOwner.fetchOwnerSalonShop(
+                FirebaseAuth.instance.currentUser?.uid ?? ''),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return SizedBox(
@@ -332,10 +343,21 @@ class _OwnerHomePageState extends State<OwnerHomePage>
                   ),
                 );
               }
-              if (!snapshot.hasData) {
-                hasData == false;
+
+              if (snapshot.hasError) {
+                debugPrint("Error fetching shop: ${snapshot.error}");
+                return Center(
+                    child: Text("Something went wrong: ${snapshot.error}"));
+              }
+
+              if (!snapshot.hasData || snapshot.data == null) {
+                hasData = false; // 👈 fixed assignment
                 return createShopContainer(context);
               }
+              // if (!snapshot.hasData) {
+              //   hasData == false;
+              //   return createShopContainer(context);
+              // }
 
               final shop = snapshot.data!;
               return Column(
@@ -382,59 +404,6 @@ class _OwnerHomePageState extends State<OwnerHomePage>
     );
   }
 
-  // Future<void> scrollBottomSheet(BuildContext context) {
-  //   return showModalBottomSheet(
-  //     context: context,
-  //     clipBehavior: Clip.hardEdge,
-  //     //enableDrag: true,
-  //     //useSafeArea: true,
-  //     showDragHandle: true,
-  //     isDismissible: true,
-  //     isScrollControlled: true,
-  //     backgroundColor: Colors.white,
-  //     shape: const RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.vertical(
-  //         top: Radius.circular(25),
-  //       ),
-  //     ),
-  //     builder: (BuildContext context) {
-  //       return DraggableScrollableSheet(
-  //         expand: false,
-  //         initialChildSize: 0.8,
-  //         minChildSize: 0.2,
-  //         maxChildSize: 0.9,
-  //         builder: (BuildContext context, ScrollController scrollController) {
-  //           return SizedBox(
-  //             height: 125,
-  //             width: MediaQuery.of(context).size.width,
-  //             child: ListView.builder(
-  //               itemCount: 4,
-  //               scrollDirection: Axis.vertical,
-  //               itemBuilder: (BuildContext context, int index) {
-  //                 return ShowUpAnimation(
-  //                   delay: 300,
-  //                   child: buildShopCard(
-  //                       Colors.white,
-  //                       context,
-  //                       "Toronto Haircut",
-  //                       "Weija-Scc, Accra",
-  //                       "assets/svgs/${svgs[0]}.svg",
-  //                       10,
-  //                       10,
-  //                       Colors.black,
-  //                       Colors.grey.shade500,
-  //                       Colors.grey.shade200,
-  //                       ''),
-  //                 );
-  //               },
-  //             ),
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
-
   Widget buildShopCard(
     Color color,
     BuildContext context,
@@ -466,7 +435,11 @@ class _OwnerHomePageState extends State<OwnerHomePage>
               color: Colors.transparent, // 👈 add this
               image: DecorationImage(
                 fit: BoxFit.cover,
-                image: NetworkImage(imgs ?? ''),
+                image: NetworkImage(
+                  (imgs != null && imgs.isNotEmpty)
+                      ? imgs
+                      : 'https://via.placeholder.com/150',
+                ),
               ),
               borderRadius: BorderRadius.circular(10),
               border: Border.all(

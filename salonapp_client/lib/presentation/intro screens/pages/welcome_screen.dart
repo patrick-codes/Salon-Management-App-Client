@@ -30,7 +30,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
       bottomNavigationBar: SizedBox(
-        height: 200,
+        height: 140,
         child: Padding(
           padding: const EdgeInsets.all(30.0),
           child: Column(
@@ -57,18 +57,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     Navigator.pushReplacementNamed(context, '/login');
                   },
                   color: primaryColor,
-                ),
-              ),
-              SizedBox(height: 10),
-              ShowUpAnimation(
-                delay: 300,
-                child: CustomButton(
-                  textColor: blackColor,
-                  text: "Shop Owner",
-                  onpressed: () {
-                    Navigator.pushReplacementNamed(context, '/login');
-                  },
-                  color: whiteColor,
                 ),
               ),
             ],

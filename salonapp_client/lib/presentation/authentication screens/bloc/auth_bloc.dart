@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,24 +31,53 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
   }
 
   Future<void> onAppStarted(
-      AppStartedEvent event, Emitter<AuthState> emit) async {
+    AppStartedEvent event,
+    Emitter<AuthState> emit,
+  ) async {
     emit(AuthLoadingState());
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('authToken');
+    final String? role = prefs.getString('userRole'); // 👈 restore role too
+
     debugPrint('Token retrieved on app start: $token');
+    debugPrint('Role retrieved on app start: $role');
 
     if (token != null && token.isNotEmpty) {
-      debugPrint('User is logged in with token: $token');
+      try {
+        // Optionally fetch latest user data from Firestore
+        final doc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(token)
+            .get();
 
-      if (!emit.isDone) {
-        emit(AuthenticatedState(message: 'Signup Succesful!!'));
+        if (doc.exists) {
+          final user = UserModel.fromFirestore(doc, null);
+
+          emit(AuthenticatedState(
+            message: 'Welcome back!',
+            user: user,
+          ));
+        } else {
+          // fallback if no doc, use cached role
+          emit(AuthenticatedState(
+            message: 'Welcome back!',
+            user: UserModel(
+              id: token,
+              fullname: 'Unknown',
+              email: '',
+              phone: '',
+              password: '',
+              profilePhoto: '',
+              role: role ?? 'user', // 👈 default to saved role
+            ),
+          ));
+        }
+      } catch (e) {
+        emit(AuthFailureState(errorMessage: e.toString()));
       }
     } else {
-      debugPrint('No token found, navigating to login.');
-      if (!emit.isDone) {
-        emit(UnAuthenticatedState());
-      }
+      emit(UnAuthenticatedState());
     }
   }
 
@@ -92,20 +122,23 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
         fullname: event.fullName,
         email: event.email,
         phone: event.phone,
+        role: event.role,
         password: event.password,
         profilePhoto: imageUrl ?? '',
       );
 
       await AccountHelper.createUser(user);
 
-      emit(AuthenticatedState(message: 'Account Created Successfully!!'));
+      emit(AuthenticatedState(
+          message: 'Account Created Successfully!!', user: user));
       debugPrint('Account Created Successfully!!');
 
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('authToken', _auth.currentUser!.uid);
+      await prefs.setString('userRole', event.role);
 
       debugPrint('AuthToken saved locally.');
-      debugPrint('AuthToken saved: ${_auth.currentUser!.uid}');
+      debugPrint('Role saved locally: ${event.role}');
     } on FirebaseAuthException catch (error) {
       final exception =
           SignUpWithEmailAndPasswordFailure(error.message.toString());
@@ -121,25 +154,52 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
     try {
       emit(AuthLoadingState());
 
-      await _auth.signInWithEmailAndPassword(
+      // Sign in with Firebase
+      final credential = await _auth.signInWithEmailAndPassword(
         email: event.email,
         password: event.password,
       );
 
-      emit(AuthenticatedState(message: 'Login Succesful!!'));
-      debugPrint('Login Succesful!!');
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('authToken', _auth.currentUser!.uid);
+      final userId = credential.user!.uid;
 
-      debugPrint('AuthToken saved locally.');
-      debugPrint('AuthToken saved: ${_auth.currentUser!.uid}');
+      // 🔎 Try to fetch user from Firestore
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      String role = "user"; // default
+      UserModel? userModel;
+
+      if (doc.exists) {
+        final data = doc.data()!;
+        role = data['role'] ?? "user";
+        userModel = UserModel.fromFirestore(doc, null);
+      } else {
+        debugPrint("⚠️ Firestore record not found for $userId");
+      }
+
+      // Save UID + role in SharedPreferences
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('authToken', userId);
+      await prefs.setString('userRole', role);
+
+      debugPrint('AuthToken saved: $userId');
+      debugPrint('Role saved: $role');
+
+      // Emit success
+      emit(AuthenticatedState(
+        message: 'Login Successful!!',
+        user: userModel,
+      ));
     } on FirebaseAuthException catch (error) {
-      final exception = SignUpWithEmailAndPasswordFailure(error.code);
+      final exception =
+          SignUpWithEmailAndPasswordFailure(error.message ?? error.code);
       emit(AuthFailureState(errorMessage: exception.message));
-      debugPrint("Firebase auth exception ${exception.message}");
+      debugPrint("Firebase auth exception: ${exception.message}");
     } catch (e) {
       emit(AuthFailureState(errorMessage: e.toString()));
-      debugPrint('Error:${e.toString()}');
+      debugPrint('Error: ${e.toString()}');
     }
   }
 
@@ -180,17 +240,16 @@ class AuthBloc extends Bloc<AuthEvents, AuthState> {
     emit(UserLoadingState());
 
     try {
-      final user =
-          await UserModel.getCurrentUser(); // uses FirebaseAuth internally
+      final user = await UserModel.getCurrentUser(); // already fetches role too
 
-      if (user.id!.isNotEmpty) {
-        emit(CurrentUserState(user));
+      if (user.id != null && user.id!.isNotEmpty) {
+        emit(CurrentUserState(user)); // UI can now access user.role
       } else {
         emit(UserLoadingFailState("No authenticated user found"));
       }
     } catch (e) {
       emit(UserLoadingFailState(e.toString()));
-      debugPrint(e.toString());
+      debugPrint("Error in currentUser: $e");
     }
   }
 }

@@ -12,6 +12,8 @@ class UserModel {
   late String? password;
   late String? profilePhoto;
   late DateTime? createdAt;
+  late String? role; // 👈 added
+
   UserModel({
     this.id,
     required this.fullname,
@@ -20,6 +22,7 @@ class UserModel {
     required this.password,
     required this.profilePhoto,
     this.createdAt,
+    required this.role, // 👈 added
   });
 
   Map<String, dynamic> toJson() {
@@ -31,18 +34,8 @@ class UserModel {
       'password': password,
       'profilePhoto': profilePhoto,
       'createdAt': FieldValue.serverTimestamp(),
+      'role': role, // 👈 added
     };
-  }
-
-  UserModel.defaultModel() {
-    // Set default values for the fields
-    id = null;
-    fullname = 'Default fullname';
-    email = 'default@example.com';
-    phone = '233################';
-    password = 'Default Password';
-    profilePhoto = 'profilePhoto';
-    createdAt = DateTime.now();
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
@@ -50,10 +43,11 @@ class UserModel {
       id: map['id'],
       email: map['email'],
       fullname: map['fullname'],
-      profilePhoto: map['photoUrl'],
+      profilePhoto: map['profilePhoto'],
       phone: map['phone'],
       password: map['password'],
       createdAt: (map['createdAt'] as Timestamp?)?.toDate(),
+      role: map['role'], // 👈 added
     );
   }
 
@@ -69,6 +63,7 @@ class UserModel {
         password: data['password'],
         profilePhoto: data['profilePhoto'],
         createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
+        role: data['role'], // 👈 added
       );
     } else {
       print('Document not found for id: ${document.id}');
@@ -91,6 +86,7 @@ class UserModel {
       password: data['password'],
       profilePhoto: data['profilePhoto'],
       createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
+      role: data['role'], // 👈 added
     );
   }
 
@@ -102,7 +98,19 @@ class UserModel {
       fullname: 'Guest',
       password: '',
       profilePhoto: '',
+      role: 'guest', // 👈 added
     );
+  }
+
+  UserModel.defaultModel() {
+    id = null;
+    fullname = 'Default fullname';
+    email = 'default@example.com';
+    phone = '233################';
+    password = 'Default Password';
+    profilePhoto = 'profilePhoto';
+    createdAt = DateTime.now();
+    role = 'user'; // 👈 added default
   }
 
   static Future<UserModel> getCurrentUser() async {

@@ -28,6 +28,7 @@ class _SignupScrenState extends State<SignupScren> {
   File? image;
 
   final formKey = GlobalKey<FormState>();
+  String? selectedRole = "user";
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +53,14 @@ class _SignupScrenState extends State<SignupScren> {
             type: ToastificationType.error,
           );
         } else if (state is AuthenticatedState) {
-          Navigator.pushReplacementNamed(context, '/mainhome');
+          final user = state.user;
+
+          if (user?.role == "shopowner") {
+            Navigator.pushReplacementNamed(context, '/ownerhome');
+          } else {
+            Navigator.pushReplacementNamed(context, '/mainhome');
+          }
+
           toastification.show(
             showProgressBar: false,
             description: Column(
@@ -81,6 +89,14 @@ class _SignupScrenState extends State<SignupScren> {
               statusBarColor: primaryColor,
               statusBarIconBrightness: Brightness.light,
             ),
+            centerTitle: true,
+            title: Text(
+              "Create Account",
+              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                    color: backgroundColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
             leading: const Icon(
               MingCute.arrow_left_fill,
               color: primaryColor,
@@ -96,13 +112,7 @@ class _SignupScrenState extends State<SignupScren> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    "Create Account",
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                          color: backgroundColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
+                  SizedBox(height: 40),
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: ShowUpAnimation(
@@ -126,7 +136,6 @@ class _SignupScrenState extends State<SignupScren> {
                           //     ),
                           //   ),
                           // ),
-                          // const SizedBox(height: 18),
                           Center(
                             child: GestureDetector(
                               onTap: () => context
@@ -184,7 +193,7 @@ class _SignupScrenState extends State<SignupScren> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 15),
+                          const SizedBox(height: 25),
                           Form(
                             key: formKey,
                             child: Column(
@@ -245,6 +254,30 @@ class _SignupScrenState extends State<SignupScren> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                   ),
+                                ),
+                                const SizedBox(height: 10),
+                                DropdownButtonFormField<String>(
+                                  value: selectedRole,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedRole = value!;
+                                    });
+                                  },
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    labelText: "Select Role",
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8)),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                  ),
+                                  items: const [
+                                    DropdownMenuItem(
+                                        value: "user", child: Text("User")),
+                                    DropdownMenuItem(
+                                        value: "shopowner",
+                                        child: Text("Shop Owner")),
+                                  ],
                                 ),
                                 const SizedBox(height: 10),
                                 TextFormField(
@@ -337,6 +370,7 @@ class _SignupScrenState extends State<SignupScren> {
                                         fullName: _fullName,
                                         gender: _gender,
                                         phone: _phone,
+                                        role: selectedRole!,
                                         email: _email,
                                         password: _password,
                                       ),
@@ -396,7 +430,7 @@ class _SignupScrenState extends State<SignupScren> {
                           Divider(
                             color: Colors.grey.shade400,
                           ),
-                          const SizedBox(height: 50),
+                          const SizedBox(height: 30),
                           GestureDetector(
                             onTap: () {
                               Navigator.pushNamed(context, '/login');

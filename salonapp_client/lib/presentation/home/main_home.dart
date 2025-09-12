@@ -24,9 +24,9 @@ class _MainHomePageState extends State<MainHomePage> {
 
   List<Widget> pages = [
     MyHomePage(),
-    // CreateShopPage(),
     ShopsPage(),
     AppointmentsPage(),
+//    CreateShopPage(),
     AccountPage(),
   ];
 
@@ -69,10 +69,6 @@ class _MainHomePageState extends State<MainHomePage> {
                 icon: MingCute.home_5_line,
                 text: 'Home',
               ),
-              // GButton(
-              //   icon: MingCute.certificate_line,
-              //   text: 'Create',
-              // ),
               GButton(
                 icon: MingCute.scissors_line,
                 text: 'Shops',

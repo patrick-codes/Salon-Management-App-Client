@@ -8,12 +8,14 @@ class CustomButton extends StatelessWidget {
   String text;
   final void Function() onpressed;
   Color color;
+  Color? textColor;
   IconData? icon;
   CustomButton({
     Key? key,
     required this.text,
     required this.onpressed,
     required this.color,
+    this.textColor,
     this.icon,
   }) : super(key: key);
 
@@ -39,7 +41,7 @@ class CustomButton extends StatelessWidget {
               Text(
                 text,
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: secondaryColor,
+                      color: textColor ?? secondaryColor,
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),

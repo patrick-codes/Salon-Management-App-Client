@@ -30,25 +30,26 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
       bottomNavigationBar: SizedBox(
-        height: 110,
-        child: Column(
-          children: [
-            Center(
-              child: SmoothPageIndicator(
-                controller: _controller,
-                count: infos.length,
-                effect: const ExpandingDotsEffect(
-                  paintStyle: PaintingStyle.fill,
-                  activeDotColor: primaryColor,
-                  dotHeight: 8,
-                  dotWidth: 8,
-                  spacing: 8,
+        height: 140,
+        child: Padding(
+          padding: const EdgeInsets.all(30.0),
+          child: Column(
+            children: [
+              Center(
+                child: SmoothPageIndicator(
+                  controller: _controller,
+                  count: infos.length,
+                  effect: const ExpandingDotsEffect(
+                    paintStyle: PaintingStyle.fill,
+                    activeDotColor: primaryColor,
+                    dotHeight: 8,
+                    dotWidth: 8,
+                    spacing: 8,
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: ShowUpAnimation(
+              SizedBox(height: 15),
+              ShowUpAnimation(
                 delay: 300,
                 child: CustomButton(
                   text: "Get Started",
@@ -58,8 +59,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   color: primaryColor,
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       body: Stack(

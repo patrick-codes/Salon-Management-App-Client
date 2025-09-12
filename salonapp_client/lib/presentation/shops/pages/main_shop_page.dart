@@ -492,7 +492,6 @@ class _DetailsPageState extends State<MainShopinfoPage> {
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     final service = shop!.services![index];
-
                                     return GestureDetector(
                                       onTap: () {
                                         setState(() {

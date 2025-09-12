@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'auth_bloc.dart';
 
 sealed class AuthState {}
@@ -9,8 +8,10 @@ class AuthLoadingState extends AuthState {}
 
 class AuthenticatedState extends AuthState {
   final String message;
+  final UserModel? user;
+  String? role;
 
-  AuthenticatedState({required this.message});
+  AuthenticatedState({required this.message, this.user, this.role});
 }
 
 class UnAuthenticatedState extends AuthState {}

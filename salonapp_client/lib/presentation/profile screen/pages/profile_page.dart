@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
-
 import '../../../helpers/colors/color_constants.dart';
 import '../../../helpers/widgets/text_widgets.dart';
 import '../../authentication screens/bloc/auth_bloc.dart';

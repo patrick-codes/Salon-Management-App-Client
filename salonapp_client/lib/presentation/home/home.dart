@@ -102,6 +102,25 @@ class _MyHomePageState extends State<MyHomePage>
     "undraw_pie-graph_8m6b",
   ];
 
+  List<Map<String, String>> bannerTitle = [
+    {
+      'title': 'Do you own a salon or barbershop?',
+      'subtitle': 'Register now and start growing your business with us!',
+      'image': 'assets/images/img-ten.jpg'
+    },
+    {
+      'title': 'Turn your shop into a brand',
+      'subtitle': 'List your salon, manage bookings, and reach more clients.',
+      'image': 'assets/images/img-sixteen.jpg'
+    },
+    {
+      'title': 'Be part of the Hairvana community',
+      'subtitle':
+          'Join hundreds of shop owners already getting more customers.',
+      'image': 'assets/images/img3.jpg'
+    },
+  ];
+
   List<ShopModel>? shops;
   UserModel? user;
   bool isLoaded = false;
@@ -365,14 +384,18 @@ class _MyHomePageState extends State<MyHomePage>
                         SizedBox(
                           height: 140,
                           width: MediaQuery.of(context).size.width,
-                          child: ListView.builder(
-                            itemCount: 1,
+                          child: PageView.builder(
+                            itemCount: bannerTitle.length,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (BuildContext context, int index) {
+                              final banner = bannerTitle[index];
                               return ShowUpAnimation(
                                 delay: 300,
-                                child: buildDisCountCard(icons[index],
-                                    title[index], "assets/images/img6.jpg"),
+                                child: buildDisCountCard(
+                                  banner['title']!,
+                                  banner['subtitle']!,
+                                  banner['image']!,
+                                ),
                               );
                             },
                           ),
@@ -487,8 +510,8 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   Widget buildDisCountCard(
-    Icon icon,
     String title,
+    String subtitle,
     String imgs,
   ) {
     return Column(
@@ -531,56 +554,53 @@ class _MyHomePageState extends State<MyHomePage>
               ),
               Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        PrimaryText(
-                          text: "Do you own a shop?",
-                          color: whiteColor,
-                          fontWeight: FontWeight.w600,
-                          size: 20,
-                        ),
-                        SizedBox(height: 7),
-                        SizedBox(
-                          width: 300,
-                          child: PrimaryText(
-                              text:
-                                  "You can logout and register as a shop owner now!",
-                              color: whiteColor,
-                              fontWeight: FontWeight.w500,
-                              size: 13,
-                              alignment: TextAlign.start),
-                        ),
-                        // SizedBox(height: 25),
-                        // GestureDetector(
-                        //   onTap: () {
-                        //     ExternalAppLauncher.downloadLink();
-                        //   },
-                        //   child: Container(
-                        //     height: 30,
-                        //     width: 110,
-                        //     decoration: BoxDecoration(
-                        //       color: Colors.orange,
-                        //       borderRadius: BorderRadius.circular(5),
-                        //     ),
-                        //     child: Center(
-                        //       child: Text(
-                        //         "Download Now",
-                        //         style: TextStyle(
-                        //           fontWeight: FontWeight.bold,
-                        //           color: blackColor,
-                        //           fontSize: 11,
-                        //         ),
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
-                      ],
+                    PrimaryText(
+                      text: title,
+                      alignment: TextAlign.start,
+                      color: whiteColor,
+                      fontWeight: FontWeight.w600,
+                      size: 18,
+                      textOverflow: TextOverflow.visible,
                     ),
+                    SizedBox(height: 7),
+                    SizedBox(
+                      width: 300,
+                      child: PrimaryText(
+                        text: subtitle,
+                        color: whiteColor,
+                        fontWeight: FontWeight.w400,
+                        size: 12,
+                        alignment: TextAlign.start,
+                      ),
+                    ),
+                    // SizedBox(height: 25),
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     ExternalAppLauncher.downloadLink();
+                    //   },
+                    //   child: Container(
+                    //     height: 30,
+                    //     width: 110,
+                    //     decoration: BoxDecoration(
+                    //       color: Colors.orange,
+                    //       borderRadius: BorderRadius.circular(5),
+                    //     ),
+                    //     child: Center(
+                    //       child: Text(
+                    //         "Download Now",
+                    //         style: TextStyle(
+                    //           fontWeight: FontWeight.bold,
+                    //           color: blackColor,
+                    //           fontSize: 11,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

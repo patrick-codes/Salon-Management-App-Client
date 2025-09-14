@@ -161,8 +161,7 @@ class _OwnerHomePageState extends State<OwnerHomePage>
                           size: 25,
                         ),
                         SizedBox(width: 5),
-                        (fetchOwner.shopList != null &&
-                                fetchOwner.shopList!.length > 1)
+                        (fetchOwner.shopList.length > 1)
                             ? PrimaryText(
                                 text: 'Get Started',
                                 size: 14,

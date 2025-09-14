@@ -10,7 +10,6 @@ import 'package:toastification/toastification.dart';
 import '../../helpers/colors/widgets/style.dart';
 import '../authentication screens/bloc/auth_bloc.dart';
 import '../checkout page/components/Transaction/other/show_up_animation.dart';
-import '../filter screen/pages/filter_screen.dart';
 import '../shops/bloc/shops_bloc.dart';
 import '../shops/components/gridview.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -537,6 +536,7 @@ class _MyHomePageState extends State<MyHomePage>
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         PrimaryText(
                           text: "Do you own a shop?",
@@ -544,37 +544,41 @@ class _MyHomePageState extends State<MyHomePage>
                           fontWeight: FontWeight.w600,
                           size: 20,
                         ),
-                        SizedBox(height: 2),
-                        PrimaryText(
-                          text: "Download the shop owner app!",
-                          color: whiteColor,
-                          fontWeight: FontWeight.w500,
-                          size: 9.5,
+                        SizedBox(height: 7),
+                        SizedBox(
+                          width: 300,
+                          child: PrimaryText(
+                              text:
+                                  "You can logout and register as a shop owner now!",
+                              color: whiteColor,
+                              fontWeight: FontWeight.w500,
+                              size: 13,
+                              alignment: TextAlign.start),
                         ),
-                        SizedBox(height: 25),
-                        GestureDetector(
-                          onTap: () {
-                            ExternalAppLauncher.downloadLink();
-                          },
-                          child: Container(
-                            height: 30,
-                            width: 110,
-                            decoration: BoxDecoration(
-                              color: Colors.orange,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Download Now",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: blackColor,
-                                  fontSize: 11,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                        // SizedBox(height: 25),
+                        // GestureDetector(
+                        //   onTap: () {
+                        //     ExternalAppLauncher.downloadLink();
+                        //   },
+                        //   child: Container(
+                        //     height: 30,
+                        //     width: 110,
+                        //     decoration: BoxDecoration(
+                        //       color: Colors.orange,
+                        //       borderRadius: BorderRadius.circular(5),
+                        //     ),
+                        //     child: Center(
+                        //       child: Text(
+                        //         "Download Now",
+                        //         style: TextStyle(
+                        //           fontWeight: FontWeight.bold,
+                        //           color: blackColor,
+                        //           fontSize: 11,
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ],

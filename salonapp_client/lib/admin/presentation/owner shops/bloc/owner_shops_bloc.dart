@@ -6,7 +6,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../presentation/shops/repository/data rmodel/service_model.dart';
 import '../../../data/image uploader/image_uploader.dart';
-import '../../owner location/bloc/owner_location_bloc.dart';
 import '../repository/salonservices helper/owner_fetch_services_helper.dart';
 
 part 'owner_shops_events.dart';

@@ -10,7 +10,6 @@ import 'package:toastification/toastification.dart';
 import '../../helpers/colors/widgets/style.dart';
 import '../authentication screens/bloc/auth_bloc.dart';
 import '../checkout page/components/Transaction/other/show_up_animation.dart';
-import '../filter screen/pages/filter_screen.dart';
 import '../shops/bloc/shops_bloc.dart';
 import '../shops/components/gridview.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -101,6 +100,25 @@ class _MyHomePageState extends State<MyHomePage>
     "undraw_barber_utly",
     "undraw_people_ka7y",
     "undraw_pie-graph_8m6b",
+  ];
+
+  List<Map<String, String>> bannerTitle = [
+    {
+      'title': 'Do you own a salon or barbershop?',
+      'subtitle': 'Register now and start growing your business with us!',
+      'image': 'assets/images/img-ten.jpg'
+    },
+    {
+      'title': 'Turn your shop into a brand',
+      'subtitle': 'List your salon, manage bookings, and reach more clients.',
+      'image': 'assets/images/img-sixteen.jpg'
+    },
+    {
+      'title': 'Be part of the Hairvana community',
+      'subtitle':
+          'Join hundreds of shop owners already getting more customers.',
+      'image': 'assets/images/img3.jpg'
+    },
   ];
 
   List<ShopModel>? shops;
@@ -366,14 +384,18 @@ class _MyHomePageState extends State<MyHomePage>
                         SizedBox(
                           height: 140,
                           width: MediaQuery.of(context).size.width,
-                          child: ListView.builder(
-                            itemCount: 1,
+                          child: PageView.builder(
+                            itemCount: bannerTitle.length,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (BuildContext context, int index) {
+                              final banner = bannerTitle[index];
                               return ShowUpAnimation(
                                 delay: 300,
-                                child: buildDisCountCard(icons[index],
-                                    title[index], "assets/images/img6.jpg"),
+                                child: buildDisCountCard(
+                                  banner['title']!,
+                                  banner['subtitle']!,
+                                  banner['image']!,
+                                ),
                               );
                             },
                           ),
@@ -488,8 +510,8 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   Widget buildDisCountCard(
-    Icon icon,
     String title,
+    String subtitle,
     String imgs,
   ) {
     return Column(
@@ -532,51 +554,53 @@ class _MyHomePageState extends State<MyHomePage>
               ),
               Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        PrimaryText(
-                          text: "Do you own a shop?",
-                          color: whiteColor,
-                          fontWeight: FontWeight.w600,
-                          size: 20,
-                        ),
-                        SizedBox(height: 2),
-                        PrimaryText(
-                          text: "Download the shop owner app!",
-                          color: whiteColor,
-                          fontWeight: FontWeight.w500,
-                          size: 9.5,
-                        ),
-                        SizedBox(height: 25),
-                        GestureDetector(
-                          onTap: () {
-                            ExternalAppLauncher.downloadLink();
-                          },
-                          child: Container(
-                            height: 30,
-                            width: 110,
-                            decoration: BoxDecoration(
-                              color: Colors.orange,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Download Now",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: blackColor,
-                                  fontSize: 11,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                    PrimaryText(
+                      text: title,
+                      alignment: TextAlign.start,
+                      color: whiteColor,
+                      fontWeight: FontWeight.w600,
+                      size: 18,
+                      textOverflow: TextOverflow.visible,
                     ),
+                    SizedBox(height: 7),
+                    SizedBox(
+                      width: 300,
+                      child: PrimaryText(
+                        text: subtitle,
+                        color: whiteColor,
+                        fontWeight: FontWeight.w400,
+                        size: 12,
+                        alignment: TextAlign.start,
+                      ),
+                    ),
+                    // SizedBox(height: 25),
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     ExternalAppLauncher.downloadLink();
+                    //   },
+                    //   child: Container(
+                    //     height: 30,
+                    //     width: 110,
+                    //     decoration: BoxDecoration(
+                    //       color: Colors.orange,
+                    //       borderRadius: BorderRadius.circular(5),
+                    //     ),
+                    //     child: Center(
+                    //       child: Text(
+                    //         "Download Now",
+                    //         style: TextStyle(
+                    //           fontWeight: FontWeight.bold,
+                    //           color: blackColor,
+                    //           fontSize: 11,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

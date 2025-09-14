@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:intl/intl.dart';
-import 'package:salonapp_client/presentation/authentication%20screens/bloc/auth_bloc.dart';
 import '../../../../presentation/shops/repository/data rmodel/service_model.dart';
 import '../../../helpers/config/size_config.dart';
 import '../../../helpers/constants/color_constants.dart';

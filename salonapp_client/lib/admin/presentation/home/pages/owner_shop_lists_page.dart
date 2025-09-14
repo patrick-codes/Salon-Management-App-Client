@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salonapp_client/helpers/widgets/text_widgets.dart';
 import '../../../../presentation/shops/repository/data rmodel/service_model.dart';
 import '../../../helpers/constants/color_constants.dart';
-import '../../../helpers/text style/text_style.dart';
 import '../../owner shops/bloc/owner_shops_bloc.dart';
 import 'ownershop_details_page.dart';
 

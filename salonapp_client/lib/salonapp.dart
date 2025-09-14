@@ -4,7 +4,6 @@ import 'package:salonapp_client/presentation/shops/pages/shop%20info/shop_info.d
 import 'admin/presentation/appointments/pages/appointments_page.dart';
 import 'admin/presentation/home/pages/owner_home.dart';
 import 'admin/presentation/home/pages/owner_shop_lists_page.dart';
-import 'admin/presentation/home/pages/ownershop_details_page.dart';
 import 'admin/presentation/owner shops/pages/manage_shop.dart';
 import 'admin/presentation/owner shops/pages/owner_create_shopservice_page.dart';
 import 'helpers/colors/color_constants.dart';
